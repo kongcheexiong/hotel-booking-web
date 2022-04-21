@@ -1,0 +1,74 @@
+/* #sdb {
+    background-color: #FAFAFA;
+    height: 100vh;
+    display: block;
+    position: fixed;
+
+}
+
+#navtext {
+    color: #898989;
+}
+
+
+.sidenav---sidenav-toggle---1KRjR .sidenav---icon-bar---u1f02 {
+    background-color: #898989 !important;
+
+} */
+
+.logo {
+    padding-left: 20px;
+    padding-top: 20px;
+    color: #898989;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 260px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #FAFAFA
+}
+
+nav ul {
+    list-style: none,
+}
+
+nav ul a {
+    display: block;
+    text-decoration: none;
+    font-size: 14px;
+    color: #898989;
+    position: relative;
+    padding: 15px 0px 15px 25px;
+    transition: all 0.5s;
+}
+
+nav ul a:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 40px 0 0 40px;
+    z-index: -1;
+    transition: all 1s
+}
+
+nav ul a:hover {
+    color: #898989;
+    cursor: pointer;
+}
+
+nav ul a:hover:before {
+    width: 95%
+}
+
+.wrapper {
+    margin-left: 260px
+}
+
