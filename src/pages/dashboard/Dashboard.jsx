@@ -9,7 +9,7 @@ function Dashboard() {
   const navigate = useNavigate();
   return (
     <div>
-      
+      sgfgs
       <button
         onClick={() => {
           Auth.logOut(() => {
