@@ -10,6 +10,7 @@ function Dashboard() {
   return (
     <div>
       sgfgs
+      this is easy
       <button
         onClick={() => {
           Auth.logOut(() => {
