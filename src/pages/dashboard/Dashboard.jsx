@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 // auth
 import Auth from "../../auth.js";
 import { router } from "../../constants/index.js";
-import SideNav from "../../components/sideNav/sideNav.jsx";
+
 function Dashboard() {
   const navigate = useNavigate();
   return (

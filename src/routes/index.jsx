@@ -4,7 +4,7 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./publicRoute";
 
 //components
-import SideNav from "../components/sideNav/sideNav";
+
 
 //Pages
 import Dashboard from "../pages/dashboard/Dashboard";
@@ -25,6 +25,12 @@ function MyRouter() {
         <Route element={<Layout />}>
           <Route exact path={`${router.DASHBOARD}`} element={<Dashboard />} />
           <Route exact path={`${router.SERVICES}`} element={<Test />} />
+          <Route exact path={`${router.SETTING}`} element={<Test />} />
+          <Route exact path={`${router.CUSTOMER}`} element={<Test />} />
+          <Route exact path={`${router.ORDER}`} element={<Test />} />
+          <Route exact path={`${router.NOTIFICATION}`} element={<Test />} />
+          <Route exact path={`${router.PAYMENT}`} element={<Test />} />
+          <Route exact path={`${router.INVOICE}`} element={<Test />} />
           <Route exact path={`${router.SHOPS}`} element={<Test />} />
           
         </Route>

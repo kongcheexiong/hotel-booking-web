@@ -19,7 +19,11 @@
 .logo {
     padding-left: 20px;
     padding-top: 20px;
-    color: #898989;
+    color: rgba(160, 174, 192, 1);
+    ;
+}
+nav {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 nav ul {
@@ -30,7 +34,7 @@ nav ul {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #FAFAFA
+    background-color: #F8F9FA
 }
 
 nav ul {
@@ -40,11 +44,13 @@ nav ul {
 nav ul a {
     display: block;
     text-decoration: none;
-    font-size: 14px;
-    color: #898989;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(0,0,0,0.87);
     position: relative;
-    padding: 15px 0px 15px 25px;
-    transition: all 0.5s;
+    margin-left: 10px;
+    padding: 10px 0px 10px 20px;
+    transition: all 0.3s;
 }
 
 nav ul a:before {
@@ -53,22 +59,29 @@ nav ul a:before {
     top: 0;
     right: 0;
     height: 100%;
-    background: #FFFFFF;
-    border-radius: 40px 0 0 40px;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 10px;
     z-index: -1;
     transition: all 1s
 }
 
 nav ul a:hover {
-    color: #898989;
+   
+
+ 
+   opacity: 0.5;
     cursor: pointer;
 }
 
 nav ul a:hover:before {
-    width: 95%
+  
 }
 
 .wrapper {
     margin-left: 260px
+}
+nav ul .menu{
+    position: sticky;
+    height: 300px;
 }
 

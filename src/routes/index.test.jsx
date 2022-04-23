@@ -4,7 +4,6 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./publicRoute";
 
 //components
-import SideNav from "../components/sideNav/sideNav";
 
 //Pages
 import Dashboard from "../pages/dashboard/Dashboard";
