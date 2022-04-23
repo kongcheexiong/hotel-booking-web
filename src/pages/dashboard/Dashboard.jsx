@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { Stack } from "@mui/material";
 
 // auth
 import Auth from "../../auth.js";
@@ -9,18 +10,12 @@ function Dashboard() {
   const navigate = useNavigate();
   return (
     <div>
-      sgfgs
-      this is easy
-      <button
-        onClick={() => {
-          Auth.logOut(() => {
-            navigate(`/login`, { replace: true });
-          });
-        }}
-      >
-        logout
-      </button>
- 
+      <Stack direction='column' spacing={1} >
+        {/**static card */}
+        {/**new shop and income */}
+        {/**service info */}
+
+      </Stack>
     </div>
   );
 }
