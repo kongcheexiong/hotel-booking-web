@@ -1,25 +1,24 @@
-import React from "react";
+import * as react from "react";
 import { Route, Navigate } from "react-router-dom";
 import Auth from "../auth";
 
-export const ProtectedRoute = ({
-  component: Component,
-  ...rest
-}) => {
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        if (Auth.isAuthenticated()) {
-          return <Component {...props} />;
-        } else {
-          return (
-            <Navigate to="/"
-              
-            />
-          );
-        }
-      }}
-    />
-  );
+import { authContext } from "../context/authContext";
+
+import { router } from "../constants";
+
+const ProtectedRoute = (props) => {
+  //const { auth } = react.useContext(authContext);
+  //const token = auth.accessToken;s
+  const token = localStorage.getItem('accessToken')
+  const { children } = props;
+
+  if (!token) {
+    return <Navigate to={`${router.LOGIN}`} replace />;
+  }
+
+  
+
+  return children;
 };
+
+export default ProtectedRoute;

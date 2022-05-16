@@ -1,0 +1,32 @@
+label {
+    font-size: 14px;
+    font-weight: 500;
+
+}
+
+input[type=number]{
+    height: 35px;
+    width: 50px;
+    border: 1px solid #b1aeae;
+
+    border-radius: 5px;
+  
+
+    margin: 8px 0;
+    box-sizing: border-box;
+
+
+ 
+}
+input[type=number]:hover{
+    border-color: black
+   
+
+}
+input[type=number]:focus{
+    outline: none !important;
+  
+    border: 2px solid #4781be;
+    
+}
+
