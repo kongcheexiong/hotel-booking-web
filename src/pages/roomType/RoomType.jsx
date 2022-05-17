@@ -2,7 +2,7 @@ import React from 'react'
 
 //componetn
 import Header from './components/Header'
-import DataTables from './components/Table'
+//import DataTables from './components/Table'
 
 import PageSizeCustomOptions from './components/DataTable'
 

@@ -11,6 +11,7 @@ import { router } from "../../../constants";
 //import style for override material ui components
 import { textStyle, btnStyle } from "../../../style";
 import "../style.css";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 export default function AddRoomType() {
   {
@@ -31,15 +32,16 @@ export default function AddRoomType() {
     suggestedGuestAllowed: "",
     note: "",
     images: [],
+    totoalRoom: 0,
+    isDeleted: false,
   };
-  const [data,setData] = React.useState(initialState)
+  const [data, setData] = React.useState(initialState);
   const [typeName, setTypeName] = React.useState("");
   const [price, setPrice] = React.useState("");
   const [numOfBed, setNumOfBed] = React.useState("");
   const [suggestedGuestAllowed, setSuggestedGuestAllowed] = React.useState("");
   const [note, setNote] = React.useState("");
   const [images, setImages] = React.useState([]);
-
 
   const navigate = useNavigate();
   return (
@@ -63,36 +65,51 @@ export default function AddRoomType() {
       <hr />
       {/**form area */}
       <Stack direction="column" spacing={1}>
-        <Stack>
+        {/**
+         *  <Stack>
           <label id="id">ລະຫັດປະເພດຫ້ອງ</label>
           <TextField sx={{ ...textStyle, width: "100%" }} />
         </Stack>
+         */}
+
         <Stack>
-          <label id="room">ປະເພດຫ້ອງ</label>
-          <TextField 
-          onChange={(e)=>{
-            setData({...data,typeName: e.target.value})
-         
-          }}
-          sx={{ ...textStyle, width: "100%" }} />
+          <label id="room">ຫ້ອງ</label>
+          <TextField
+            onChange={(e) => {
+              setData({ ...data, typeName: e.target.value });
+            }}
+            sx={{ ...textStyle, width: "100%" }}
+          />
         </Stack>
         <Stack>
-          <label id="room">ໝາຍເຫດ</label>
-          <TextField sx={{ ...textStyle, width: "100%" }} />
+          <label id="note">ໝາຍເຫດ</label>
+          <TextField
+            onChange={(e) => {
+              setData({ ...data, note: e.target.value });
+            }}
+            sx={{ ...textStyle, width: "100%" }}
+          />
         </Stack>
         <Stack>
           <label id="price">ລາຄາ</label>
-          <TextField sx={{ ...textStyle, width: "100%" }} />
+          <TextField
+            onChange={(e) => {
+              setData({ ...data, price: e.target.value });
+            }}
+            sx={{ ...textStyle, width: "100%" }}
+          />
         </Stack>
         <Stack direction="row" spacing={2}>
           <Stack direction="column">
             <label id="nomOfBed">ຈໍານວນຕຽງ</label>
-            <TextField sx={{ ...textStyle }} />
+            <TextField
+              onChange={(e) => {
+                setData({ ...data, numberOfBed: e.target.value });
+              }}
+              sx={{ ...textStyle }}
+            />
           </Stack>
-          <Stack direction="column">
-            <label id="nomOfToilet">ຈໍານວນຫ້ອງນໍ້າ</label>
-            <TextField sx={{ ...textStyle }} />
-          </Stack>
+
           <Stack direction="column">
             <label id="nomOfQuest">ຈໍານວນລູກຄ້າແນະນໍາ</label>
             <TextField sx={{ ...textStyle }} />
@@ -106,11 +123,27 @@ export default function AddRoomType() {
           name="filefield"
           multiple="multiple"
           type="file"
+          onChange={(event) => {
+            event.preventDefault();
+            const file = event.target.files;
+            //const frmdata = new FormData();
+            const fileImage = []
+            for (var x = 0; x < file.length; x++) {
+            //  frmdata.append("file", file[x]);
+              fileImage.push(file[x].name)
+            }
+            setData({ ...data, images: fileImage });
+            
+          }}
         />
       </Stack>
       {/**submit button */}
       <Stack sx={{ marginTop: "50px" }} direction="row" justifyContent="center">
-        <Button onClick={ ()=> alert(JSON.stringify(data))} variant="contained" sx={{ ...btnStyle }}>
+        <Button
+          onClick={() => alert(JSON.stringify(data))}
+          variant="contained"
+          sx={{ ...btnStyle }}
+        >
           ຕົກລົງ
         </Button>
       </Stack>

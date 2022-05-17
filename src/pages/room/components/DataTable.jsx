@@ -34,7 +34,7 @@ export default function PageSizeCustomOptions() {
         );
       },
     },
-    { field: "id", headerName: "ລະຫັດ", width: 80 },
+    { field: "id", headerName: "ລະຫັດ", width: 80,  },
     { field: "roomNumber", headerName: "ເບີຫ້ອງ", flex: 1,sortable: false, },
     { field: "type", headerName: "ປະເພດຫ້ອງ",  flex: 1},
     {
@@ -113,7 +113,7 @@ export default function PageSizeCustomOptions() {
        
         disableSelectionOnClick
        
-       disableColumnMenu
+       
      
 
       />
