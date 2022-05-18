@@ -1,4 +1,5 @@
-# finder-web
-#run dev version 
+# install 
+run npm install
+# run dev version (test)
 npm run dev
 
