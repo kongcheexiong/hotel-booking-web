@@ -11,14 +11,7 @@ import { font } from "../../../constants/index";
 import { Construction } from "@mui/icons-material";
 
 export default function PageSizeCustomOptions() {
-  const initialState = {
-    id: "",
-    roomType: "",
-    price: "",
-    numOfBed: "",
-    numOfQuest: "",
-    note: "",
-  };
+ 
   const hotelID = localStorage.getItem("hotel");
 
   const [roomData, setRoomData] = React.useState([]);
@@ -106,8 +99,7 @@ export default function PageSizeCustomOptions() {
       sortable: false,
     },
   ];
-
-  const rows = [
+/**  const rows = [
     {
       _id: 1,
       roomType: "VIP01",
@@ -124,7 +116,8 @@ export default function PageSizeCustomOptions() {
       suggestedGuestAllowed: 2,
       note: "ຫ້ອງແອ, ບໍລິການອາຫານເຊົ້າ",
     },
-  ];
+  ];*/
+ 
 
   const datagridSx = {
     //borderRadius: 2,
