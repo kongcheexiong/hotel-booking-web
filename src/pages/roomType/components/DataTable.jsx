@@ -11,18 +11,13 @@ import { font } from "../../../constants/index";
 import { Construction } from "@mui/icons-material";
 
 export default function PageSizeCustomOptions() {
- 
   const hotelID = localStorage.getItem("hotel");
 
-  const [roomData, setRoomData] = React.useState([]);
-  const [row, setrow] = React.useState([]);
-  const [url, setUrl] = React.useState(
-    `http://localhost:8080/api/room-types/skip/0/limit/30?hotelId=${hotelID}`
-  );
+  //const [roomData, setRoomData] = React.useState([]);
 
   const [resData, setResData] = React.useState([]);
-  const [dataRows, setDataRows] = React.useState([]);
-  const responseData = [{}];
+  //const [dataRows, setDataRows] = React.useState([]);
+
   const [isLoading, setloading] = React.useState(true);
 
   const fetchData = async () => {
@@ -33,7 +28,6 @@ export default function PageSizeCustomOptions() {
       .then((res) => {
         setResData(res.data.roomTypes);
         setloading(false);
-        
       })
       .catch((err) => console.error(err));
     console.log(resData);
@@ -42,11 +36,9 @@ export default function PageSizeCustomOptions() {
   React.useEffect(() => {
     //setResData([])
     setloading(true);
-    setRoomData([]);
+
     setResData([]);
     fetchData();
-    
-    
   }, []);
 
   const [pageSize, setPageSize] = React.useState(10);
@@ -99,7 +91,7 @@ export default function PageSizeCustomOptions() {
       sortable: false,
     },
   ];
-/**  const rows = [
+  /**  const rows = [
     {
       _id: 1,
       roomType: "VIP01",
@@ -117,7 +109,6 @@ export default function PageSizeCustomOptions() {
       note: "ຫ້ອງແອ, ບໍລິການອາຫານເຊົ້າ",
     },
   ];*/
- 
 
   const datagridSx = {
     //borderRadius: 2,
