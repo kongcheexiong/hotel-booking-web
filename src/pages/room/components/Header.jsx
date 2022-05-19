@@ -22,55 +22,6 @@ import { textStyle } from "../../../style";
 
 import { authContext } from "../../../context/authContext";
 
-export const AddRoom = (props) => {
-  const { isOpen } = props;
-  return (
-    <Dialog
-      open={isOpen}
-      onClose={() => {}}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle
-        sx={{ fontFamily: "Noto sans lao", fontSize: "18px" }}
-        id="add-new-type"
-      >
-        {"ເພີ່ມປະເພດຫ້ອງ"}
-      </DialogTitle>
-      <DialogContent>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure debitis
-        dignissimos, voluptates laboriosam nulla necessitatibus dolores, dolorum
-        quibusdam in totam cumque, sed nemo illum? Possimus libero in tempore
-        asperiores modi?
-      </DialogContent>
-      <DialogActions>
-        <Button
-          sx={{ fontFamily: "Noto sans lao" }}
-          variant="outlined"
-          color="error"
-          size="small"
-          onClick={togglePopUp}
-        >
-          ຍົກເລີກ
-        </Button>
-        <Button
-          sx={{ fontFamily: "Noto sans lao" }}
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={togglePopUp}
-        >
-          ຕົກລົງ
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
-{
-  /**pop up add new type form
-   *
-   */
-}
 
 export default function Header() {
   const [isOpen, setOpen] = react.useState(false);

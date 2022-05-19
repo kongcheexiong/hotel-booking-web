@@ -3,7 +3,14 @@ label {
     font-weight: 500;
 
 }
-
+.previewImg{
+    cursor: pointer;
+}
+.previewImg:hover{
+    color: red;
+    text-decoration: underline;
+    
+}
 input[type=number]{
     height: 35px;
     width: 50px;
