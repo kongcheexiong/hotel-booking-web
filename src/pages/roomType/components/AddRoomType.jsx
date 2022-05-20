@@ -54,7 +54,8 @@ export default function AddRoomType() {
   const [files, setFiles] = React.useState("");
   const accessToken = localStorage.getItem("accessToken");
   //func for upload image
-  const handleUploadImg = () => {
+  const handleUploadImg = async () => {
+    setLoading(true)
     let data = new FormData();
 
     for (const i of Object.keys(files)) {
@@ -68,7 +69,7 @@ export default function AddRoomType() {
       timeout: 5000,
     };
 
-    axios(config)
+    await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
       })
@@ -79,7 +80,8 @@ export default function AddRoomType() {
   };
 
   // func for upload roomtype info
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
+    setLoading(true)
     let config = {
       method: "post",
       url: "http://localhost:8080/api/create/room-type",
@@ -90,7 +92,7 @@ export default function AddRoomType() {
       data: JSON.stringify(data),
       timeout: 5000,
     };
-    axios(config)
+    await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         console.log('submited')
@@ -212,7 +214,7 @@ export default function AddRoomType() {
       <Stack sx={{ marginTop: "50px" }} direction="row" justifyContent="">
         <Button
           onClick={async () => {
-            console.log(data)
+            //console.log(data)
             setLoading(true);
             await handleUploadImg();
             await handleSubmit();

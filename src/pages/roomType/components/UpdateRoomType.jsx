@@ -17,17 +17,21 @@ import "../style.css";
 import { ConstructionOutlined, TurnedIn } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import { counterContext } from "../../../context/counter";
+
 export default function UpdateRoomType(props) {
   // const {setRoomType } = React.useContext(roomTypeContext);
   //const roomType = React.useContext(roomTypeContext)
   // console.log(roomType.data)
-  const { updatedData }= props
+  const { value, setValue } = React.useContext(counterContext);
+
+  const { updatedData } = props;
 
   const [loading, setLoading] = React.useState(false);
   const [err, setErr] = React.useState(false);
 
   const hotelId = localStorage.getItem("hotel");
-  console.log(updatedData)
+  console.log(updatedData);
   const initialState = {
     id: updatedData._id,
     data: {
@@ -39,13 +43,14 @@ export default function UpdateRoomType(props) {
       images: [],
     },
   };
-  
+
   const [data, setData] = React.useState(initialState);
-  
+
   const [files, setFiles] = React.useState("");
   const accessToken = localStorage.getItem("accessToken");
   //func for upload image
-  const handleUploadImg = () => {
+  const handleUploadImg = async () => {
+    setLoading(true);
     let data = new FormData();
 
     for (const i of Object.keys(files)) {
@@ -59,7 +64,7 @@ export default function UpdateRoomType(props) {
       timeout: 5000,
     };
 
-    axios(config)
+    await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
       })
@@ -70,7 +75,8 @@ export default function UpdateRoomType(props) {
   };
 
   // func for upload roomtype info
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setLoading(true);
     let config = {
       method: "put",
       url: "http://localhost:8080/api/update/room-type",
@@ -81,9 +87,10 @@ export default function UpdateRoomType(props) {
       data: JSON.stringify(data),
       timeout: 5000,
     };
-    axios(config)
+    await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
+        setValue(() => value + 1);
         //console.log('submited')
       })
       .catch(function (error) {
@@ -92,13 +99,35 @@ export default function UpdateRoomType(props) {
         setErr(true);
       });
   };
+  const [deletedId,setDeleltedId] = React.useState('')
+
+  const handleDelete = async () => {
+    let config = {
+      method: "delete",
+      url: "http://localhost:8080/api/delete/room-type",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        id: "",
+      },
+      timeout: 5000
+    };
+
+    await axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   const navigate = useNavigate();
   //*//********* */
 
   return (
     <div>
-        
       {/**form header */}
       <Stack
         sx={{ backgroundColor: "#1565C0", padding: "0px 10px", color: "white" }}
@@ -107,59 +136,60 @@ export default function UpdateRoomType(props) {
         alignItems="center"
       >
         <h3>ແກ້ໄຂປະເພດຫ້ອງ</h3>
-        <IconButton
-          onClick={() =>{}
-            
-          }
-        >
+        {/**
+         * <IconButton onClick={() => {}}>
           <CancelIcon fontSize="large" color="" />
         </IconButton>
+         * 
+         */}
       </Stack>
       <hr />
       {/**form area */}
       <Stack direction="column" spacing={1}>
-        {/**
-         *  <Stack>
-          <label id="id">ລະຫັດປະເພດຫ້ອງ</label>
-          <TextField sx={{ ...textStyle, width: "100%" }} />
-        </Stack>
-         */}
-
         <Stack>
           <label id="room">ຫ້ອງ</label>
           <TextField
-          defaultValue={updatedData.typeName}
-          onChange={(e) => {
-            setData({ ...data, data: {
-                ...data.data,
-                typeName: e.target.value
-            } });
-          }}
+            defaultValue={updatedData.typeName}
+            onChange={(e) => {
+              setData({
+                ...data,
+                data: {
+                  ...data.data,
+                  typeName: e.target.value,
+                },
+              });
+            }}
             sx={{ ...textStyle, width: "100%" }}
           />
         </Stack>
         <Stack>
           <label id="note">ໝາຍເຫດ</label>
           <TextField
-          defaultValue={updatedData.note}
-          onChange={(e) => {
-            setData({ ...data, data: {
-                ...data.data,
-                note: e.target.value
-            } });
-          }}
+            defaultValue={updatedData.note}
+            onChange={(e) => {
+              setData({
+                ...data,
+                data: {
+                  ...data.data,
+                  note: e.target.value,
+                },
+              });
+            }}
             sx={{ ...textStyle, width: "100%" }}
           />
         </Stack>
         <Stack>
           <label id="price">ລາຄາ</label>
           <TextField
-           defaultValue={updatedData.price}
+            defaultValue={updatedData.price}
             onChange={(e) => {
-                setData({ ...data, data: {
-                    ...data.data,
-                  price: e.target.value
-                } })
+              setData({
+                ...data,
+                data: {
+                  ...data.data,
+                  price: e.target.value,
+                },
+              });
             }}
             sx={{ ...textStyle, width: "100%" }}
           />
@@ -168,13 +198,16 @@ export default function UpdateRoomType(props) {
           <Stack direction="column">
             <label id="nomOfBed">ຈໍານວນຕຽງ</label>
             <TextField
-            defaultValue={updatedData.numberOfBed}
-            onChange={(e) => {
-                setData({ ...data, data: {
+              defaultValue={updatedData.numberOfBed}
+              onChange={(e) => {
+                setData({
+                  ...data,
+                  data: {
                     ...data.data,
-                    numberOfBed: e.target.value
-                } })
-            }}
+                    numberOfBed: e.target.value,
+                  },
+                });
+              }}
               sx={{ ...textStyle }}
             />
           </Stack>
@@ -182,14 +215,16 @@ export default function UpdateRoomType(props) {
           <Stack direction="column">
             <label id="nomOfQuest">ຈໍານວນລູກຄ້າແນະນໍາ</label>
             <TextField
-             defaultValue={updatedData.suggestedGuestAllowed}
-             onChange={(e) => {
-                setData({ ...data, data: {
+              defaultValue={updatedData.suggestedGuestAllowed}
+              onChange={(e) => {
+                setData({
+                  ...data,
+                  data: {
                     ...data.data,
-                    suggestedGuestAllowed: e.target.value
-                } })
-             }}
-            
+                    suggestedGuestAllowed: e.target.value,
+                  },
+                });
+              }}
               sx={{ ...textStyle }}
             />
           </Stack>
@@ -214,7 +249,13 @@ export default function UpdateRoomType(props) {
                 //  frmdata.append("file", file[x]);
                 fileImage.push(file[x].name);
               }
-              setData({ ...data, images: fileImage });
+              setData({
+                ...data,
+                data: {
+                  ...data.data,
+                  images: fileImage,
+                },
+              });
             }}
           />
           {loading ? <CircularProgress /> : null}
@@ -225,12 +266,12 @@ export default function UpdateRoomType(props) {
       <Stack sx={{ marginTop: "50px" }} direction="row" justifyContent="">
         <Button
           onClick={async () => {
-            console.log(data)
-            //setLoading(true);
-            //await handleUploadImg();
-            //await handleSubmit();
-            //setErr(false);
-           // setLoading(false);
+            console.log(data);
+            setLoading(true);
+            await handleUploadImg();
+            await handleSubmit();
+            setErr(false);
+            setLoading(false);
 
             //await navigate(`${router.ROOMTYPEMANAGEMENT}`,{replace:true})
           }}

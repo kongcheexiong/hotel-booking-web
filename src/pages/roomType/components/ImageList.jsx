@@ -7,31 +7,56 @@ import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
+import axios from 'axios';
+
 export default function TitlebarImageList(props) {
-    const itemData = [
-        {
-          img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-          title: 'Breakfast',
-          author: '@bkristastucchio',
-          rows: 2,
-          cols: 2,
-          featured: true,
-        },
-        {
-          img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-          title: 'Burger',
-          author: '@rollelflex_graphy726',
-        },
-      ];
-      const {imgName} = props
-      const img = [imgName]
-      console.log(img[0])
+    
+      const {imgData} = props
+      const id = imgData._id
       
+      const [img,setImg] = React.useState([imgData.images])
+      //console.log(img)
+      const [showImg,setShowImg] = React.useState(img[0])
+      console.log(showImg)
+
+      //console.log(img[0])
+      const handleDelete = async(item)=>{
+          setLoading(true)
+        var config = {
+            method: 'put',
+            url: 'http://localhost:8080/api/remove/room-type-images',
+            headers: { 
+              'Content-Type': 'application/json'
+            },
+            data : {
+                id: id,
+                images: [
+                    item
+                ]
+
+            }
+          };
+          
+          await axios(config)
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+            setErr(false)
+          })
+          .catch(function (error) {
+            console.log(error);
+            setErr(true)
+          });
+          
+      }
+      
+      const [loading,setLoading] = React.useState(false)
+
+      const [err, setErr] = React.useState(false)
 
   return (
     <ImageList sx={{ width: 500, height: 450 }}>
 
-      {img[0].map((item,index) => (
+      {showImg.map((item,index) => (
         <ImageListItem key={index}>
           <img
             src={`http://localhost:8080/api/image/${item}`}
@@ -49,6 +74,10 @@ export default function TitlebarImageList(props) {
                 aria-label={`info about ${item}`}
                 onClick = {()=>{
                     console.log(item)
+                    console.log(index)
+                    handleDelete(item) 
+                   
+                    showImg.splice(index,1)
                 }}
               >
                 <DeleteOutlineIcon />
@@ -57,6 +86,9 @@ export default function TitlebarImageList(props) {
           />
         </ImageListItem>
       ))}
+      {err && <h3>there is an err</h3>}
+      {loading? <h3>Loading...</h3> : null}
+      
     </ImageList>
   );
 }

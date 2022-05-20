@@ -21,10 +21,14 @@ import UpdateRoomType from "./UpdateRoomType";
 import { font, router } from "../../../constants/index";
 import { Construction } from "@mui/icons-material";
 
+import { counterContext } from "../../../context/counter";
+
 import "../style.css";
 
 export default function PageSizeCustomOptions() {
   const navigate = useNavigate()
+  
+  const {value, setValue} = React.useContext(counterContext)
   //const {setRoomType} = React.useContext(roomTypeContext)
   //const roomType = React.useContext(roomTypeContext)
   const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false)
@@ -35,7 +39,9 @@ export default function PageSizeCustomOptions() {
   const handlePopUpImg = () => setPopupImg(!popUpImg);
 
   const hotelID = localStorage.getItem("hotel");
-  const [count, setCount] = React.useState(0);
+  //const [count, setCount] = React.useState(0);
+
+  const [imgData,setImgData] = React.useState()
 
   
 
@@ -46,7 +52,9 @@ export default function PageSizeCustomOptions() {
   const [error, setError] = React.useState(false);
 
   const [isLoading, setloading] = React.useState(true);
-  const [imgSrc, setImgSrc] = React.useState([]);
+  //const [imgSrc, setImgSrc] = React.useState([]);
+
+ 
 
   const fetchData = async () => {
     await axios
@@ -94,7 +102,7 @@ export default function PageSizeCustomOptions() {
 
     //setResData([]);
     fetchData();
-  }, [count]);
+  }, [value]);
   /// pop up form to view images
 
   const [pageSize, setPageSize] = React.useState(10);
@@ -111,6 +119,8 @@ export default function PageSizeCustomOptions() {
               onClick={() => {
                 console.log(parram.row._id);
                 deleteRoomType(parram.row._id);
+                setValue(()=> value+1)
+                
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -124,8 +134,7 @@ export default function PageSizeCustomOptions() {
                 
                 await console.log(updatedData);
                 handleUpdateForm();
-               //await setRoomType({isEdit: true ,data: parram.row})
-               //console.log(roomType.roomType)
+            
                 //navigate(`${router.ROOMTYPEMANAGEMENT}/add`)
                 
 
@@ -155,7 +164,9 @@ export default function PageSizeCustomOptions() {
             className="previewImg"
             onClick={() => {
               handlePopUpImg()
-              setImgSrc(parram.row.images);
+              //setImgSrc(parram.row.images);
+              setImgData(parram.row)
+             // console.log(parram.row)
             }}
           >
             {parram.row.images}
@@ -245,7 +256,7 @@ export default function PageSizeCustomOptions() {
               {"ຮູບພາບ"}
             </DialogTitle>
             <DialogContent>
-              <TitlebarImageList imgName={imgSrc} />
+              <TitlebarImageList imgData={imgData} />
             </DialogContent>
           </Dialog>
           {/**show update form */}
