@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
-import { IconButton } from "@mui/material";
+import { Button, IconButton, Stack, TextField } from "@mui/material";
 import axios from "axios";
 import { roomTypeContext } from "../RoomType.context";
 
@@ -25,11 +25,37 @@ import { counterContext } from "../../../context/counter";
 
 import "../style.css";
 
+import { textStyle, btnStyle } from "../../../style";
+
+export const SearchField = props =>{
+  const {typeName} = props
+  const {roomType, setRoomType} = React.useContext(roomTypeContext)
+  const handleSearch = async()=>{
+
+
+  }
+  return(
+    <Stack direction='row' spacing={1}>
+      <TextField  placeholder="ຊື່ປະເພດຫ້ອງ"  sx={{...textStyle}} onChange = {(e)=>{
+        setRoomType({...roomType, typeName: e.target.value})
+        console.log(roomType)
+      }}/>
+      <Button sx={{...btnStyle}} onClick = {()=> {
+        console.log(roomType)
+      }}>ຄົ້ນຫາ</Button>
+    </Stack>
+  )
+}
+
+
 export default function PageSizeCustomOptions() {
+
+
+
   const navigate = useNavigate()
   
   const {value, setValue} = React.useContext(counterContext)
-  //const {setRoomType} = React.useContext(roomTypeContext)
+  const {roomType,setRoomType} = React.useContext(roomTypeContext)
   //const roomType = React.useContext(roomTypeContext)
   const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false)
   const handleUpdateForm = ()=> setPopUpUpdateForm(!popUpUpdateForm)
@@ -54,7 +80,7 @@ export default function PageSizeCustomOptions() {
   const [isLoading, setloading] = React.useState(true);
   //const [imgSrc, setImgSrc] = React.useState([]);
 
- 
+
 
   const fetchData = async () => {
     await axios
@@ -70,7 +96,7 @@ export default function PageSizeCustomOptions() {
         console.error(err);
         setError(true);
       });
-    console.log(resData);
+   // console.log(resData);
   };
   const deleteRoomType = async (deletedId) => {
     var data = JSON.stringify({
@@ -99,9 +125,9 @@ export default function PageSizeCustomOptions() {
   React.useEffect(() => {
     //setResData([])
     setloading(true);
-
     //setResData([]);
     fetchData();
+    console.log(`resdata: ${resData}`)
   }, [value]);
   /// pop up form to view images
 
@@ -188,6 +214,12 @@ export default function PageSizeCustomOptions() {
       flex: 1,
     },
     {
+      field: "totalRoom",
+      headerName: "ຫ້ອງທັງໝົດ",
+      type: "number",
+      flex: 1,
+    },
+    {
       field: "note",
       headerName: "ໝາຍເຫດ",
       type: "number",
@@ -229,9 +261,10 @@ export default function PageSizeCustomOptions() {
       {isLoading ? (
         <h1>Loading...</h1>
       ) : (
-        <div style={{ height: 650, width: "100%" }}>
+        <div style={{ height: 660, width: "100%" }}>
+          <SearchField/>
           <DataGrid
-            sx={{ ...datagridSx }}
+            sx={{ ...datagridSx, marginTop: '10px' }}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[5, 10, 20]}

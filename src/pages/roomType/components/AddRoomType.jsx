@@ -34,7 +34,7 @@ export default function AddRoomType() {
     suggestedGuestAllowed: "",
     note: "",
     images: [],
-    totoalRoom: 0,
+    totalRoom: 0,
     isDeleted: false,
   };
   const initialDeletedData = {
@@ -55,6 +55,7 @@ export default function AddRoomType() {
   const accessToken = localStorage.getItem("accessToken");
   //func for upload image
   const handleUploadImg = async () => {
+    
     setLoading(true)
     let data = new FormData();
 
@@ -95,11 +96,13 @@ export default function AddRoomType() {
     await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
-        console.log('submited')
+        setLoading(false)
+
+      //  console.log('submited')
       })
       .catch(function (error) {
         console.log(error);
-        console.log('error')
+       // console.log('error')
         setErr(true);
       });
   };
@@ -215,11 +218,11 @@ export default function AddRoomType() {
         <Button
           onClick={async () => {
             //console.log(data)
-            setLoading(true);
+            await setLoading(true);
+            await setErr(false)
             await handleUploadImg();
             await handleSubmit();
-            setErr(false);
-            setLoading(false);
+            
 
             //await navigate(`${router.ROOMTYPEMANAGEMENT}`,{replace:true})
           }}

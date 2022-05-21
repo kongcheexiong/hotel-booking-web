@@ -22,12 +22,77 @@ import { textStyle } from "../../../style";
 
 import { authContext } from "../../../context/authContext";
 
+import axios from "axios";
 
 export default function Header() {
   const [isOpen, setOpen] = react.useState(false);
   const handlePopUp = () => setOpen(!isOpen);
   const navigate = useNavigate();
   // const {auth,setAuth} = react.useContext(authContext)
+  const hotelID = localStorage.getItem("hotel");
+
+  const [roomTypeData, setRoomTypeData] = react.useState([]);
+  const [typeName, setTypeName] = react.useState([]);
+
+  //add new room
+  const [roomNumber, setRoomNumber] = react.useState("");
+  const [type, setType] = react.useState("");
+  const [note, setNote] = react.useState('');
+  const [err,setErr] = react.useState(false)
+  const [success,setSuccess] = react.useState(false)
+  const [loading,setLoading] = react.useState(false)
+
+  const getRoomtypeData = async () => {
+    await axios
+      .get(
+        `http://localhost:8080/api/room-types/skip/0/limit/30?hotelId=${hotelID}`,
+        { timeout: 5000 }
+      )
+      .then((res) => {
+        setRoomTypeData(res.data.roomTypes);
+        //setloading(false);
+        console.log(roomTypeData);
+      })
+      .catch((err) => {
+        console.error(err);
+        // setError(true);
+      });
+  };
+
+  const handleAddNewRoom = async () => {
+    setLoading(true)
+    axios
+      .post(
+        "http://localhost:8080/api/create/room",
+        {
+          hotel: hotelID,
+          roomtype: type,
+          roomName: roomNumber,
+          status: false,
+          isDeleted: false,
+          note: note,
+        },
+        {
+          timeout: 5000,
+        }
+      )
+      .then((res) => {
+        setSuccess(true)
+        setLoading(false)
+
+        console.log(res)
+      })
+      .catch((err) => {
+        setErr(true)
+        console.error(err)
+      });
+  };
+
+  react.useEffect(() => {
+    getRoomtypeData();
+    //getTypeName();
+  }, []);
+
   return (
     <Stack direction="column" spacing={2}>
       {/**add new type and room */}
@@ -61,7 +126,12 @@ export default function Header() {
         {/** show pop up to add new room */}
         <Dialog
           open={isOpen}
-          onClose={handlePopUp}
+          onClose={() => {
+            handlePopUp();
+            setType("");
+            setRoomNumber("");
+            setNote('')
+          }}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -82,21 +152,41 @@ export default function Header() {
             debitis
             <Stack direction="column" spacing={1}>
               <Stack>
-                <label>ລະຫັດ</label>
-                <TextField sx={{ ...textStyle, width: "100%" }} />
-              </Stack>
-              <Stack>
                 <label>ເບີຫ້ອງ</label>
-                <TextField sx={{ ...textStyle, width: "100%" }} />
+                <TextField
+                  onChange={(e) => setRoomNumber(e.target.value)}
+                  sx={{ ...textStyle, width: "100%" }}
+                />
               </Stack>
               <Stack>
                 <label>ປະເພດຫ້ອງ</label>
-                <Select sx={{...textStyle, height: 40,width: '100%'}} value={';lk;lk'} onChange={() => {}}>
-                  <MenuItem value={"sfsdf"}>fdsf</MenuItem>
-                  <MenuItem value={"sfsdf"}>fdsf</MenuItem>
-                  <MenuItem value={"sfsdf"}>fdsf</MenuItem>
+                <Select
+                  sx={{ ...textStyle, height: 40, width: "100%" }}
+                  value={type}
+                  onChange={(e) => {
+                    setType(e.target.value);
+                  }}
+                >
+                  {roomTypeData.map((val, index) => {
+                    return (
+                      <MenuItem key={index} value={val.typeName}>
+                        {val.typeName}
+                      </MenuItem>
+                    );
+                  })}
                 </Select>
               </Stack>
+              <Stack>
+                <label>ໝາຍເຫດ</label>
+                <TextField
+                  onChange={(e) => setNote(e.target.value)}
+                  sx={{ ...textStyle, width: "100%" }}
+                />
+              </Stack>
+              {err && <h3>there is an error</h3>}
+              {loading? <h3>Please wait...</h3>: null}
+              {success && <h3>Successfully added</h3>}
+
             </Stack>
           </DialogContent>
           <DialogActions>
@@ -114,7 +204,7 @@ export default function Header() {
               variant="contained"
               color="primary"
               size="small"
-              onClick={() => {}}
+              onClick={() => {handleAddNewRoom()}}
             >
               ຕົກລົງ
             </Button>
