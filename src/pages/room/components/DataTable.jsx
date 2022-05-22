@@ -9,59 +9,83 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Chip } from "@mui/material";
 
 import { font } from "../../../constants/index";
+import { datagridSx } from "../../../style";
 
 export default function PageSizeCustomOptions() {
- 
   //const roomType = React.useContext(roomTypeContext)
 
-  
   const hotelID = localStorage.getItem("hotel");
   //const [count, setCount] = React.useState(0);
 
   //const [roomData, setRoomData] = React.useState([]);
+  const [rooms, setRooms] = React.useState();
 
-  const [resData, setResData] = React.useState([]);
+  const [resData, setResData] = React.useState();
   //const [dataRows, setDataRows] = React.useState([]);
   const [error, setError] = React.useState(false);
 
   const [isLoading, setloading] = React.useState(true);
   //const [imgSrc, setImgSrc] = React.useState([]);
 
+  const fetchData = async () => {
+    setloading(true);
 
-
-  const fetchData = async() => {
-    setloading(true)
-    var data = JSON.stringify({
-      "hotelId": ''+hotelID
-    });
+   
     
     var config = {
       method: 'get',
-      url: 'http://localhost:8080/api/rooms/skip/0/limit/30',
+      url: `http://localhost:8080/api/rooms/skip/0/limit/30?hotelId=${hotelID}`,
       headers: { 
         'Content-Type': 'application/json'
       },
-      data : data
+      timeout: 5000,
+   
     };
-
+    
     await axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        setloading(false)
-        setResData(response.data.rooms)
+    .then( (response) => {
+      console.log(response.data);
+     setResData(response.data)
+     setRooms((response.data.rooms))
+     setloading(false)
+    })
+    .catch(function (error) {
+      console.log(error);
+      setError(true)
+    });
+
+
+    {
+      /***
+    await axios
+      .get(
+        "http://localhost:8080/api/rooms/skip/0/limit/30",
+        {
+          hotelId: hotelID
+        },
+        {
+          timeout: 5000,
+        }
+      )
+      .then((res) => {
+        //console.log(res.data);
+        setRooms(res.data.rooms)
+        setResData(res.data);
+        setloading(false);
       })
-      .catch(function (error) {
-        console.log(error);
-        setError(true)
+      .catch((err) => {
+        console.error(err);
+        setError(true);
       });
+
+   */
+    }
   };
 
   React.useEffect(() => {
-
-   fetchData()
-   console.log(hotelID)
-   console.log(resData)
-    
+    fetchData();
+    console.log(hotelID);
+    console.log(resData);
   }, []);
 
   const [pageSize, setPageSize] = React.useState(10);
@@ -77,7 +101,7 @@ export default function PageSizeCustomOptions() {
             <IconButton
               onClick={() => {
                 console.log(parram.row);
-               // console.log(resData)
+                console.log(resData)
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -89,6 +113,7 @@ export default function PageSizeCustomOptions() {
     { field: "_id", headerName: "ລະຫັດ", width: 80 },
     { field: "roomName", headerName: "ເບີຫ້ອງ", flex: 1, sortable: false },
     { field: "roomType", headerName: "ປະເພດຫ້ອງ", flex: 1 },
+    { field: "note", headerName: "ໝາຍເຫດ", flex: 1, sortable: false },
     {
       field: "status",
       headerName: "ສະຖານະ",
@@ -117,57 +142,31 @@ export default function PageSizeCustomOptions() {
 
   const rows = [
     { _id: 1, roomNumber: "F01", type: "VIP 1", isAvailable: true },
-  
   ];
-  const datagridSx = {
-    //borderRadius: 2,
-    fontFamily: `${font.LAO_FONT}`,
-    "& .MuiDataGrid-cell": {
-      backgroundColor: "",
-      padding: "6px 10px",
-
-      borderWidth: 1,
-      borderColor: "#F8F9FA",
-      borderStyle: "solid",
-    },
-
-    "& .MuiDataGrid-main": {
-      // borderRadius: 2
-    },
-    "& .MuiDataGrid-virtualScrollerRenderZone": {
-      "& .MuiDataGrid-row": {
-        "&:nth-child(2n)": { backgroundColor: "rgba(235, 235, 235, .2)" },
-      },
-    },
-    "& .MuiDataGrid-columnHeaders": {
-      backgroundColor: "#1565C0",
-      color: "white",
-    },
-  };
 
   return (
     <div>
-    {error && <h1>there is an error in loading</h1>}
-    {isLoading ? (
-      <h1>Loading...</h1>
-    ) : (
-      <div style={{ height: 660, width: "100%" }}>
-       
-        <DataGrid
-          sx={{ ...datagridSx, marginTop: '10px' }}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 20]}
-          pagination
-          rows={resData}
-          columns={columns}
-          disableSelectionOnClick
-          disableColumnMenu
-          getRowId={(row) => row._id}
-        />
-       
-      </div>
-    )}
-  </div>
+      {error && <h1>there is an error in loading</h1>}
+      {isLoading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div style={{ height: 660, width: "100%" }}>
+          <h1>{resData.total}</h1>
+
+          <DataGrid
+            sx={{ ...datagridSx, marginTop: "10px" }}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[5, 10, 20]}
+            pagination
+            rows={rooms}
+            columns={columns}
+            disableSelectionOnClick
+            disableColumnMenu
+            getRowId={(row) => row._id}
+          />
+        </div>
+      )}
+    </div>
   );
 }

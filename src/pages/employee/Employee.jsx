@@ -1,9 +1,12 @@
 import React from 'react'
+import Table from './components/Table'
+import Header from './components/Header'
 
-function Employee() {
+export default function Employee() {
   return (
-    <div>Employee</div>
+    <div>
+        <Header/>
+        <Table/>
+    </div>
   )
 }
-
-export default Employee
