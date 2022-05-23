@@ -128,7 +128,7 @@ export default function PageSizeCustomOptions() {
     //setResData([]);
     fetchData();
     console.log(`resdata: ${resData}`)
-  }, [value]);
+  }, []);
   /// pop up form to view images
 
   const [pageSize, setPageSize] = React.useState(10);
@@ -218,6 +218,12 @@ export default function PageSizeCustomOptions() {
       headerName: "ຫ້ອງທັງໝົດ",
       type: "number",
       flex: 1,
+    },
+    {
+      field: "updatedAt",
+      headerName: "ວັນທີ່ສ້າງລາຍການ",
+      type: "date",
+      flex: 1.5,
     },
     {
       field: "note",

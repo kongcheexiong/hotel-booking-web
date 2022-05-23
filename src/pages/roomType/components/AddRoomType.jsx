@@ -1,4 +1,4 @@
-import { Stack, IconButton, Button, TextField } from "@mui/material";
+import { Stack, IconButton, Button, TextField, Alert } from "@mui/material";
 
 import { roomTypeContext } from "../RoomType.context";
 
@@ -24,6 +24,7 @@ export default function AddRoomType() {
 
   const [loading, setLoading] = React.useState(false);
   const [err, setErr] = React.useState(false);
+  const [success,setSuccess] = React.useState(false)
 
   const hotelId = localStorage.getItem("hotel");
   const initialState = {
@@ -97,12 +98,15 @@ export default function AddRoomType() {
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         setLoading(false)
+        setSuccess(true)
 
       //  console.log('submited')
       })
       .catch(function (error) {
         console.log(error);
        // console.log('error')
+       setSuccess(false)
+       setLoading(false)
         setErr(true);
       });
   };
@@ -209,8 +213,15 @@ export default function AddRoomType() {
               setData({ ...data, images: fileImage });
             }}
           />
-          {loading ? <CircularProgress /> : null}
-          {err ? <h1>There is an error reload and try again</h1> : null}
+          <br/>
+          
+              {err ? <Alert severity="error">This is an error alert — check it out!</Alert> : null}
+              {loading ? <CircularProgress /> : null}
+              {success? <Alert severity="success">This is a success alert — check it out!</Alert> : null}
+
+      
+          
+         
         </Stack>
       </Stack>
       {/**submit button */}
@@ -222,6 +233,7 @@ export default function AddRoomType() {
             await setErr(false)
             await handleUploadImg();
             await handleSubmit();
+            
             
 
             //await navigate(`${router.ROOMTYPEMANAGEMENT}`,{replace:true})

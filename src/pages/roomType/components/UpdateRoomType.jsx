@@ -1,4 +1,4 @@
-import { Stack, IconButton, Button, TextField } from "@mui/material";
+import { Stack, IconButton, Button, TextField, Alert } from "@mui/material";
 
 import { roomTypeContext } from "../RoomType.context";
 
@@ -29,6 +29,7 @@ export default function UpdateRoomType(props) {
 
   const [loading, setLoading] = React.useState(false);
   const [err, setErr] = React.useState(false);
+  const [success, setSuccess] = React.useState(false)
 
   const hotelId = localStorage.getItem("hotel");
   console.log(updatedData);
@@ -91,6 +92,7 @@ export default function UpdateRoomType(props) {
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         setValue(() => value + 1);
+        setSuccess(true)
         //console.log('submited')
       })
       .catch(function (error) {
@@ -260,6 +262,7 @@ export default function UpdateRoomType(props) {
           />
           {loading ? <CircularProgress /> : null}
           {err ? <h1>There is an error reload and try again</h1> : null}
+          {success && <Alert severity="success">This is a success alert — check it out!</Alert>}
         </Stack>
       </Stack>
       {/**submit button */}

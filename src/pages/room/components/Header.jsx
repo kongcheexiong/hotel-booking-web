@@ -61,17 +61,17 @@ export default function Header() {
 
   const handleAddNewRoom = async () => {
     setLoading(true)
-    axios
+    await axios
       .post(
-        "http://localhost:8080/api/create/room",
+        "http://localhost:8080/api/create/room",JSON.stringify(
         {
           hotel: hotelID,
-          roomtype: type,
+          roomType: type,
           roomName: roomNumber,
           status: false,
           isDeleted: false,
           note: note,
-        },
+        }),
         {
           timeout: 5000,
         }
@@ -127,6 +127,9 @@ export default function Header() {
         <Dialog
           open={isOpen}
           onClose={() => {
+            setSuccess(false)
+            setErr(false)
+            setLoading(false)
             handlePopUp();
             setType("");
             setRoomNumber("");
@@ -167,9 +170,9 @@ export default function Header() {
                     setType(e.target.value);
                   }}
                 >
-                  {roomTypeData.map((val, index) => {
+                  {roomTypeData.map((val) => {
                     return (
-                      <MenuItem key={index} value={val.typeName}>
+                      <MenuItem key={val._id} value={val._id}>
                         {val.typeName}
                       </MenuItem>
                     );
@@ -204,7 +207,17 @@ export default function Header() {
               variant="contained"
               color="primary"
               size="small"
-              onClick={() => {handleAddNewRoom()}}
+              onClick={() => {
+                console.log({
+                  hotel: hotelID,
+                  roomType: type,
+                  roomName: roomNumber,
+                  status: false,
+                  isDeleted: false,
+                  note: note,
+                })
+                handleAddNewRoom()
+              }}
             >
               ຕົກລົງ
             </Button>

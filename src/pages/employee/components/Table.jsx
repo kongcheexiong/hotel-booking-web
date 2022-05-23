@@ -45,7 +45,7 @@ export default function Table() {
     },
     { field: "_id", headerName: "ລະຫັດ", width: 50 },
     { field: "userName", headerName: "ຜູ້ໃຊ້", flex: 1, sortable: false },
-    { field: "image", headerName: "ຮູບ", flex: 1 },
+    { field: "image", headerName: "ຮູບ", width: 50 },
     { field: "firstName", headerName: "ຊື່", flex: 1, sortable: false },
     { field: "lastName", headerName: "ນາມສະກຸນ", flex: 1, sortable: false },
     { field: "DateOfBirth", headerName: "ວັນເດືອນປີເກີດ", flex: 1, sortable: false },
@@ -53,7 +53,7 @@ export default function Table() {
     { field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
     { field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
     { field: "phone", headerName: "ເບີໂທວະສັບ", flex: 1, sortable: false },
-    { field: "role",headerName: "Role",width: 50,},
+    { field: "role",headerName: "Role",width: 60,},
   ];
 
   const rows = [
@@ -72,7 +72,7 @@ export default function Table() {
             rows={rows}
             columns={columns}
             disableSelectionOnClick
-            disableColumnMenu
+            
             getRowId={(row) => row._id}
           />
         </div>

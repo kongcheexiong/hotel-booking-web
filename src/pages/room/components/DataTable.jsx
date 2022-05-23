@@ -30,30 +30,26 @@ export default function PageSizeCustomOptions() {
   const fetchData = async () => {
     setloading(true);
 
-   
-    
     var config = {
-      method: 'get',
+      method: "get",
       url: `http://localhost:8080/api/rooms/skip/0/limit/30?hotelId=${hotelID}`,
-      headers: { 
-        'Content-Type': 'application/json'
+      headers: {
+        "Content-Type": "application/json",
       },
       timeout: 5000,
-   
     };
-    
-    await axios(config)
-    .then( (response) => {
-      console.log(response.data);
-     setResData(response.data)
-     setRooms((response.data.rooms))
-     setloading(false)
-    })
-    .catch(function (error) {
-      console.log(error);
-      setError(true)
-    });
 
+    await axios(config)
+      .then((response) => {
+        console.log(response.data);
+        setResData(response.data);
+        setRooms(response.data.rooms);
+        setloading(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+        setError(true);
+      });
 
     {
       /***
@@ -93,7 +89,7 @@ export default function PageSizeCustomOptions() {
     {
       field: "action",
       headerName: "ຕົວເລືອກ",
-      width: 150,
+      width: 100,
       sortable: false,
       renderCell: (parram) => {
         return (
@@ -101,26 +97,51 @@ export default function PageSizeCustomOptions() {
             <IconButton
               onClick={() => {
                 console.log(parram.row);
-                console.log(resData)
+               // console.log(resData);
               }}
             >
               <DeleteIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                console.log(parram.row);
+                //console.log(resData);
+              }}
+            >
+              <EditIcon fontSize="small" />
             </IconButton>
           </div>
         );
       },
     },
     { field: "_id", headerName: "ລະຫັດ", width: 80 },
-    { field: "roomName", headerName: "ເບີຫ້ອງ", flex: 1, sortable: false },
-    { field: "roomType", headerName: "ປະເພດຫ້ອງ", flex: 1 },
+    { field: "roomName", headerName: "ເບີຫ້ອງ", width: 90, sortable: false },
+    {
+      field: "roomType",
+      headerName: "ປະເພດຫ້ອງ",
+      flex: 1,
+      renderCell: (params) => {
+
+        return params.row.roomType? (<span>{params.row.roomType.typeName}</span>) : (<span>Unknown</span>)
+        
+      },
+    },
     { field: "note", headerName: "ໝາຍເຫດ", flex: 1, sortable: false },
+    { field: "updatedAt", headerName: "ວັນທີສ້າງລາຍການ", flex: 1,
+    renderCell: (params)=>{
+      const formated_date = params.row.updatedAt
+      const date = new Date(formated_date)
+      return <span>{`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`}</span>
+    }
+  },
+  
     {
       field: "status",
       headerName: "ສະຖານະ",
       type: "boolean",
       flex: 1,
       renderCell: (parram) => {
-        if (parram.row.isAvailable) {
+        if (!parram.row.status) {
           return (
             <Chip
               sx={{ fontFamily: "Noto Sans Lao", width: "60px" }}
@@ -133,7 +154,7 @@ export default function PageSizeCustomOptions() {
           <Chip
             sx={{ fontFamily: "Noto Sans Lao", width: "60px" }}
             color="error"
-            label="ບໍຫວ່່າງ"
+            label="ບໍ່ຫວ່່າງ"
           />
         );
       },
@@ -151,7 +172,7 @@ export default function PageSizeCustomOptions() {
         <h1>Loading...</h1>
       ) : (
         <div style={{ height: 660, width: "100%" }}>
-          <h1>{resData.total}</h1>
+      
 
           <DataGrid
             sx={{ ...datagridSx, marginTop: "10px" }}
