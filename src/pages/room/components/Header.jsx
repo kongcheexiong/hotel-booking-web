@@ -21,6 +21,7 @@ import { btnStyle } from "../../../style";
 import { textStyle } from "../../../style";
 
 import { authContext } from "../../../context/authContext";
+import { counterContext } from "../../../context/counter";
 
 import axios from "axios";
 
@@ -29,6 +30,7 @@ export default function Header() {
   const handlePopUp = () => setOpen(!isOpen);
   const navigate = useNavigate();
   // const {auth,setAuth} = react.useContext(authContext)
+  const {value,setValue} = react.useContext(counterContext)
   const hotelID = localStorage.getItem("hotel");
 
   const [roomTypeData, setRoomTypeData] = react.useState([]);
@@ -63,22 +65,20 @@ export default function Header() {
     setLoading(true)
     await axios
       .post(
-        "http://localhost:8080/api/create/room",JSON.stringify(
-        {
+        "http://localhost:8080/api/create/room", {
           hotel: hotelID,
           roomType: type,
           roomName: roomNumber,
           status: false,
           isDeleted: false,
           note: note,
-        }),
-        {
-          timeout: 5000,
-        }
-      )
+        },{
+          timeout: 5000
+        })
       .then((res) => {
         setSuccess(true)
         setLoading(false)
+        setValue(value => value+1)
 
         console.log(res)
       })
@@ -186,8 +186,9 @@ export default function Header() {
                   sx={{ ...textStyle, width: "100%" }}
                 />
               </Stack>
-              {err && <h3>there is an error</h3>}
               {loading? <h3>Please wait...</h3>: null}
+              {err && <h3>there is an error</h3>}
+              
               {success && <h3>Successfully added</h3>}
 
             </Stack>

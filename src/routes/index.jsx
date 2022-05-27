@@ -14,6 +14,7 @@ import Checkin from "../pages/checkin/Checkin";
 import Report from "../pages/report/Report";
 import RoomType from "../pages/roomType/RoomType";
 import AddRoomType from "../pages/roomType/components/AddRoomType";
+import AddEmployee from "../pages/employee/components/AddEmployee";
 
 import Layout from "../layouts/layout";
 
@@ -44,6 +45,10 @@ function MyRouter() {
     {
       myRoute: `${router.EMPLOYEEMANAGEMENT}`,
       component: <Employee />,
+    },
+    {
+      myRoute: `${router.EMPLOYEEMANAGEMENT}/add`,
+      component: <AddEmployee />,
     },
     {
       myRoute: `${router.CHECKIN}`,

@@ -1,7 +1,7 @@
 //color
 export const font = {
     LAO_FONT: 'Noto Sans Lao',
-    EN_FONT: 'Open Sans'
+    EN_FONT: 'Segoe UI'
 }
 
 export const color={

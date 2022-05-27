@@ -13,15 +13,14 @@ import { CounterProvider } from '../../context/counter'
 export default function RoomType() {
   return (
     <RoomTypeProvider>
-      <CounterProvider>
+  
       <Stack direction='column' spacing={2}>
         <Header/>
         {/**<DataTables/>*/}
         <PageSizeCustomOptions/>
         </Stack>
 
-      </CounterProvider>
-       
+   
 
         
     

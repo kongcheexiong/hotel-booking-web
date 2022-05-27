@@ -10,12 +10,15 @@ import { Chip } from "@mui/material";
 
 import { font } from "../../../constants/index";
 import { datagridSx } from "../../../style";
+import { useFormatDate } from "../../../services/formateDate";
+import { counterContext } from "../../../context/counter";
 
 export default function PageSizeCustomOptions() {
   //const roomType = React.useContext(roomTypeContext)
+  const { value, setValue } = React.useContext(counterContext);
 
   const hotelID = localStorage.getItem("hotel");
-  //const [count, setCount] = React.useState(0);
+  const [count, setCount] = React.useState(0);
 
   //const [roomData, setRoomData] = React.useState([]);
   const [rooms, setRooms] = React.useState();
@@ -26,6 +29,12 @@ export default function PageSizeCustomOptions() {
 
   const [isLoading, setloading] = React.useState(true);
   //const [imgSrc, setImgSrc] = React.useState([]);
+  const [sortModel, setSortModel] = React.useState([
+    {
+      field: 'updatedAt',
+      sort: 'desc'
+    },
+  ]);
 
   const fetchData = async () => {
     setloading(true);
@@ -41,48 +50,76 @@ export default function PageSizeCustomOptions() {
 
     await axios(config)
       .then((response) => {
-        console.log(response.data);
-        setResData(response.data);
+        //console.log(response.data);
+        //setResData(response.data);
         setRooms(response.data.rooms);
         setloading(false);
+        setError(false);
       })
       .catch(function (error) {
         console.log(error);
         setError(true);
+        setloading(false);
       });
 
     {
-      /***
-    await axios
-      .get(
-        "http://localhost:8080/api/rooms/skip/0/limit/30",
-        {
-          hotelId: hotelID
-        },
-        {
-          timeout: 5000,
-        }
-      )
-      .then((res) => {
-        //console.log(res.data);
-        setRooms(res.data.rooms)
-        setResData(res.data);
-        setloading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError(true);
-      });
+     
+    }
+  };
+  const deleteUser = async ({ room = "", roomtype = "" }) => {
+    {
+      /**await axios
+      .delete("http://localhost:8080/api/delete/room",{
+        id: room,
+        roomType: roomtype
+      },{
+        timeout: 5000
+      }
 
+      )
+      .then(res => {
+        console.log(res.data);
+        setValue((value)=> value+1)
+        alert('Deleted successfully')
+      })
+      .catch(err => {
+        console.log(err)
+        alert(err)
+      });
    */
     }
+ 
+
+    var config = {
+      method: "delete",
+      url: "http://localhost:8080/api/delete/room",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      timeout: 5000,
+      data: {
+        id: room,
+        roomType: roomtype,
+      },
+    };
+
+    axios(config)
+      .then((res) => {
+        console.log(res.data);
+        setValue((value) => value + 1);
+        alert("Deleted successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err);
+      });
   };
 
   React.useEffect(() => {
     fetchData();
     console.log(hotelID);
     console.log(resData);
-  }, []);
+  }, [value]);
 
   const [pageSize, setPageSize] = React.useState(10);
   const columns = [
@@ -96,8 +133,15 @@ export default function PageSizeCustomOptions() {
           <div>
             <IconButton
               onClick={() => {
-                console.log(parram.row);
-               // console.log(resData);
+                console.log({
+                  room: "" + parram.row._id,
+                  roomtype: "" + parram.row.roomType._id,
+                });
+
+                deleteUser({
+                  room: "" + parram.row._id,
+                  roomtype: "" + parram.row.roomType._id,
+                });
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -121,20 +165,26 @@ export default function PageSizeCustomOptions() {
       headerName: "ປະເພດຫ້ອງ",
       flex: 1,
       renderCell: (params) => {
-
-        return params.row.roomType? (<span>{params.row.roomType.typeName}</span>) : (<span>Unknown</span>)
-        
+        return params.row.roomType ? (
+          <span>{params.row.roomType.typeName}</span>
+        ) : (
+          <span>Unknown</span>
+        );
       },
     },
     { field: "note", headerName: "ໝາຍເຫດ", flex: 1, sortable: false },
-    { field: "updatedAt", headerName: "ວັນທີສ້າງລາຍການ", flex: 1,
-    renderCell: (params)=>{
-      const formated_date = params.row.updatedAt
-      const date = new Date(formated_date)
-      return <span>{`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`}</span>
-    }
-  },
-  
+    {
+      field: "updatedAt",
+      headerName: "ວັນທີສ້າງລາຍການ",
+      flex: 1,
+      renderCell: (params) => {
+        const formated_date = params.row.updatedAt;
+        const date = useFormatDate(formated_date);
+
+        return <span>{date}</span>;
+      },
+    },
+
     {
       field: "status",
       headerName: "ສະຖານະ",
@@ -172,8 +222,6 @@ export default function PageSizeCustomOptions() {
         <h1>Loading...</h1>
       ) : (
         <div style={{ height: 660, width: "100%" }}>
-      
-
           <DataGrid
             sx={{ ...datagridSx, marginTop: "10px" }}
             pageSize={pageSize}
@@ -185,6 +233,8 @@ export default function PageSizeCustomOptions() {
             disableSelectionOnClick
             disableColumnMenu
             getRowId={(row) => row._id}
+            sortModel={sortModel}
+            onSortModelChange = {(model)=> setSortModel(model)}
           />
         </div>
       )}

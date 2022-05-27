@@ -71,3 +71,10 @@ export const datagridSx = {
     fontSize: '14px'
   },
 };
+
+export const datetimeStyle = {
+  '& .MuiOutlinedInput-root':{
+    borderRadius: '50px'
+  }
+
+}

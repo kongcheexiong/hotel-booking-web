@@ -1,7 +1,14 @@
 import * as React from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, IconButton, Stack, TextField } from "@mui/material";
+import {
+  Alert,
+  Button,
+  IconButton,
+  Snackbar,
+  Stack,
+  TextField,
+} from "@mui/material";
 import axios from "axios";
 import { roomTypeContext } from "../RoomType.context";
 
@@ -25,51 +32,28 @@ import { counterContext } from "../../../context/counter";
 
 import "../style.css";
 
-import { textStyle, btnStyle } from "../../../style";
-
-export const SearchField = props =>{
-  const {typeName} = props
-  const {roomType, setRoomType} = React.useContext(roomTypeContext)
-  const handleSearch = async()=>{
-
-
-  }
-  return(
-    <Stack direction='row' spacing={1}>
-      <TextField  placeholder="ຊື່ປະເພດຫ້ອງ"  sx={{...textStyle}} onChange = {(e)=>{
-        setRoomType({...roomType, typeName: e.target.value})
-        console.log(roomType)
-      }}/>
-      <Button sx={{...btnStyle}} onClick = {()=> {
-        console.log(roomType)
-      }}>ຄົ້ນຫາ</Button>
-    </Stack>
-  )
-}
-
+import { textStyle, btnStyle, datagridSx } from "../../../style";
+import { useFormatDate } from "../../../services/formateDate";
+import { fontFamily } from "@mui/system";
+import SearchArea from './SearchArea'
 
 export default function PageSizeCustomOptions() {
+  const navigate = useNavigate();
 
-
-
-  const navigate = useNavigate()
-  
-  const {value, setValue} = React.useContext(counterContext)
-  const {roomType,setRoomType} = React.useContext(roomTypeContext)
+  const { value, setValue } = React.useContext(counterContext);
+  const { roomType, setRoomType } = React.useContext(roomTypeContext);
   //const roomType = React.useContext(roomTypeContext)
-  const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false)
-  const handleUpdateForm = ()=> setPopUpUpdateForm(!popUpUpdateForm)
-  const [updatedData, setUpdatedData] = React.useState({})
+  const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false);
+  const handleUpdateForm = () => setPopUpUpdateForm(!popUpUpdateForm);
+  const [updatedData, setUpdatedData] = React.useState({});
 
   const [popUpImg, setPopupImg] = React.useState(false);
   const handlePopUpImg = () => setPopupImg(!popUpImg);
 
   const hotelID = localStorage.getItem("hotel");
-  //const [count, setCount] = React.useState(0);
+  const [count, setCount] = React.useState(0);
 
-  const [imgData,setImgData] = React.useState()
-
-  
+  const [imgData, setImgData] = React.useState();
 
   //const [roomData, setRoomData] = React.useState([]);
 
@@ -79,8 +63,13 @@ export default function PageSizeCustomOptions() {
 
   const [isLoading, setloading] = React.useState(true);
   //const [imgSrc, setImgSrc] = React.useState([]);
+  const [confirmDeleted, setConfirmDeleted] = React.useState(false);
+  const [deletedId, setDeletedId] = React.useState("");
+  const [deleteSuccess, setDeleteSuccess] = React.useState(false);
+  const [deleteErr, setDeleteErr] = React.useState(false);
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
 
-
+ 
 
   const fetchData = async () => {
     await axios
@@ -96,9 +85,12 @@ export default function PageSizeCustomOptions() {
         console.error(err);
         setError(true);
       });
-   // console.log(resData);
+    // console.log(resData);
   };
   const deleteRoomType = async (deletedId) => {
+    setDeleteErr(false);
+    setDeleteLoading(true);
+    setDeleteSuccess(false);
     var data = JSON.stringify({
       id: "" + deletedId,
     });
@@ -115,9 +107,16 @@ export default function PageSizeCustomOptions() {
     await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
+        setDeleteSuccess(true);
+        alert(`Deleted successfully`);
       })
       .catch(function (error) {
         console.log(error);
+        setDeleteErr(true);
+        alert(error);
+      })
+      .finally(() => {
+        setDeleteLoading(false);
       });
     setCount((count) => count + 1);
   };
@@ -127,8 +126,8 @@ export default function PageSizeCustomOptions() {
     setloading(true);
     //setResData([]);
     fetchData();
-    console.log(`resdata: ${resData}`)
-  }, []);
+    console.log(`resdata: ${resData}`);
+  }, [value]);
   /// pop up form to view images
 
   const [pageSize, setPageSize] = React.useState(10);
@@ -144,26 +143,26 @@ export default function PageSizeCustomOptions() {
             <IconButton
               onClick={() => {
                 console.log(parram.row._id);
+                //setConfirmDeleted(true);
+                //setDeletedId(parram.row._id)
+                //alert('dfasd')
                 deleteRoomType(parram.row._id);
-                setValue(()=> value+1)
-                
+
+                setValue(() => value + 1);
               }}
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
 
             <IconButton
-              onClick={ async() => {
+              onClick={async () => {
+                await console.log(parram.row);
+                await setUpdatedData(parram.row);
 
-                await console.log(parram.row)
-                await setUpdatedData(parram.row)
-                
                 await console.log(updatedData);
                 handleUpdateForm();
-            
-                //navigate(`${router.ROOMTYPEMANAGEMENT}/add`)
-                
 
+                //navigate(`${router.ROOMTYPEMANAGEMENT}/add`)
               }}
             >
               <EditIcon fontSize="small" />
@@ -189,10 +188,10 @@ export default function PageSizeCustomOptions() {
           <div
             className="previewImg"
             onClick={() => {
-              handlePopUpImg()
+              handlePopUpImg();
               //setImgSrc(parram.row.images);
-              setImgData(parram.row)
-             // console.log(parram.row)
+              setImgData(parram.row);
+              // console.log(parram.row)
             }}
           >
             {parram.row.images}
@@ -224,6 +223,10 @@ export default function PageSizeCustomOptions() {
       headerName: "ວັນທີ່ສ້າງລາຍການ",
       type: "date",
       flex: 1.5,
+      renderCell: (params) => {
+        const date = useFormatDate(params.row.updatedAt);
+        return <span>{date}</span>;
+      },
     },
     {
       field: "note",
@@ -233,44 +236,24 @@ export default function PageSizeCustomOptions() {
       sortable: false,
     },
   ];
-  const datagridSx = {
-    //borderRadius: 2,
-    fontFamily: `${font.LAO_FONT}`,
-    "& .MuiDataGrid-cell": {
-      backgroundColor: "",
-      padding: "6px 10px",
-
-      borderWidth: 1,
-      borderColor: "#F8F9FA",
-      borderStyle: "solid",
-    },
-
-    "& .MuiDataGrid-main": {
-      // borderRadius: 2
-      // borderRadius: 2
-      // borderRadius: 2
-    },
-    "& .MuiDataGrid-virtualScrollerRenderZone": {
-      "& .MuiDataGrid-row": {
-        "&:nth-child(2n)": { backgroundColor: "rgba(235, 235, 235, .2)" },
-      },
-    },
-    "& .MuiDataGrid-columnHeaders": {
-      backgroundColor: "#1565C0",
-      color: "white",
-    },
-  };
+ 
 
   return (
     <div>
+      <SearchArea/>
       {error && <h1>there is an error in loading</h1>}
       {isLoading ? (
         <h1>Loading...</h1>
       ) : (
         <div style={{ height: 660, width: "100%" }}>
-          <SearchField/>
+          
+          <br/>
+          <hr/>
+
+          {/**table area */}
+
           <DataGrid
-            sx={{ ...datagridSx, marginTop: '10px' }}
+            sx={{ ...datagridSx, marginTop: "10px" }}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[5, 10, 20]}
@@ -305,9 +288,8 @@ export default function PageSizeCustomOptions() {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-   
             <DialogContent>
-             <UpdateRoomType updatedData={updatedData} />
+              <UpdateRoomType updatedData={updatedData} />
             </DialogContent>
           </Dialog>
         </div>

@@ -15,12 +15,13 @@ import { btnStyle } from "../../../style";
 import { router } from "../../../constants";
 
 export default function Header() {
+  const navigate = useNavigate()
   return (
     <Stack direction="column" spacing={2}>
     <Stack direction="row" justifyContent="space-between" alignItems="center">
       {/**add new type btn */}
       <Button
-        onClick={()=> {}}
+        onClick={()=> navigate(`${router.EMPLOYEEMANAGEMENT}/add`,{replace: true})}
         color="primary"
         disableElevation
         sx={{ ...btnStyle }}
