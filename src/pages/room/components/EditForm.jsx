@@ -1,6 +1,5 @@
 import { Stack, IconButton, Button, TextField, Alert } from "@mui/material";
 
-import { roomTypeContext } from "../RoomType.context";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 import { styled } from "@mui/material";
@@ -13,52 +12,46 @@ import { router } from "../../../constants";
 
 //import style for override material ui components
 import { textStyle, btnStyle } from "../../../style";
-import "../style.css";
+
 import { ConstructionOutlined, TurnedIn } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
+
+import { counterContext } from "../../../context/counter";
 import { SERVER_URL } from "../../../constants";
 
-export default function AddRoomType() {
+export default function EditForm(props) {
   // const {setRoomType } = React.useContext(roomTypeContext);
   //const roomType = React.useContext(roomTypeContext)
   // console.log(roomType.data)
+  const { value, setValue } = React.useContext(counterContext);
+
+  const { updatedData } = props;
 
   const [loading, setLoading] = React.useState(false);
   const [err, setErr] = React.useState(false);
-  const [success,setSuccess] = React.useState(false)
+  const [success, setSuccess] = React.useState(false)
 
   const hotelId = localStorage.getItem("hotel");
+  console.log(updatedData);
   const initialState = {
-    hotel: hotelId,
-    typeName: "",
-    price: "",
-    numberOfBed: "",
-    suggestedGuestAllowed: "",
-    note: "",
-    images: [],
-    totalRoom: 0,
-    isDeleted: false,
-  };
-  const initialDeletedData = {
-    id: "",
+    id: updatedData._id,
     data: {
-      typeName: "",
-      price: "",
-      numberOfBed: "",
-      suggestedGuestAllowed: "",
-      note: "",
+      typeName: updatedData.typeName,
+      price: updatedData.price,
+      numberOfBed: updatedData.numberOfBed,
+      suggestedGuestAllowed: updatedData.suggestedGuestAllowed,
+      note: updatedData.note,
       images: [],
     },
   };
-  const [deletedData, setDeletedData] = React.useState(initialDeletedData);
 
   const [data, setData] = React.useState(initialState);
+
   const [files, setFiles] = React.useState("");
   const accessToken = localStorage.getItem("accessToken");
   //func for upload image
   const handleUploadImg = async () => {
-    
-    setLoading(true)
+    setLoading(true);
     let data = new FormData();
 
     for (const i of Object.keys(files)) {
@@ -83,11 +76,11 @@ export default function AddRoomType() {
   };
 
   // func for upload roomtype info
-  const handleSubmit = async() => {
-    setLoading(true)
+  const handleSubmit = async () => {
+    setLoading(true);
     let config = {
-      method: "post",
-      url: `${SERVER_URL}/api/create/room-type`,
+      method: "put",
+      url: `${SERVER_URL}/api/update/room-type`,
       headers: {
         Authorization: accessToken,
         "Content-Type": "application/json",
@@ -98,17 +91,37 @@ export default function AddRoomType() {
     await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
-        setLoading(false)
+        setValue(() => value + 1);
         setSuccess(true)
-
-      //  console.log('submited')
+        //console.log('submited')
       })
       .catch(function (error) {
         console.log(error);
-       // console.log('error')
-       setSuccess(false)
-       setLoading(false)
+        //console.log('error')
         setErr(true);
+      });
+  };
+  const [deletedId,setDeleltedId] = React.useState('')
+
+  const handleDelete = async () => {
+    let config = {
+      method: "delete",
+      url: `${SERVER_URL}/api/delete/room-type`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        id: "",
+      },
+      timeout: 5000
+    };
+
+    await axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
       });
   };
 
@@ -124,30 +137,29 @@ export default function AddRoomType() {
         justifyContent="space-between"
         alignItems="center"
       >
-        <h3>ເພີ່ມປະເພດຫ້ອງ</h3>
-        <IconButton
-          onClick={() =>
-            navigate(`${router.ROOMTYPEMANAGEMENT}`, { replace: "true" })
-          }
-        >
+        <h3>ແກ້ໄຂປະເພດຫ້ອງ</h3>
+        {/**
+         * <IconButton onClick={() => {}}>
           <CancelIcon fontSize="large" color="" />
         </IconButton>
+         * 
+         */}
       </Stack>
       <hr />
       {/**form area */}
       <Stack direction="column" spacing={1}>
-        {/**
-         *  <Stack>
-          <label id="id">ລະຫັດປະເພດຫ້ອງ</label>
-          <TextField sx={{ ...textStyle, width: "100%" }} />
-        </Stack>
-         */}
-
         <Stack>
           <label id="room">ຫ້ອງ</label>
           <TextField
+            defaultValue={updatedData.typeName}
             onChange={(e) => {
-              setData({ ...data, typeName: e.target.value });
+              setData({
+                ...data,
+                data: {
+                  ...data.data,
+                  typeName: e.target.value,
+                },
+              });
             }}
             sx={{ ...textStyle, width: "100%" }}
           />
@@ -155,8 +167,15 @@ export default function AddRoomType() {
         <Stack>
           <label id="note">ໝາຍເຫດ</label>
           <TextField
+            defaultValue={updatedData.note}
             onChange={(e) => {
-              setData({ ...data, note: e.target.value });
+              setData({
+                ...data,
+                data: {
+                  ...data.data,
+                  note: e.target.value,
+                },
+              });
             }}
             sx={{ ...textStyle, width: "100%" }}
           />
@@ -164,8 +183,15 @@ export default function AddRoomType() {
         <Stack>
           <label id="price">ລາຄາ</label>
           <TextField
+            defaultValue={updatedData.price}
             onChange={(e) => {
-              setData({ ...data, price: e.target.value });
+              setData({
+                ...data,
+                data: {
+                  ...data.data,
+                  price: e.target.value,
+                },
+              });
             }}
             sx={{ ...textStyle, width: "100%" }}
           />
@@ -174,8 +200,15 @@ export default function AddRoomType() {
           <Stack direction="column">
             <label id="nomOfBed">ຈໍານວນຕຽງ</label>
             <TextField
+              defaultValue={updatedData.numberOfBed}
               onChange={(e) => {
-                setData({ ...data, numberOfBed: e.target.value });
+                setData({
+                  ...data,
+                  data: {
+                    ...data.data,
+                    numberOfBed: e.target.value,
+                  },
+                });
               }}
               sx={{ ...textStyle }}
             />
@@ -184,15 +217,22 @@ export default function AddRoomType() {
           <Stack direction="column">
             <label id="nomOfQuest">ຈໍານວນລູກຄ້າແນະນໍາ</label>
             <TextField
+              defaultValue={updatedData.suggestedGuestAllowed}
               onChange={(e) => {
-                setData({ ...data, suggestedGuestAllowed: e.target.value });
+                setData({
+                  ...data,
+                  data: {
+                    ...data.data,
+                    suggestedGuestAllowed: e.target.value,
+                  },
+                });
               }}
               sx={{ ...textStyle }}
             />
           </Stack>
         </Stack>
 
-        <span>ເພີ່ມຮູບພາບປະກອບ</span>
+        <span>ເພີ່ມຮູບພາບ</span>
         <Stack>
           <input
             accept="image/png, image/gif, image/jpeg"
@@ -211,31 +251,30 @@ export default function AddRoomType() {
                 //  frmdata.append("file", file[x]);
                 fileImage.push(file[x].name);
               }
-              setData({ ...data, images: fileImage });
+              setData({
+                ...data,
+                data: {
+                  ...data.data,
+                  images: fileImage,
+                },
+              });
             }}
           />
-          <br/>
-          
-              {err ? <Alert severity="error">This is an error alert — check it out!</Alert> : null}
-              {loading ? <CircularProgress /> : null}
-              {success? <Alert severity="success">This is a success alert — check it out!</Alert> : null}
-
-      
-          
-         
+          {loading ? <CircularProgress /> : null}
+          {err ? <h1>There is an error reload and try again</h1> : null}
+          {success && <Alert severity="success">This is a success alert — check it out!</Alert>}
         </Stack>
       </Stack>
       {/**submit button */}
       <Stack sx={{ marginTop: "50px" }} direction="row" justifyContent="">
         <Button
           onClick={async () => {
-            //console.log(data)
-            await setLoading(true);
-            await setErr(false)
+            console.log(data);
+            setLoading(true);
             await handleUploadImg();
             await handleSubmit();
-            
-            
+            setErr(false);
+            setLoading(false);
 
             //await navigate(`${router.ROOMTYPEMANAGEMENT}`,{replace:true})
           }}

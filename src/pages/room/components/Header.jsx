@@ -22,6 +22,7 @@ import { textStyle } from "../../../style";
 
 import { authContext } from "../../../context/authContext";
 import { counterContext } from "../../../context/counter";
+import { SERVER_URL } from "../../../constants";
 
 import axios from "axios";
 
@@ -47,7 +48,7 @@ export default function Header() {
   const getRoomtypeData = async () => {
     await axios
       .get(
-        `http://localhost:8080/api/room-types/skip/0/limit/30?hotelId=${hotelID}`,
+        `${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`,
         { timeout: 5000 }
       )
       .then((res) => {
@@ -65,7 +66,7 @@ export default function Header() {
     setLoading(true)
     await axios
       .post(
-        "http://localhost:8080/api/create/room", {
+        `${SERVER_URL}/api/create/room`, {
           hotel: hotelID,
           roomType: type,
           roomName: roomNumber,
@@ -229,23 +230,7 @@ export default function Header() {
       <hr />
 
       {/**search area */}
-      <Stack direction="row" spacing={2} alignItems="center">
-        <TextField
-          sx={{ ...textStyle }}
-          id="password"
-          placeholder="ລະຫັດຫ້ອງ"
-          size="small"
-        />
-        <Button
-          color="primary"
-          disableElevation
-          sx={{ ...btnStyle }}
-          size="medium"
-          variant="text"
-        >
-          ຄົ້ນຫາ
-        </Button>
-      </Stack>
+    
     </Stack>
   );
 }

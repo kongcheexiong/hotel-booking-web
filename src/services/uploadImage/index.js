@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { SERVER_URL } from '../../constants';
 
 export const handleUploadImg = async (files) => {
     
@@ -11,7 +12,7 @@ export const handleUploadImg = async (files) => {
 
     var config = {
       method: "post",
-      url: "http://localhost:8080/api/upload/images",
+      url: `${SERVER_URL}/api/upload/images`,
       data: data,
       timeout: 5000,
     };

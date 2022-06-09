@@ -9,6 +9,8 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 import axios from "axios";
 
+import { SERVER_URL } from "../../../constants";
+
 export default function TitlebarImageList(props) {
   const { imgData } = props;
   const id = imgData._id;
@@ -23,13 +25,14 @@ export default function TitlebarImageList(props) {
     setLoading(true);
     var config = {
       method: "put",
-      url: "http://localhost:8080/api/remove/room-type-images",
+      url: `${SERVER_URL}/api/remove/room-type-images`,
       headers: {
         "Content-Type": "application/json",
       },
       data: {
         id: id,
         images: [item],
+        
       },
     };
 
@@ -59,7 +62,7 @@ export default function TitlebarImageList(props) {
       {showImg.map((item, index) => (
         <ImageListItem key={index}>
           <img
-            src={`http://localhost:8080/api/image/${item}`}
+            src={`${SERVER_URL}/api/image/${item}`}
             //srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
             alt={item}
             loading="lazy"

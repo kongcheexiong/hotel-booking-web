@@ -7,7 +7,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-
+import { SERVER_URL } from "../../../constants";
 ///import { roomTypeContext } from "../RoomType.context";
 
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -69,7 +69,7 @@ export default function AddEmployee() {
     setLoading(true);
     let config = {
       method: "post",
-      url: "http://localhost:8080/api/create/user",
+      url: `${SERVER_URL}/api/create/user`,
       headers: {
         Authorization: accessToken,
         "Content-Type": "application/json",

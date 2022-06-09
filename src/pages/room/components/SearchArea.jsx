@@ -6,54 +6,51 @@ import SearchIcon from "@mui/icons-material/Search";
 import { textStyle, btnStyle, datagridSx } from "../../../style";
 import { font } from "../../../constants/index";
 import { counterContext } from "../../../context/counter";
-import {roomTypeContext} from '../../../context/roomType.context'
-import { dataContext } from "../../../context/data.context";
+import {roomContext} from '../../../context/room.context'
 import { SERVER_URL } from "../../../constants/index";
 
 import axios from "axios";
 
 export default function SearchArea() {
   const { value, setValue } = React.useContext(counterContext);
-
-  const {roomType, setRoomType} = React.useContext(roomTypeContext)
+ const {room,setRoom} = React.useContext(roomContext)
+ 
+  
   //const {data,setData} = React.useContext(dataContext)
   const [search, setSearch] = React.useState('')
   const hotel = localStorage.getItem('hotel')
 
-
-
-  
   const fetchData = async () => {
-    setRoomType({...roomType,
-       roomTypeLoading: true,
-       roomTypeErr: false,
-       roomtypeSuccess: false
+    setRoom({...room,
+       roomLoading: true,
+       roomErr: false,
+       roomSuccess: false
       
       })
       
         await axios
       .get(
-        `${SERVER_URL}/api/room-type?roomType=${search}&hotelId=${hotel}`,
+        `${SERVER_URL}/api/room?hotelId=${hotel}&roomName=${search}`,
         { timeout: 5000 }
       )
       .then((res) => {
         console.log(res.data)
         //alert('success')
-        setRoomType({...roomType,
-           roomTypeData: res.data,
-           roomTypeLoading: false,
-           roomTypeSuccess: true
+        setRoom({...room,
+           roomData: res.data,
+           roomLoading: false,
+           roomSuccess: true
           })
        
       })
       .catch((err) => {
         console.error(err);
         alert(err)
-        setRoomType({...data,
-          roomTypeData: res.data,
-          roomTypeLoading: false,
-          roomTypeSuccess: false,
-          roomTypeErr: true
+        setRoom({...data,
+          roomData: res.data,
+          roomLoading: false,
+          roomSuccess: false,
+          roomErr: true
          })
         
       });
@@ -87,7 +84,7 @@ export default function SearchArea() {
         onClick={async() => {
           await fetchData()
 
-          await console.log(roomType);
+          await console.log(room);
         }}
           sx={{
             ...btnStyle,

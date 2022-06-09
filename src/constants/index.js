@@ -1,4 +1,6 @@
 //color
+export const SERVER_URL=  'http://128.199.202.236:8080'
+
 export const font = {
     LAO_FONT: 'Noto Sans Lao',
     EN_FONT: 'Segoe UI'
@@ -22,7 +24,8 @@ export const router = {
     EMPLOYEEMANAGEMENT: '/employee',
     ROOMMAGEMENT:'/room',
     ROOMTYPEMANAGEMENT: '/roomType',
-    LOGIN: '/login'
+    LOGIN: '/login',
+    REGISTER: '/register'
 
 
 }

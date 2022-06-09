@@ -17,6 +17,9 @@ import { router } from "../../../constants";
 //component
 
 
+//import {SERVER_URL} from '../../../constants/index'
+
+
 export default function Header() {
 
   const navigate = useNavigate();
@@ -35,38 +38,7 @@ export default function Header() {
         >
           ເພີ່ມປະເພດຫ້ອງ
         </Button>
-        {/**
-         *   <IconButton
-          onClick={() =>
-            navigate(`${router.ROOMMAGEMENT}`, { replace: "true" })
-          }
-        >
-          <CancelIcon fontSize="large" color="error" />
-        </IconButton>
-         */}
-      
-
-        {/**cencel btn */}
       </Stack>
-      {/**pop up add new type form 
-       *       <Dialog
-      open={isOpen}
-      onClose={togglePopUp}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle sx={{fontFamily: 'Noto sans lao', fontSize: '18px'}} id="add-new-type">{"ເພີ່ມປະເພດຫ້ອງ"}</DialogTitle>
-      <DialogContent>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure debitis dignissimos, voluptates laboriosam nulla necessitatibus dolores, dolorum quibusdam in totam cumque, sed nemo illum? Possimus libero in tempore asperiores modi?
-      </DialogContent>
-      <DialogActions>
-        <Button sx={{fontFamily: 'Noto sans lao'}} variant="outlined" color="error" size="small" onClick={togglePopUp}>ຍົກເລີກ</Button>
-        <Button sx={{fontFamily: 'Noto sans lao'}} variant="contained" color="primary" size="small" onClick={togglePopUp}>ຕົກລົງ</Button>
-      </DialogActions>
-    </Dialog>
-      */}
-
-     
 
       <hr />
     </Stack>

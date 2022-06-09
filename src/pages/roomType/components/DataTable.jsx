@@ -5,12 +5,13 @@ import {
   Alert,
   Button,
   IconButton,
+  Skeleton,
   Snackbar,
   Stack,
   TextField,
 } from "@mui/material";
 import axios from "axios";
-import { roomTypeContext } from "../RoomType.context";
+
 
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -28,7 +29,10 @@ import UpdateRoomType from "./UpdateRoomType";
 import { font, router } from "../../../constants/index";
 import { Construction } from "@mui/icons-material";
 
+//context
+import { roomTypeContext } from "../../../context/roomType.context";
 import { counterContext } from "../../../context/counter";
+import {dataContext} from '../../../context/data.context'
 
 import "../style.css";
 
@@ -36,13 +40,16 @@ import { textStyle, btnStyle, datagridSx } from "../../../style";
 import { useFormatDate } from "../../../services/formateDate";
 import { fontFamily } from "@mui/system";
 import SearchArea from './SearchArea'
+import { SERVER_URL } from "../../../constants/index";
 
 export default function PageSizeCustomOptions() {
+  const {roomType,setRoomType} = React.useContext(roomTypeContext)
+
+  const {data,setData} = React.useContext(dataContext)
   const navigate = useNavigate();
 
   const { value, setValue } = React.useContext(counterContext);
-  const { roomType, setRoomType } = React.useContext(roomTypeContext);
-  //const roomType = React.useContext(roomTypeContext)
+ 
   const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false);
   const handleUpdateForm = () => setPopUpUpdateForm(!popUpUpdateForm);
   const [updatedData, setUpdatedData] = React.useState({});
@@ -74,12 +81,22 @@ export default function PageSizeCustomOptions() {
   const fetchData = async () => {
     await axios
       .get(
-        `http://localhost:8080/api/room-types/skip/0/limit/30?hotelId=${hotelID}`,
+        `${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`,
         { timeout: 5000 }
       )
       .then((res) => {
         setResData(res.data.roomTypes);
+        setRoomType({...roomType,
+           roomTypeData: res.data.roomTypes,
+           isLoading: false,
+           hasErr: false,
+           isSuccess: true
+          
+          })
+
         setloading(false);
+        setError(false)
+      
       })
       .catch((err) => {
         console.error(err);
@@ -97,7 +114,7 @@ export default function PageSizeCustomOptions() {
 
     var config = {
       method: "delete",
-      url: "http://localhost:8080/api/delete/room-type",
+      url: `${SERVER_URL}/api/delete/room-type`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -122,10 +139,11 @@ export default function PageSizeCustomOptions() {
   };
 
   React.useEffect(() => {
-    //setResData([])
+    
     setloading(true);
-    //setResData([]);
+   
     fetchData();
+    
     console.log(`resdata: ${resData}`);
   }, [value]);
   /// pop up form to view images
@@ -241,14 +259,15 @@ export default function PageSizeCustomOptions() {
   return (
     <div>
       <SearchArea/>
+      <br/>
+          <hr/>
       {error && <h1>there is an error in loading</h1>}
       {isLoading ? (
-        <h1>Loading...</h1>
+        <Skeleton variant="rectangular" width='100%' height={660}/>
       ) : (
         <div style={{ height: 660, width: "100%" }}>
           
-          <br/>
-          <hr/>
+       
 
           {/**table area */}
 
@@ -258,10 +277,10 @@ export default function PageSizeCustomOptions() {
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[5, 10, 20]}
             pagination
-            rows={resData}
+            rows={roomType.roomTypeData}
             columns={columns}
             disableSelectionOnClick
-            disableColumnMenu
+          
             getRowId={(row) => row._id}
           />
           {/**show image album */}

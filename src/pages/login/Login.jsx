@@ -12,17 +12,11 @@ import { router } from "../../constants/index.js";
 
 //connstant
 import { color } from "../../constants/index.js";
+import {textStyle} from '../../style'
+import { SERVER_URL } from "../../constants/index.js";
 
 //logo
-const textStyle = {
-  backgroundColor: "rgba(250, 250, 251, 1)",
-  borderRadius: "10px",
 
-  width: "300px",
-  "& fieldset": {
-    borderRadius: "10px",
-  },
-};
 const btnStyle = {
   "&.MuiButton-root": {},
   "&.MuiButton-text": {
@@ -58,7 +52,7 @@ const {auth, setAuth } = react.useContext(authContext);
 
   var config = {
     method: "post",
-    url: "http://localhost:8080/api/user/login",
+    url: `${SERVER_URL}/api/user/login`,
     headers: {
       "Content-Type": "application/json",
     },
@@ -110,7 +104,7 @@ const {auth, setAuth } = react.useContext(authContext);
       >
         <div
           style={{
-            backgroundColor: color.YELLLOW_COLOR,
+           // backgroundColor: color.YELLLOW_COLOR,
             width: "400px",
             height: "550px",
             padding: "50px",

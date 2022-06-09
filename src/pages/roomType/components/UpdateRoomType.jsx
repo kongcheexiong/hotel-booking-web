@@ -18,7 +18,7 @@ import { ConstructionOutlined, TurnedIn } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { counterContext } from "../../../context/counter";
-
+import {SERVER_URL} from '../../../constants/index'
 export default function UpdateRoomType(props) {
   // const {setRoomType } = React.useContext(roomTypeContext);
   //const roomType = React.useContext(roomTypeContext)
@@ -60,7 +60,7 @@ export default function UpdateRoomType(props) {
 
     var config = {
       method: "post",
-      url: "http://localhost:8080/api/upload/images",
+      url: `${SERVER_URL}/api/upload/images`,
       data: data,
       timeout: 5000,
     };
@@ -80,7 +80,7 @@ export default function UpdateRoomType(props) {
     setLoading(true);
     let config = {
       method: "put",
-      url: "http://localhost:8080/api/update/room-type",
+      url: `${SERVER_URL}/api/update/room-type`,
       headers: {
         Authorization: accessToken,
         "Content-Type": "application/json",
@@ -106,7 +106,7 @@ export default function UpdateRoomType(props) {
   const handleDelete = async () => {
     let config = {
       method: "delete",
-      url: "http://localhost:8080/api/delete/room-type",
+      url: `${SERVER_URL}/api/delete/room-type`,
       headers: {
         "Content-Type": "application/json",
       },

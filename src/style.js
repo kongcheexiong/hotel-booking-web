@@ -18,12 +18,16 @@ export const btnStyle = {
 
 //text
 export const textStyle = {
-  width: "200px",
+  width: "300px",
+  backgroundColor: "rgba(250, 250, 251, 1)",
+  borderRadius: "5px",
+
 
   "& .MuiInputBase-root": {
     fontFamily: "Noto Sans Lao",
     height: 35,
-    fontSize: '14px'
+    fontSize: '14px',
+    //borderRadius: "15px",
   },
   "& label.Mui-focused": {
     color: "",
@@ -34,12 +38,17 @@ export const textStyle = {
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
       borderColor: "",
+      borderRadius: "5px",
+
+      
     },
     "&:hover fieldset": {
       borderColor: "",
+      borderRadius: "5px",
     },
     "&.Mui-focused fieldset": {
       borderColor: "",
+      borderRadius: "5px",
     },
   },
 };
@@ -77,4 +86,8 @@ export const datetimeStyle = {
     borderRadius: '50px'
   }
 
+}
+
+export const selectStyle = {
+  
 }

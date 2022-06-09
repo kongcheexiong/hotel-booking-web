@@ -15,6 +15,8 @@ import Report from "../pages/report/Report";
 import RoomType from "../pages/roomType/RoomType";
 import AddRoomType from "../pages/roomType/components/AddRoomType";
 import AddEmployee from "../pages/employee/components/AddEmployee";
+import Register from "../pages/register/Register";
+import RegisterInfo from "../pages/registerInfo/register.info";
 
 import Layout from "../layouts/layout";
 
@@ -67,7 +69,9 @@ function MyRouter() {
     <Router>
       <Routes>
         {/** not log in */}
-        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/" element={<Login />} />
+        <Route exact path={router.REGISTER} element={<Register/>} />
+        <Route exact path= {`${router.REGISTER}/info`} element={<RegisterInfo/>}/>
         {/**log in successfully */}
         <Route element={<Layout />}>
           {privateRoute.map((data, index) => {

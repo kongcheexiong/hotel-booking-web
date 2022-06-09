@@ -1,7 +1,9 @@
 import * as React from "react";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
-import { IconButton } from "@mui/material";
+import { IconButton, Dialog, DialogContent, DialogTitle } from "@mui/material";
+
+import SearchArea from './SearchArea'
 
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -12,9 +14,19 @@ import { font } from "../../../constants/index";
 import { datagridSx } from "../../../style";
 import { useFormatDate } from "../../../services/formateDate";
 import { counterContext } from "../../../context/counter";
+import { roomContext } from "../../../context/room.context";
+
+import EditForm from './EditForm'
+import { SERVER_URL } from "../../../constants/index";
 
 export default function PageSizeCustomOptions() {
   //const roomType = React.useContext(roomTypeContext)
+  const [editOpen, setEditOpen] = React.useState(false)
+  const handleOpenEditForm = ()=> setEditOpen(!editOpen)
+  const [updatedData, setUpdatedData] = React.useState()
+
+
+  const {room, setRoom} = React.useContext(roomContext)
   const { value, setValue } = React.useContext(counterContext);
 
   const hotelID = localStorage.getItem("hotel");
@@ -41,7 +53,7 @@ export default function PageSizeCustomOptions() {
 
     var config = {
       method: "get",
-      url: `http://localhost:8080/api/rooms/skip/0/limit/30?hotelId=${hotelID}`,
+      url: `${SERVER_URL}/api/rooms/skip/0/limit/30?hotelId=${hotelID}`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -53,6 +65,7 @@ export default function PageSizeCustomOptions() {
         //console.log(response.data);
         //setResData(response.data);
         setRooms(response.data.rooms);
+        setRoom({...room, roomData: response.data.rooms})
         setloading(false);
         setError(false);
       })
@@ -67,32 +80,12 @@ export default function PageSizeCustomOptions() {
     }
   };
   const deleteUser = async ({ room = "", roomtype = "" }) => {
-    {
-      /**await axios
-      .delete("http://localhost:8080/api/delete/room",{
-        id: room,
-        roomType: roomtype
-      },{
-        timeout: 5000
-      }
-
-      )
-      .then(res => {
-        console.log(res.data);
-        setValue((value)=> value+1)
-        alert('Deleted successfully')
-      })
-      .catch(err => {
-        console.log(err)
-        alert(err)
-      });
-   */
-    }
+   
  
 
     var config = {
       method: "delete",
-      url: "http://localhost:8080/api/delete/room",
+      url: `${SERVER_URL}/api/delete/room`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -149,6 +142,8 @@ export default function PageSizeCustomOptions() {
             <IconButton
               onClick={() => {
                 console.log(parram.row);
+                setUpdatedData(parram.row)
+                handleOpenEditForm()
                 //console.log(resData);
               }}
             >
@@ -217,6 +212,8 @@ export default function PageSizeCustomOptions() {
 
   return (
     <div>
+      <SearchArea/>
+
       {error && <h1>there is an error in loading</h1>}
       {isLoading ? (
         <h1>Loading...</h1>
@@ -228,7 +225,7 @@ export default function PageSizeCustomOptions() {
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[5, 10, 20]}
             pagination
-            rows={rooms}
+            rows={room.roomData}
             columns={columns}
             disableSelectionOnClick
             disableColumnMenu
@@ -236,6 +233,17 @@ export default function PageSizeCustomOptions() {
             sortModel={sortModel}
             onSortModelChange = {(model)=> setSortModel(model)}
           />
+          {/**show update form */}
+          <Dialog
+            open={editOpen}
+            onClose={handleOpenEditForm}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent>
+              <EditForm updatedData={updatedData} />
+            </DialogContent>
+          </Dialog>
         </div>
       )}
     </div>

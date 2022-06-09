@@ -139,7 +139,7 @@ const SideNav = () => {
                   <div
                     onClick={() => {
                       localStorage.clear()
-                      navigate(`${router.LOGIN}`)
+                      navigate(`/`)
                     }}
                   >
                     ອອກຈາກລະບົບ

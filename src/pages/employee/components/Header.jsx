@@ -14,6 +14,8 @@ import { btnStyle } from "../../../style";
 //router
 import { router } from "../../../constants";
 
+import { SERVER_URL } from "../../../constants";
+
 export default function Header() {
   const navigate = useNavigate()
   return (

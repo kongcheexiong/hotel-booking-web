@@ -13,6 +13,8 @@ import { datagridSx } from "../../../style";
 
 import { useFormatDate } from "../../../services/formateDate";
 
+import { SERVER_URL } from "../../../constants/index";
+
 export default function Table() {
   const hotelId = localStorage.getItem("hotel");
   const [pageSize, setPageSize] = React.useState(10);
@@ -33,7 +35,7 @@ export default function Table() {
     setErr(false);
     await axios
       .get(
-        `http://localhost:8080/api/users/skip/0/limit/30?hotelId=${hotelId}`,
+        `${SERVER_URL}/api/users/skip/0/limit/30?hotelId=${hotelId}`,
         { timeout: 5000 }
       )
       .then((res) => {
