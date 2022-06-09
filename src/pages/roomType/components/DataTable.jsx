@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -32,24 +31,24 @@ import { Construction } from "@mui/icons-material";
 //context
 import { roomTypeContext } from "../../../context/roomType.context";
 import { counterContext } from "../../../context/counter";
-import {dataContext} from '../../../context/data.context'
+import { dataContext } from "../../../context/data.context";
 
 import "../style.css";
 
 import { textStyle, btnStyle, datagridSx } from "../../../style";
 import { useFormatDate } from "../../../services/formateDate";
 import { fontFamily } from "@mui/system";
-import SearchArea from './SearchArea'
+import SearchArea from "./SearchArea";
 import { SERVER_URL } from "../../../constants/index";
 
 export default function PageSizeCustomOptions() {
-  const {roomType,setRoomType} = React.useContext(roomTypeContext)
+  const { roomType, setRoomType } = React.useContext(roomTypeContext);
 
-  const {data,setData} = React.useContext(dataContext)
+  const { data, setData } = React.useContext(dataContext);
   const navigate = useNavigate();
 
   const { value, setValue } = React.useContext(counterContext);
- 
+
   const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false);
   const handleUpdateForm = () => setPopUpUpdateForm(!popUpUpdateForm);
   const [updatedData, setUpdatedData] = React.useState({});
@@ -76,31 +75,31 @@ export default function PageSizeCustomOptions() {
   const [deleteErr, setDeleteErr] = React.useState(false);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
 
- 
-
   const fetchData = async () => {
+    setloading(true);
+
     await axios
-      .get(
-        `${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`,
-        { timeout: 5000 }
-      )
+      .get(`${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`, {
+        timeout: 5000,
+      })
       .then((res) => {
         setResData(res.data.roomTypes);
-        setRoomType({...roomType,
-           roomTypeData: res.data.roomTypes,
-           isLoading: false,
-           hasErr: false,
-           isSuccess: true
-          
-          })
+        setRoomType({
+          ...roomType,
+          roomTypeData: res.data.roomTypes,
+          isLoading: false,
+          hasErr: false,
+          isSuccess: true,
+        });
+        console.log(roomType.roomTypeData)
 
         setloading(false);
-        setError(false)
-      
+        setError(false);
       })
       .catch((err) => {
         console.error(err);
         setError(true);
+        setloading(false)
       });
     // console.log(resData);
   };
@@ -139,11 +138,10 @@ export default function PageSizeCustomOptions() {
   };
 
   React.useEffect(() => {
-    
     setloading(true);
-   
+
     fetchData();
-    
+
     console.log(`resdata: ${resData}`);
   }, [value]);
   /// pop up form to view images
@@ -160,11 +158,11 @@ export default function PageSizeCustomOptions() {
           <div>
             <IconButton
               onClick={() => {
-                console.log(parram.row._id);
+                console.log(parram.row.roomType._id);
                 //setConfirmDeleted(true);
                 //setDeletedId(parram.row._id)
                 //alert('dfasd')
-                deleteRoomType(parram.row._id);
+                deleteRoomType(parram.row.roomType._id);
 
                 setValue(() => value + 1);
               }}
@@ -174,8 +172,8 @@ export default function PageSizeCustomOptions() {
 
             <IconButton
               onClick={async () => {
-                await console.log(parram.row);
-                await setUpdatedData(parram.row);
+                await console.log(parram.row.roomType);
+                await setUpdatedData(parram.row.roomType);
 
                 await console.log(updatedData);
                 handleUpdateForm();
@@ -189,12 +187,28 @@ export default function PageSizeCustomOptions() {
         );
       },
     },
-    { field: "_id", headerName: "ລະຫັດ", width: 80 },
+    { field: "_id", headerName: "ລະຫັດ", width: 80,
+    renderCell: (parram) => {
+      return (
+        <div>
+          {parram.row.roomType._id}
+        </div>
+      );
+    },
+  
+  },
     {
       field: "typeName",
       headerName: "ຊື່ປະເພດຫ້ອງ",
       flex: 1,
       sortable: false,
+      renderCell: (parram) => {
+        return (
+          <div>
+            {parram.row.roomType.typeName}
+          </div>
+        );
+      },
     },
     {
       field: "images",
@@ -208,33 +222,63 @@ export default function PageSizeCustomOptions() {
             onClick={() => {
               handlePopUpImg();
               //setImgSrc(parram.row.images);
-              setImgData(parram.row);
+              setImgData(parram.row.roomType);
               // console.log(parram.row)
             }}
           >
-            {parram.row.images}
+            {parram.row.roomType.images}
           </div>
         );
       },
     },
-    { field: "price", headerName: "ລາຄາ", flex: 1 },
+    { field: "price", headerName: "ລາຄາ", flex: 1,
+    renderCell: (parram) => {
+      return (
+        <div>
+          {parram.row.roomType.price}
+        </div>
+      );
+    },
+  
+  },
     {
       field: "numberOfBed",
       headerName: "ຈໍານວນຕຽງ",
       type: "number",
       flex: 1,
+      renderCell: (parram) => {
+        return (
+          <div>
+            {parram.row.roomType.numberOfBed}
+          </div>
+        );
+      },
     },
     {
       field: "suggestedGuestAllowed",
       headerName: "ຈໍານວນລູກຄ້າແນະນໍາ",
       type: "number",
       flex: 1,
+      renderCell: (parram) => {
+        return (
+          <div>
+            {parram.row.roomType.suggestedGuestAllowed}
+          </div>
+        );
+      },
     },
     {
       field: "totalRoom",
       headerName: "ຫ້ອງທັງໝົດ",
       type: "number",
       flex: 1,
+      renderCell: (parram) => {
+        return (
+          <div>
+            {parram.row.totalRoom}
+          </div>
+        );
+      },
     },
     {
       field: "updatedAt",
@@ -242,7 +286,7 @@ export default function PageSizeCustomOptions() {
       type: "date",
       flex: 1.5,
       renderCell: (params) => {
-        const date = useFormatDate(params.row.updatedAt);
+        const date = useFormatDate(params.row.roomType.updatedAt);
         return <span>{date}</span>;
       },
     },
@@ -252,27 +296,31 @@ export default function PageSizeCustomOptions() {
       type: "number",
       flex: 1.5,
       sortable: false,
+      renderCell: (parram) => {
+        return (
+          <div>
+            {parram.row.roomType.note}
+          </div>
+        );
+      },
     },
   ];
- 
 
   return (
     <div>
-      <SearchArea/>
-      <br/>
-          <hr/>
+      <SearchArea />
+      <br />
+      <hr />
       {error && <h1>there is an error in loading</h1>}
       {isLoading ? (
-        <Skeleton variant="rectangular" width='100%' height={660}/>
+        <Skeleton variant="rectangular" width="100%" height={660} />
       ) : (
         <div style={{ height: 660, width: "100%" }}>
-          
-       
-
           {/**table area */}
 
           <DataGrid
             sx={{ ...datagridSx, marginTop: "10px" }}
+            getRowId={(row) => row.roomType._id}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
             rowsPerPageOptions={[5, 10, 20]}
@@ -280,8 +328,7 @@ export default function PageSizeCustomOptions() {
             rows={roomType.roomTypeData}
             columns={columns}
             disableSelectionOnClick
-          
-            getRowId={(row) => row._id}
+            
           />
           {/**show image album */}
           <Dialog

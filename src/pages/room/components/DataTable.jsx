@@ -75,9 +75,6 @@ export default function PageSizeCustomOptions() {
         setloading(false);
       });
 
-    {
-     
-    }
   };
   const deleteUser = async ({ room = "", roomtype = "" }) => {
    

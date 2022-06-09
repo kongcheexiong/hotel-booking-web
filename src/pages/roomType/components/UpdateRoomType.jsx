@@ -210,7 +210,7 @@ export default function UpdateRoomType(props) {
                   },
                 });
               }}
-              sx={{ ...textStyle }}
+              sx={{ ...textStyle, width: "100%" }}
             />
           </Stack>
 
@@ -227,7 +227,7 @@ export default function UpdateRoomType(props) {
                   },
                 });
               }}
-              sx={{ ...textStyle }}
+              sx={{ ...textStyle, width: "100%" }}
             />
           </Stack>
         </Stack>
