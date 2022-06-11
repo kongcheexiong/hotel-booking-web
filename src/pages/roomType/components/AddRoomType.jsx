@@ -17,7 +17,7 @@ import "../style.css";
 import { ConstructionOutlined, TurnedIn } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { SERVER_URL } from "../../../constants";
-
+import {handleUploadImg} from '../../../services/uploadImage/index'
 export default function AddRoomType() {
   // const {setRoomType } = React.useContext(roomTypeContext);
   //const roomType = React.useContext(roomTypeContext)
@@ -56,31 +56,7 @@ export default function AddRoomType() {
   const [files, setFiles] = React.useState("");
   const accessToken = localStorage.getItem("accessToken");
   //func for upload image
-  const handleUploadImg = async () => {
-    
-    setLoading(true)
-    let data = new FormData();
 
-    for (const i of Object.keys(files)) {
-      data.append("file", files[i]);
-    }
-
-    var config = {
-      method: "post",
-      url: `${SERVER_URL}/api/upload/images`,
-      data: data,
-      timeout: 5000,
-    };
-
-    await axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-        setErr(true);
-      });
-  };
 
   // func for upload roomtype info
   const handleSubmit = async() => {
@@ -205,6 +181,7 @@ export default function AddRoomType() {
 
               const file = event.target.files;
               setFiles(file);
+              //console.log(file)
               //const frmdata = new FormData();
               const fileImage = [];
               for (var x = 0; x < file.length; x++) {
@@ -219,10 +196,6 @@ export default function AddRoomType() {
               {err ? <Alert severity="error">This is an error alert — check it out!</Alert> : null}
               {loading ? <CircularProgress /> : null}
               {success? <Alert severity="success">This is a success alert — check it out!</Alert> : null}
-
-      
-          
-         
         </Stack>
       </Stack>
       {/**submit button */}
@@ -232,7 +205,7 @@ export default function AddRoomType() {
             //console.log(data)
             await setLoading(true);
             await setErr(false)
-            await handleUploadImg();
+            await handleUploadImg(files);
             await handleSubmit();
             
             

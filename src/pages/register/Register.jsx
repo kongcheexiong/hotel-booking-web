@@ -37,10 +37,6 @@ function Register(props) {
 
   const { registerInfo, setRegisterInfo } = react.useContext(registerContext);
 
-  react.useEffect(() => {
-    setRegisterInfo({ ...registerInfo, role: "OWNER" });
-  }, []);
-
   return (
     <div
       className="login"

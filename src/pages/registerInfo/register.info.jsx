@@ -1,5 +1,6 @@
 import React from "react";
 import Map from "./components/map";
+import { Navigate } from "react-router-dom";
 import { color, font } from "../../constants";
 import {
   Button,
@@ -17,6 +18,10 @@ import laoInfo from "../../../lao.json";
 import { MusicNoteOutlined } from "@mui/icons-material";
 import { Box } from "@mui/system";
 
+import { handleUploadImg } from "../../services/uploadImage";
+import { SERVER_URL } from "../../constants";
+import { router } from "../../constants";
+
 import axios from "axios";
 export default function RegisterInfo() {
   const { registerInfo, setRegisterInfo } = React.useContext(registerContext);
@@ -25,13 +30,82 @@ export default function RegisterInfo() {
   const [village, setVillage] = React.useState([]);
   const [update, setUpdate] = React.useState(0);
   const [files, setFiles] = React.useState("");
+  const [hotelName, setHotelName] = React.useState("");
 
-  const registerUser = async () => {};
+  const registerUser = async () => {
+    var data = JSON.stringify({
+      hotel: hotelName,
+      userName: registerInfo.userName,
+      password: registerInfo.password,
+      role: "OWNER",
+    });
+
+    var config = {
+      method: "post",
+      url: `${SERVER_URL}/api/create/user`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      timeout: 5000,
+      data: data,
+    };
+
+    await axios(config)
+      .then(function (response) {
+        console.log(response.data);
+        alert("create success");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   const registerHotel = async () => {
-    await axios
-      .post("")
-      .then((res) => {})
-      .catch((err) => console.error(err));
+    var data = JSON.stringify({
+      hotelName: registerInfo.hotelName,
+      images: registerInfo.images,
+      province: registerInfo.province,
+      city: registerInfo.district,
+      village: registerInfo.village,
+      lat: registerInfo.lat,
+      lng: registerInfo.lng,
+      isDeleted: false,
+      note: registerInfo.note,
+    });
+
+    var config = {
+      method: "post",
+      url: `${SERVER_URL}/api/create/hotel`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      timeout: 5000,
+      data: data,
+    };
+
+    await axios(config)
+      .then(function (response) {
+        console.log(response.data);
+        // setHotelName(response.data._id)
+        console.log(hotelName);
+        return response.data._id;
+      })
+      .then((hotelID) => {
+        axios
+          .post(`${SERVER_URL}/api/create/user`, {
+            hotel: hotelID,
+            userName: registerInfo.userName,
+            password: registerInfo.password,
+            role: "OWNER",
+          })
+          .then((res) => {
+            console.log(res.data)
+            alert('create success')
+          })
+          .catch((err) => console.error(err));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   React.useEffect(() => {
@@ -64,7 +138,7 @@ export default function RegisterInfo() {
     }
   }, [registerInfo.district]);
 
-  return (
+  return Object.keys(registerInfo).length !== 0 ? (
     <Stack
       direction="row"
       justifyContent="center"
@@ -75,9 +149,12 @@ export default function RegisterInfo() {
         <Stack spacing={1}>
           <label>ຊື່ໂຮງແຮມ</label>
           <TextField
-            placeholder="adf"
-            defaultValue={registerInfo.userName}
+            // placeholder="adf"
+            //defaultValue={registerInfo.userName}
             sx={{ ...textStyle, width: "100%" }}
+            onChange={(e) => {
+              setRegisterInfo({ ...registerInfo, hotelName: e.target.value });
+            }}
           />
         </Stack>
         <div
@@ -200,9 +277,12 @@ export default function RegisterInfo() {
           <Stack spacing={1}>
             <label>ເພີ່ມລາຍລະອຽດອຶ່ນໆ</label>
             <TextField
-              placeholder="adf"
-              defaultValue={registerInfo.password}
+              //placeholder="adf"
+              //defaultValue={registerInfo.password}
               sx={{ ...textStyle, width: "100%" }}
+              onChange={(e) => {
+                setRegisterInfo({ ...registerInfo, note: e.target.value });
+              }}
             />
           </Stack>
           <Stack spacing={1}>
@@ -224,7 +304,7 @@ export default function RegisterInfo() {
                   fileImage.push(file[x].name);
                 }
                 //setData({ ...data, images: fileImage });
-                setRegisterInfo({ ...registerInfo, img: fileImage });
+                setRegisterInfo({ ...registerInfo, images: fileImage });
               }}
             />
           </Stack>
@@ -235,7 +315,13 @@ export default function RegisterInfo() {
         </div>
         <br />
         <Button
-          onClick={() => console.log(registerInfo)}
+          onClick={async () => {
+            
+            await registerHotel();
+            await handleUploadImg(files)
+            await alert('create success')
+            
+          }}
           variant="contained"
           sx={{ ...btnStyle }}
         >
@@ -243,5 +329,7 @@ export default function RegisterInfo() {
         </Button>
       </div>
     </Stack>
+  ) : (
+    <Navigate to={`${router.REGISTER}`} replace />
   );
 }

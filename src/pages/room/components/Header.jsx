@@ -169,12 +169,13 @@ export default function Header() {
                   value={type}
                   onChange={(e) => {
                     setType(e.target.value);
+
                   }}
                 >
                   {roomTypeData.map((val) => {
                     return (
-                      <MenuItem key={val._id} value={val._id}>
-                        {val.typeName}
+                      <MenuItem key={val.roomType._id} value={val.roomType._id}>
+                        {val.roomType.typeName}
                       </MenuItem>
                     );
                   })}
@@ -200,7 +201,10 @@ export default function Header() {
               variant="outlined"
               color="error"
               size="small"
-              onClick={handlePopUp}
+              onClick={
+                console.log(roomTypeData)
+                //handlePopUp()
+              }
             >
               ຍົກເລີກ
             </Button>

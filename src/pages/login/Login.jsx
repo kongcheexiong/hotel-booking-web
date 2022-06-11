@@ -74,7 +74,7 @@ const {auth, setAuth } = react.useContext(authContext);
 
         const userId = "" + res.user._id;
         const userName = res.user.userName;
-        const hotelId = res.user.hotel
+        const hotelId = res.user.hotel._id
         const userRole = res.user.role
 
         setUser("");
@@ -86,6 +86,7 @@ const {auth, setAuth } = react.useContext(authContext);
         localStorage.setItem("userName", userName);
         localStorage.setItem('role',userRole);
         localStorage.setItem('hotel',hotelId)
+        localStorage.setItem('hotelName',res.user.hotel.hotelName)
 
       })
       .catch(function (error) {

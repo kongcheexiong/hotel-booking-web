@@ -95,6 +95,7 @@ export default function PageSizeCustomOptions() {
 
         setloading(false);
         setError(false);
+        
       })
       .catch((err) => {
         console.error(err);
@@ -311,7 +312,7 @@ export default function PageSizeCustomOptions() {
       <SearchArea />
       <br />
       <hr />
-      {error && <h1>there is an error in loading</h1>}
+      {error ? <h1>there is an error in loading</h1>: null}
       {isLoading ? (
         <Skeleton variant="rectangular" width="100%" height={660} />
       ) : (

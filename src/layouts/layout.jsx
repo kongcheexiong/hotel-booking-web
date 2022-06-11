@@ -82,6 +82,7 @@ const sideNavData = [
 
 const SideNav = () => {
   const navigate = useNavigate();
+  const hotelName = localStorage.getItem('hotelName')
   //const {auth,setAuth } = react.useContext(authContext);
 
   return (
@@ -91,7 +92,7 @@ const SideNav = () => {
           <div
             style={{
               display: "flex",
-              justifyContent: "space-between",
+              //justifyContent: "space-between",
               margin: "5px",
               alignItems: "center",
               columnGap: "20px",
@@ -99,7 +100,7 @@ const SideNav = () => {
           >
             <img src="../IMG.JPG" alt="img" height={50} />
 
-            <h1 style={{ color: "rgba(27, 21, 76, 1)" }}>Hotel Management</h1>
+            <h1 style={{ color: "rgba(27, 21, 76, 1)" }}>{hotelName}</h1>
           </div>
           <hr />
           <div
