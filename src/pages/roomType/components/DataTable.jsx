@@ -77,6 +77,8 @@ export default function PageSizeCustomOptions() {
 
   const fetchData = async () => {
     setloading(true);
+    setError(false)
+    
 
     await axios
       .get(`${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`, {
@@ -99,7 +101,7 @@ export default function PageSizeCustomOptions() {
       })
       .catch((err) => {
         console.error(err);
-        setError(true);
+        //setError(true);
         setloading(false)
       });
     // console.log(resData);
@@ -139,7 +141,7 @@ export default function PageSizeCustomOptions() {
   };
 
   React.useEffect(() => {
-    setloading(true);
+    //setloading(true);
 
     fetchData();
 
@@ -293,7 +295,7 @@ export default function PageSizeCustomOptions() {
     },
     {
       field: "note",
-      headerName: "ໝາຍເຫດ",
+      headerName: "ລາຍລະອຽດ",
       type: "number",
       flex: 1.5,
       sortable: false,
@@ -314,7 +316,8 @@ export default function PageSizeCustomOptions() {
       <hr />
       {error ? <h1>there is an error in loading</h1>: null}
       {isLoading ? (
-        <Skeleton variant="rectangular" width="100%" height={660} />
+        //<Skeleton variant="rectangular" width="100%" height={660} />
+        <h1>Loading...</h1>
       ) : (
         <div style={{ height: 660, width: "100%" }}>
           {/**table area */}
@@ -329,6 +332,7 @@ export default function PageSizeCustomOptions() {
             rows={roomType.roomTypeData}
             columns={columns}
             disableSelectionOnClick
+            loading={isLoading}
             
           />
           {/**show image album */}

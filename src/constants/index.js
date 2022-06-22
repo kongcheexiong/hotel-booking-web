@@ -1,5 +1,5 @@
 //color
-export const SERVER_URL=  'http://128.199.202.236:8080'
+export const SERVER_URL=  'http://127.0.0.1:8080'
 
 export const font = {
     LAO_FONT: 'Noto Sans Lao',

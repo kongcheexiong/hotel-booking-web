@@ -17,6 +17,7 @@ import AddRoomType from "../pages/roomType/components/AddRoomType";
 import AddEmployee from "../pages/employee/components/AddEmployee";
 import Register from "../pages/register/Register";
 import RegisterInfo from "../pages/registerInfo/register.info";
+import AddCheckin from "../pages/AddNewCheckin/AddCheckin";
 
 import Layout from "../layouts/layout";
 
@@ -64,6 +65,11 @@ function MyRouter() {
       myRoute: `${router.REPORT}`,
       component: <Report />,
     },
+    {
+      myRoute: `${router.CHECKIN}/add`,
+      component: <AddCheckin />,
+    },
+
   ];
   return (
     <Router>

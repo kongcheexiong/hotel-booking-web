@@ -164,7 +164,7 @@ export default function PageSizeCustomOptions() {
         );
       },
     },
-    { field: "note", headerName: "ໝາຍເຫດ", flex: 1, sortable: false },
+    { field: "note", headerName: "ລາຍລະອຽດ", flex: 1, sortable: false },
     {
       field: "updatedAt",
       headerName: "ວັນທີສ້າງລາຍການ",
@@ -210,6 +210,8 @@ export default function PageSizeCustomOptions() {
   return (
     <div>
       <SearchArea/>
+      <br/>
+      <hr/>
 
       {error && <h1>there is an error in loading</h1>}
       {isLoading ? (

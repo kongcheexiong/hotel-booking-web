@@ -72,7 +72,7 @@ const {auth, setAuth } = react.useContext(authContext);
         console.log(res);
         let token = res.accessToken;
 
-        const userId = "" + res.user._id;
+        const userId = res.user._id;
         const userName = res.user.userName;
         const hotelId = res.user.hotel._id
         const userRole = res.user.role

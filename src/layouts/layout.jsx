@@ -185,7 +185,7 @@ function Layout() {
               className="en"
               style={{ fontSize: "16px", fontWeight: "500" }}
             >
-              kongchee
+              {localStorage.getItem('userName')}
             </span>
           </Stack>
 

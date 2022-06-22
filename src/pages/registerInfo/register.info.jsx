@@ -86,7 +86,7 @@ export default function RegisterInfo() {
       .then(function (response) {
         console.log(response.data);
         // setHotelName(response.data._id)
-        console.log(hotelName);
+        console.log(response.data._id);
         return response.data._id;
       })
       .then((hotelID) => {
@@ -98,6 +98,7 @@ export default function RegisterInfo() {
             role: "OWNER",
           })
           .then((res) => {
+            handleUploadImg(files)
             console.log(res.data)
             alert('create success')
           })
@@ -318,8 +319,8 @@ export default function RegisterInfo() {
           onClick={async () => {
             
             await registerHotel();
-            await handleUploadImg(files)
-            await alert('create success')
+            //await handleUploadImg(files)
+           
             
           }}
           variant="contained"
