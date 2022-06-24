@@ -64,8 +64,8 @@ export default function Table() {
   
   },
     {
-      field: "typeName",
-      headerName: "ຊື່ປະເພດຫ້ອງ",
+      field: "customerPhone",
+      headerName: "ເບີໂທລະສັບ",
       flex: 1,
       sortable: false,
       renderCell: (parram) => {
@@ -76,28 +76,8 @@ export default function Table() {
         );
       },
     },
-    {
-      field: "images",
-      headerName: "ຮູບ",
-      flex: 1,
-      sortable: false,
-      renderCell: (parram) => {
-        return (
-          <div
-            className="previewImg"
-            onClick={() => {
-              handlePopUpImg();
-              //setImgSrc(parram.row.images);
-              setImgData(parram.row.roomType);
-              // console.log(parram.row)
-            }}
-          >
-            {parram.row.roomType.images}
-          </div>
-        );
-      },
-    },
-    { field: "price", headerName: "ລາຄາ", flex: 1,
+    
+    { field: "roomType", headerName: "ປະເພດຫ້ອງ", flex: 1,
     renderCell: (parram) => {
       return (
         <div>
@@ -108,8 +88,8 @@ export default function Table() {
   
   },
     {
-      field: "numberOfBed",
-      headerName: "ຈໍານວນຕຽງ",
+      field: "quantity",
+      headerName: "ຈໍານວນ",
       type: "number",
       flex: 1,
       renderCell: (parram) => {
@@ -121,8 +101,8 @@ export default function Table() {
       },
     },
     {
-      field: "suggestedGuestAllowed",
-      headerName: "ຈໍານວນລູກຄ້າແນະນໍາ",
+      field: "checkInDate",
+      headerName: "ວັນທີເຂົ້າພັກ",
       type: "number",
       flex: 1,
       renderCell: (parram) => {
@@ -134,20 +114,7 @@ export default function Table() {
       },
     },
     {
-      field: "totalRoom",
-      headerName: "ຫ້ອງທັງໝົດ",
-      type: "number",
-      flex: 1,
-      renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.totalRoom}
-          </div>
-        );
-      },
-    },
-    {
-      field: "updatedAt",
+      field: "createdAt",
       headerName: "ວັນທີ່ສ້າງລາຍການ",
       type: "date",
       flex: 1.5,
@@ -156,9 +123,11 @@ export default function Table() {
         return <span>{date}</span>;
       },
     },
+    
+    
     {
       field: "note",
-      headerName: "ໝາຍເຫດ",
+      headerName: "ລາຍລະອຽດ",
       type: "number",
       flex: 1.5,
       sortable: false,
@@ -166,6 +135,19 @@ export default function Table() {
         return (
           <div>
             {parram.row.roomType.note}
+          </div>
+        );
+      },
+    },
+    {
+      field: "status",
+      headerName: "ສະຖານະ",
+      type: "boolean",
+      flex: 1,
+      renderCell: (parram) => {
+        return (
+          <div>
+            {parram.row.totalRoom}
           </div>
         );
       },

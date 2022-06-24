@@ -1,156 +1,83 @@
-import { Avatar, Stack, Select, MenuItem, TextField } from "@mui/material";
+import { Avatar, Stack, Select, MenuItem, TextField, IconButton, Button } from "@mui/material";
 import * as React from "react";
+import {useNavigate} from 'react-router-dom'
+//components
+import UserInfo from "./components/UserInfo";
+import BookingDetail from "./components/BookingDetail";
 
-//font
-import { font } from "../../constants";
+//font color router
+import { font, color, router } from "../../constants";
 
 //style
-import { textStyle } from "../../style";
+import { textStyle, btnStyle } from "../../style";
+
+//icon
+import CancelIcon from "@mui/icons-material/Cancel";
 
 export default function AddCheckin() {
-    const [verify ,setVerify] = React.useState('none')
-    const [gender, setGender] = React.useState('MALE')
+    
+    const navigate = useNavigate();
+ 
   return (
-    <Stack direction="column">
-        <Stack sx={{backgroundColor: "red"}}>
-            <h1>ແຈ້ງເຂົ້າ</h1>
-        </Stack>
-      {/**user info */}
-      <Stack direction="column" spacing={2}>
-        <Stack direction="row" spacing={2}>
-          <Avatar sx={{ height: "70px", width: "70px" }} />
-          <Stack direction="column" spacing={2}>
-            {/**user name */}
-            <Stack direction="row" spacing={4}>
-              <Stack>
-                <label>ເພດ</label>
-                <Select
-                  sx={{
-                    ...textStyle,
-                    fontFamily: `${font.LAO_FONT}`,
-                    height: 35,
-                    width: "200px",
-                  }}
-                  value={gender}
-
-                  onChange={(e) => {
-                   
-                    setGender(e.target.value)
-                  }}
-                  variant="standard"
-                >
-                  <MenuItem
-                    sx={{ fontFamily: `${font.LAO_FONT}` }}
-                    value="MALE"
-                  >
-                    ທ້າວ
-                  </MenuItem>
-                  <MenuItem
-                    sx={{ fontFamily: `${font.LAO_FONT}` }}
-                    value="FEMALE"
-                  >
-                    ນາງ
-                  </MenuItem>
-                </Select>
-              </Stack>
-              <Stack>
-                <label>ຊື້</label>
-                <TextField
-                  placeholder="First name"
-                  variant="standard"
-                  sx={{
-                    ...textStyle,
-                    width: "200px",
-                    backgroundColor: "white",
-                  }}
-                />
-              </Stack>
-              <Stack>
-                <label>ນາມສະກຸນ</label>
-                <TextField
-                  placeholder="Last name"
-                  variant="standard"
-                  sx={{
-                    ...textStyle,
-                    width: "200px",
-                    backgroundColor: "white",
-                  }}
-                />
-              </Stack>
-            </Stack>
-
-            {/**user detail */}
-            <Stack direction="row" spacing={4}>
-              <Stack>
-                <label>ເບີໂທລະສັບ</label>
-                <TextField
-                  placeholder="020 XXX XXXXX"
-                  variant="standard"
-                  sx={{
-                    ...textStyle,
-                    width: "200px",
-                    backgroundColor: "white",
-                  }}
-                />
-              </Stack>
-              <Stack>
-                <label>ເອກະສານອ້າງອີງ</label>
-                <Select
-                  sx={{
-                    ...textStyle,
-                    fontFamily: `${font.LAO_FONT}`,
-                    height: 35,
-                    width: "200px",
-                  }}
-                  value={verify}
-
-                  onChange={(e) => {
-                    //setData({ ...data, gender: e.target.value });
-                    //setFilter(e.target.value)
-                    //setDisplayFilter(e.target.name)
-                    setVerify(e.target.value)
-                  }}
-                  variant="standard"
-                >
-                    <MenuItem
-                    sx={{ fontFamily: `${font.LAO_FONT}` }}
-                    value="none"
-                  >
-                    ---Select---
-                  </MenuItem>
-                  <MenuItem
-                    sx={{ fontFamily: `${font.LAO_FONT}` }}
-                    value="PASSPORT"
-                  >
-                    Passport
-                  </MenuItem>
-                  <MenuItem
-                    sx={{ fontFamily: `${font.LAO_FONT}` }}
-                    value="IDCARD"
-                  >
-                    ID card
-                  </MenuItem>
-                </Select>
-              </Stack>
-              <Stack>
-                <label>ເລກທີ</label>
-                <TextField
-                  placeholder=""
-                  variant="standard"
-                  sx={{
-                    ...textStyle,
-                    width: "200px",
-                    backgroundColor: "white",
-                  }}
-                />
-              </Stack>
-            </Stack>
-          </Stack>
-        </Stack>
+    <Stack direction="column" sx={{}}>
+        {/**header */}
+      <Stack
+        sx={{ backgroundColor: "#1565C0", padding: "0px 10px", color: "white" }}
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <h3>ແຈ້ງເຂົ້າ</h3>
+        <IconButton
+          onClick={() =>
+            navigate(`/${router.CHECKIN}`)
+          }
+        >
+          <CancelIcon fontSize="large" color="" />
+        </IconButton>
       </Stack>
+      <div style={{ padding: "10px" }}>
+         {/**user info */}
+         <UserInfo/>
+       
 
-      {/**user booking detail */}
-      <Stack direction="column" spacing={2}></Stack>
+        
+        
+        
+        
+      </div>
+      <div
+          style={{
+            marginTop: "20px",
+            //marginLeft: '95px',
+            backgroundColor: `${color.GRAY_COLLOR}`,
+            padding: "10px",
+
+          }}
+        >
+          <span style={{ fontSize: "16px" }}>ລາຍລະອຽດການຈອງ</span>
+        </div>
+        {/**user booking detail */}
+        <div style={{ margin: '10px 0px'}}>
+            <BookingDetail/>
+
+        </div>
+         {/* button */}
+         <Stack>
+         <Button
+          size="small"
+          
+          disableElevation
+          variant="contained"
+          sx={{ ...btnStyle, width: "200px" }}
+          onClick={()=>{ navigate(`/${router.CHECKIN}/add`)}}
+        >
+          ແຈ້ງເຂົ້າ
+        </Button>
+
+         </Stack>
+
+    
     </Stack>
   );
 }

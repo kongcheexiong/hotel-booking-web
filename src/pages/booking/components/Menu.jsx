@@ -1,5 +1,5 @@
 import { AddIcCallOutlined } from "@mui/icons-material";
-import { Button, Stack, TextField } from "@mui/material";
+import { Button, Stack, TextField, Select, MenuItem } from "@mui/material";
 import { GridAddIcon } from "@mui/x-data-grid";
 import * as React from "react";
 
@@ -20,6 +20,8 @@ export default function Menu() {
   const [startDate, setStartDate] = React.useState();
   const [endDate, setEndDate] = React.useState();
 
+  const [filter ,setFilter] = React.useState('ALL')
+
   return (
     <Stack direction="column" spacing={3}>
       {/** action button */}
@@ -35,7 +37,7 @@ export default function Menu() {
         </Button>
       </Stack>
       <hr />
-      <Stack direction="row" spacing={5}>
+      <Stack direction="row" spacing={3} >
         {/**start date */}
         <Stack>
           <label id="dateOfBirth">ຕັ້ງແຕ່ວັນທີ</label>
@@ -62,11 +64,7 @@ export default function Menu() {
                     ///  birthday: e.target.value,
                     ///})
                   }
-                  sx={{
-                    ...textStyle,
-                    width: "250px",
-                    backgroundColor: "white",
-                  }}
+                  sx={{ ...textStyle, width: "250px", backgroundColor: 'white' }}
                   {...params}
                 />
               )}
@@ -99,30 +97,53 @@ export default function Menu() {
                     ///  birthday: e.target.value,
                     ///})
                   }
-                  sx={{
-                    ...textStyle,
-                    backgroundColor: "white",
-                    width: "250px",
-                  }}
+                  sx={{ ...textStyle, backgroundColor: 'white', width: "250px" }}
                   {...params}
                 />
               )}
             />
           </LocalizationProvider>
         </Stack>
-        {/**search*/}
-        <Stack justifyContent="flex-end">
+        {/**status filter
+         * <Stack >
+            <label id=""gender>ສະຖານະ</label>
+            <Select
+
+              sx={{ ...textStyle, fontFamily: `${font.LAO_FONT}`, height: 35, width: "200px" }}
+              value={filter}
+            
+
+              onChange={(e) => {
+                //setData({ ...data, gender: e.target.value });
+                setFilter(e.target.value)
+                //setDisplayFilter(e.target.name)
+              }}
+            >
+              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}} value="ALL">ສະແດງທັງໝົດ</MenuItem>
+              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}}  value="PENDING">ລໍຖ້າແຈ້ງເຂົ້າ</MenuItem>
+              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}}  value="CHECKEDOUT"></MenuItem>
+            </Select>
+          </Stack>
+         */}
+        
+        
+        
+       
+      </Stack>
+      <Stack direction='row' spacing={2} justifyContent='center'>
+        {/**search*/ }
+        <Stack justifyContent="flex-end" spacing={2}>
           <Button
             size="small"
             startIcon={<SearchIcon />}
             disableElevation
             variant="contained"
+            
             sx={{
               ...btnStyle,
-
+              width: "110px",
               "&.MuiButton-root": {
-                width: "110px",
-
+                
                 fontFamily: `${font.EN_FONT}`,
                 height: 35,
               },
@@ -130,11 +151,13 @@ export default function Menu() {
           >
             Search
           </Button>
+          
         </Stack>
         {/**reload */}
-
+        
         <Stack justifyContent="flex-end">
           <Button
+
             size="small"
             startIcon={<CachedIcon />}
             disableElevation
@@ -142,8 +165,9 @@ export default function Menu() {
             color="success"
             sx={{
               ...btnStyle,
+              width: "110px",
               "&.MuiButton-root": {
-                width: "110px",
+                width: "100px",
                 fontFamily: `${font.EN_FONT}`,
                 height: 35,
               },
@@ -151,8 +175,10 @@ export default function Menu() {
           >
             Reload
           </Button>
+          
         </Stack>
       </Stack>
+      
     </Stack>
   );
 }
