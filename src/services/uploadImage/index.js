@@ -2,6 +2,7 @@ import axios from 'axios'
 import { SERVER_URL } from '../../constants';
 
 export const handleUploadImg = async (files) => {
+  
   console.log(files)
 
     let data = new FormData();
