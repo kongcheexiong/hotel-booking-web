@@ -4,6 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import {
   Alert,
   Button,
+  Divider,
   IconButton,
   Skeleton,
   Snackbar,
@@ -75,6 +76,9 @@ export default function PageSizeCustomOptions() {
   const [deleteErr, setDeleteErr] = React.useState(false);
   const [deleteLoading, setDeleteLoading] = React.useState(false);
 
+  const [deleteId, setDeleteId] = React.useState();
+  const [popUpConfirm, setPopUpConfirm] = React.useState(false);
+
   const fetchData = async () => {
     setloading(true);
     setError(false)
@@ -127,12 +131,17 @@ export default function PageSizeCustomOptions() {
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         setDeleteSuccess(true);
-        alert(`Deleted successfully`);
+        //alert(`Deleted successfully`);
       })
       .catch(function (error) {
         console.log(error);
         setDeleteErr(true);
-        alert(error);
+        if(error.response){
+          alert(error.response.data.message);
+
+        }
+
+        
       })
       .finally(() => {
         setDeleteLoading(false);
@@ -165,9 +174,9 @@ export default function PageSizeCustomOptions() {
                 //setConfirmDeleted(true);
                 //setDeletedId(parram.row._id)
                 //alert('dfasd')
-                deleteRoomType(parram.row.roomType._id);
-
-                setValue(() => value + 1);
+                setDeleteId(parram.row.roomType._id)
+                setPopUpConfirm(true)
+                
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -313,8 +322,9 @@ export default function PageSizeCustomOptions() {
     <div>
       <SearchArea />
       <br />
-      <hr />
-      {error ? <h1>there is an error in loading</h1>: null}
+      <Divider/>
+      {error ? <h1>there
+         is an error in loading</h1>: null}
       {isLoading ? (
         //<Skeleton variant="rectangular" width="100%" height={660} />
         <h1>Loading...</h1>
@@ -362,6 +372,57 @@ export default function PageSizeCustomOptions() {
             <DialogContent>
               <UpdateRoomType updatedData={updatedData} />
             </DialogContent>
+          </Dialog>
+          {/**show confirm dialog */}
+          <Dialog
+            fullWidth
+            maxWidth="xs"
+            open={popUpConfirm}
+            onClose={() => setPopUpConfirm(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle
+              style={{
+                " & .MuiDialogTitle-root": {
+                  fontFamily: `${font.LAO_FONT}`,
+                },
+              }}
+              id="alert-dialog-title"
+            >
+              <span
+                style={{
+                  fontFamily: `${font.LAO_FONT}`,
+                }}
+              >
+                ຢືນຢັນ
+              </span>
+            </DialogTitle>
+            <DialogContent>
+              <span
+                style={{
+                  fontFamily: `${font.LAO_FONT}`,
+                }}
+              >
+                ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ?{" "}
+              </span>
+            </DialogContent>
+            <DialogActions>
+              <Button sx={{ ...btnStyle }} onClick={ ()=> {
+                setPopUpConfirm(false)
+                deleteRoomType(deleteId);
+
+                setValue(() => value + 1);
+                }}>
+                ຕົກລົງ
+              </Button>
+              <Button
+                sx={{ ...btnStyle }}
+                onClick={() => setPopUpConfirm(false)}
+              >
+                ຍົກເລີກ
+              </Button>
+            </DialogActions>
           </Dialog>
         </div>
       )}

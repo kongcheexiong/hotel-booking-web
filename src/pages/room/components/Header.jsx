@@ -7,7 +7,7 @@ import { router, color } from "../../../constants";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SendIcon from "@mui/icons-material/Send";
-import { MenuItem, Select, Stack, TextField } from "@mui/material";
+import { Divider, MenuItem, Select, Stack, TextField } from "@mui/material";
 import {
   Dialog,
   DialogActions,
@@ -231,7 +231,7 @@ export default function Header() {
         </Dialog>
         {/****************************************** */}
       </Stack>
-      <hr />
+      <Divider/>
 
       {/**search area */}
     

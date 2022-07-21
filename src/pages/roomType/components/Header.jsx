@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import * as React from "react";
 //material ui
 
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { IconButton } from "@mui/material";
 //icon
@@ -40,7 +40,7 @@ export default function Header() {
         </Button>
       </Stack>
 
-      <hr />
+      <Divider/>
     </Stack>
   );
 }

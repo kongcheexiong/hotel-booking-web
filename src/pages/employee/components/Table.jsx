@@ -1,7 +1,16 @@
 import * as React from "react";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
-import { IconButton, Stack, Dialog, DialogTitle, DialogContent } from "@mui/material";
+import {
+  IconButton,
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
+import { counterContext } from "../../../context/counter";
 
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -9,13 +18,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Chip } from "@mui/material";
 
 import { font } from "../../../constants/index";
-import { datagridSx } from "../../../style";
+import { btnStyle, datagridSx } from "../../../style";
 
 import { useFormatDate } from "../../../services/formateDate";
+// component
+import TitlebarImageList from "./ImageList";
+import EditUser from "./EditUser";
 
 import { SERVER_URL } from "../../../constants/index";
 
 export default function Table() {
+  const { value, setValue } = React.useContext(counterContext);
   const hotelId = localStorage.getItem("hotel");
   const [pageSize, setPageSize] = React.useState(10);
 
@@ -29,15 +42,20 @@ export default function Table() {
   const handlePopUpImg = () => setPopupImg(!popUpImg);
   const [imgData, setImgData] = React.useState();
 
+  const [deleteId, setDeleteId] = React.useState();
+
+  const [updateData, setUpdatedData] = React.useState();
+  const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false);
+  const [popUpConfirm, setPopUpConfirm] = React.useState(false);
+
   const fetchData = async () => {
     setloading(true);
     setSuccess(false);
     setErr(false);
     await axios
-      .get(
-        `${SERVER_URL}/api/users/skip/0/limit/30?hotelId=${hotelId}`,
-        { timeout: 5000 }
-      )
+      .get(`${SERVER_URL}/api/users/skip/0/limit/30?hotelId=${hotelId}`, {
+        timeout: 5000,
+      })
       .then((res) => {
         console.log(res.data.users);
         setTotal(res.data.total);
@@ -53,6 +71,22 @@ export default function Table() {
       });
   };
 
+  const deleteUser = async (userID) => {
+    await axios
+      .delete(`${SERVER_URL}/api/delete/user`, {
+        data: {
+          id: userID,
+        },
+        timeout: 5000,
+      })
+      .then((res) => {
+        console.log(res.data);
+        //alert("delete successfully");
+        fetchData();
+      })
+      .catch((err) => console.error(err));
+  };
+
   const columns = [
     {
       field: "action",
@@ -65,16 +99,19 @@ export default function Table() {
             <IconButton
               onClick={() => {
                 console.log(parram.row);
-                // console.log(resData)
+                setDeleteId(parram.row._id);
+                setPopUpConfirm(true);
+                //deleteUser(parram.row._id);
               }}
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
             <IconButton
               onClick={() => {
-                console.log();
-
-                // console.log(resData)
+                let data = parram.row;
+                setUpdatedData(data);
+                console.log(updateData);
+                setPopUpUpdateForm(true);
               }}
             >
               <EditIcon fontSize="small" />
@@ -83,19 +120,19 @@ export default function Table() {
         );
       },
     },
-    { field: "_id", headerName: "ລະຫັດ", width: 50 },
+    { field: "_id", headerName: "ລະຫັດ", width: 70 },
     { field: "userName", headerName: "ຜູ້ໃຊ້", flex: 1, sortable: false },
     {
       field: "image",
       headerName: "ຮູບ",
-      width: 50,
+      width: 70,
       sortable: false,
       renderCell: (parram) => {
         return (
           <div
             className="previewImg"
             onClick={() => {
-              console.log(parram.row.image)
+              console.log(parram.row.image);
               handlePopUpImg();
               setImgData(parram.row.image);
             }}
@@ -105,6 +142,18 @@ export default function Table() {
         );
       },
     },
+    {
+      field: "gender",
+      headerName: "ເພດ",
+      width: 50,
+      sortable: false,
+      renderCell: (params) => {
+        if (params.row.gender === "MALE") {
+          return <div>ທ້າວ</div>;
+        }
+        return <span>ນາງ</span>;
+      },
+    },
     { field: "firstName", headerName: "ຊື່", flex: 1, sortable: false },
     { field: "lastName", headerName: "ນາມສະກຸນ", flex: 1, sortable: false },
     {
@@ -112,7 +161,11 @@ export default function Table() {
       headerName: "ວັນເດືອນປີເກີດ",
       flex: 1,
       sortable: false,
+      align: "center",
       renderCell: (params) => {
+        if (!params.row.birthday) {
+          return <div>null</div>;
+        }
         const date = useFormatDate(params.row.birthday);
         return <span>{date}</span>;
       },
@@ -121,7 +174,7 @@ export default function Table() {
     { field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
     { field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
     { field: "phone", headerName: "ເບີໂທວະສັບ", flex: 1, sortable: false },
-    { field: "role", headerName: "Role", width: 60 },
+    { field: "role", headerName: "Role", flex: 0.6 },
   ];
 
   const rows = [
@@ -142,10 +195,12 @@ export default function Table() {
   React.useEffect(() => {
     fetchData();
     console.log(resData);
-  }, []);
+  }, [value]);
 
   return (
-    <div>
+    <div style={{
+      marginTop: '20px'
+    }}>
       {loading && <h1>loading</h1>}
       {err && <h1>there is an error</h1>}
       {success && (
@@ -175,8 +230,86 @@ export default function Table() {
               {"ຮູບພາບ"}
             </DialogTitle>
             <DialogContent>
-              {/** <TitlebarImageList imgData={imgData} />*/}
+              <TitlebarImageList imgData={imgData} />
             </DialogContent>
+          </Dialog>
+          {/**show update form */}
+          <Dialog
+            fullWidth
+            maxWidth="sm"
+            open={popUpUpdateForm}
+            onClose={() => setPopUpUpdateForm(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle
+              style={{
+                " & .MuiDialogTitle-root": {
+                  fontFamily: `${font.LAO_FONT}`,
+                },
+              }}
+              id="alert-dialog-title"
+            >
+              <span
+                style={{
+                  fontFamily: `${font.LAO_FONT}`,
+                }}
+              >
+                ແກ້ໄຂຂໍ້ມູນພະນັກງານ
+              </span>
+            </DialogTitle>
+            <DialogContent>
+              <EditUser data={updateData} />
+            </DialogContent>
+          </Dialog>
+          {/**show confirm dialog */}
+          <Dialog
+            fullWidth
+            maxWidth="xs"
+            open={popUpConfirm}
+            onClose={() => setPopUpConfirm(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle
+              style={{
+                " & .MuiDialogTitle-root": {
+                  fontFamily: `${font.LAO_FONT}`,
+                },
+              }}
+              id="alert-dialog-title"
+            >
+              <span
+                style={{
+                  fontFamily: `${font.LAO_FONT}`,
+                }}
+              >
+                ຢືນຢັນ
+              </span>
+            </DialogTitle>
+            <DialogContent>
+              <span
+                style={{
+                  fontFamily: `${font.LAO_FONT}`,
+                }}
+              >
+                ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ?{" "}
+              </span>
+            </DialogContent>
+            <DialogActions>
+              <Button sx={{ ...btnStyle }} onClick={ ()=> {
+                setPopUpConfirm(false)
+                deleteUser(deleteId)
+                }}>
+                ຕົກລົງ
+              </Button>
+              <Button
+                sx={{ ...btnStyle }}
+                onClick={() => setPopUpConfirm(false)}
+              >
+                ຍົກເລີກ
+              </Button>
+            </DialogActions>
           </Dialog>
         </div>
       )}

@@ -19,6 +19,8 @@ import Register from "../pages/register/Register";
 import RegisterInfo from "../pages/registerInfo/register.info";
 import AddCheckin from "../pages/AddNewCheckin/AddCheckin";
 
+import PageNotFound from "../pages/pageNotFound";
+
 import Layout from "../layouts/layout";
 
 import { authContext } from "../context/authContext";
@@ -91,6 +93,7 @@ function MyRouter() {
             );
           })}
         </Route>
+        <Route exact path= '*' element={<PageNotFound/>}/>
       </Routes>
     </Router>
   );

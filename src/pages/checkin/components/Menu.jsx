@@ -64,6 +64,7 @@ export default function Menu() {
           <label id="dateOfBirth">ຕັ້ງແຕ່ວັນທີ</label>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
+            
               inputFormat="dd/MM/yyyy"
               value={startDate}
               onChange={(value) => {

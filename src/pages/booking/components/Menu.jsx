@@ -1,5 +1,12 @@
 import { AddIcCallOutlined } from "@mui/icons-material";
 import { Button, Stack, TextField, Select, MenuItem } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+
 import { GridAddIcon } from "@mui/x-data-grid";
 import * as React from "react";
 
@@ -14,13 +21,17 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 //import style
 import { btnStyle, textStyle } from "../../../style";
 
-import { font } from "../../../constants";
+import { font,color } from "../../../constants";
 
+import { counterContext } from "../../../context/counter";
 export default function Menu() {
   const [startDate, setStartDate] = React.useState();
   const [endDate, setEndDate] = React.useState();
 
   const [filter ,setFilter] = React.useState('ALL')
+  const [isOpen, setOpen]= React.useState(false)
+
+  const {value, setValue} = React.useContext(counterContext)
 
   return (
     <Stack direction="column" spacing={3}>
@@ -32,6 +43,7 @@ export default function Menu() {
           disableElevation
           variant="contained"
           sx={{ ...btnStyle, width: "200px" }}
+          onClick={()=>setOpen(true)}
         >
           ຈອງຫ້ອງ
         </Button>
@@ -157,6 +169,9 @@ export default function Menu() {
         
         <Stack justifyContent="flex-end">
           <Button
+          onClick={()=>{
+            setValue( value => value+1)
+          }}
 
             size="small"
             startIcon={<CachedIcon />}
@@ -178,6 +193,95 @@ export default function Menu() {
           
         </Stack>
       </Stack>
+      {/** add new booking dialog */}
+      <Dialog
+          open={isOpen}
+          onClose={() => {
+            setOpen(false)
+            
+          }}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            sx={{
+              fontFamily: "Noto sans lao",
+              fontSize: "18px",
+              backgroundColor: `${color.BLUE_COLOR}`,
+              fontWeight: 500,
+              color: "white",
+            }}
+            id="add-new-type"
+          >
+            {"+ ເພີ່ມຫ້ອງ"}
+          </DialogTitle>
+          <DialogContent>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure
+            debitis
+            <Stack direction="column" spacing={1}>
+              <Stack>
+                <label>ເບີຫ້ອງ</label>
+                <TextField
+                  onChange={(e) => {}}
+                  sx={{ ...textStyle, width: "100%" }}
+                />
+              </Stack>
+              <Stack>
+                <label>ປະເພດຫ້ອງ</label>
+                <Select
+                  sx={{ ...textStyle, height: 40, width: "100%" }}
+                 // value={}
+                  onChange={(e) => {
+                    //setType(e.target.value);
+
+                  }}
+                >
+                  <MenuItem value='1'>
+                        VIP01
+                  </MenuItem>
+                  {/*roomTypeData.map((val) => {
+                    return (
+                      <MenuItem key={val.roomType._id} value={val.roomType._id}>
+                        {val.roomType.typeName}
+                      </MenuItem>
+                    );
+                  })*/}
+                </Select>
+              </Stack>
+              <Stack>
+                <label>ໝາຍເຫດ</label>
+                <TextField
+                  onChange={(e) => {}}
+                  sx={{ ...textStyle, width: "100%" }}
+                />
+              </Stack>
+              
+            </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              sx={{ fontFamily: "Noto sans lao" }}
+              variant="outlined"
+              color="error"
+              size="small"
+              onClick= {()=> setOpen(false)}
+            >
+              ຍົກເລີກ
+            </Button>
+            <Button
+              sx={{ fontFamily: "Noto sans lao" }}
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={() => {
+               
+              }}
+            >
+              ຕົກລົງ
+            </Button>
+          </DialogActions>
+        </Dialog>
+
       
     </Stack>
   );

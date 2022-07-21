@@ -1,7 +1,7 @@
 import * as React from "react";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
-import { IconButton, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { IconButton, Dialog, DialogContent, DialogTitle, Divider } from "@mui/material";
 
 import SearchArea from './SearchArea'
 
@@ -211,7 +211,7 @@ export default function PageSizeCustomOptions() {
     <div>
       <SearchArea/>
       <br/>
-      <hr/>
+      <Divider/>
 
       {error && <h1>there is an error in loading</h1>}
       {isLoading ? (
