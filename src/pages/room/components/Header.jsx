@@ -1,7 +1,7 @@
 import * as react from "react";
 import { useNavigate } from "react-router-dom";
 //route
-import { router, color } from "../../../constants";
+import { router, color,font } from "../../../constants";
 
 //import material ui component
 import Button from "@mui/material/Button";
@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import CachedIcon from "@mui/icons-material/Cached";
 
 //style
 import { btnStyle } from "../../../style";
@@ -24,9 +25,13 @@ import { authContext } from "../../../context/authContext";
 import { counterContext } from "../../../context/counter";
 import { SERVER_URL } from "../../../constants";
 
+import { roomContext } from "../../../context/room.context";
+
 import axios from "axios";
 
 export default function Header() {
+  const {room ,setRoom} =react.useContext(roomContext)
+
   const [isOpen, setOpen] = react.useState(false);
   const handlePopUp = () => setOpen(!isOpen);
   const navigate = useNavigate();
@@ -123,6 +128,29 @@ export default function Header() {
           startIcon={<AddIcon />}
         >
           ເພີ່ມຫ້ອງ
+        </Button>
+
+        <Button
+        onClick={()=> {
+          setRoom({})
+          
+          setValue(value => value+1)
+        }}
+          disableElevation
+          variant="outlined"
+          color='secondary'
+          startIcon={<CachedIcon/>}
+          sx={{
+            ...btnStyle,
+            "&.MuiButton-root": {
+              fontFamily: `${font.EN_FONT}`,
+              width: "100px",
+              height: 30,
+              fontSize: '12px'
+            },
+          }}
+        >
+          reload
         </Button>
         {/** show pop up to add new room */}
         <Dialog

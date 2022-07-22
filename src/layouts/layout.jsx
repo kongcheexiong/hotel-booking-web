@@ -62,7 +62,7 @@ function Layout() {
     var beepsound = new Audio(
       "https://www.soundjay.com/button/sounds/beep-01a.mp3"
     );
-    beepsound.play();
+    //beepsound.play();
   };
 
   const { notification, setNotification } =

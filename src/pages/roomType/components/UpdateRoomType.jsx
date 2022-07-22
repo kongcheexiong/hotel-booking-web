@@ -40,7 +40,7 @@ export default function UpdateRoomType(props) {
       price: updatedData.price,
       numberOfBed: updatedData.numberOfBed,
       suggestedGuestAllowed: updatedData.suggestedGuestAllowed,
-      note: updatedData.ote,
+      note: updatedData.note,
       images: [],
     },
   };

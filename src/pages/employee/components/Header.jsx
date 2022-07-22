@@ -13,7 +13,7 @@ import CachedIcon from '@mui/icons-material/Cached';
 import { btnStyle } from "../../../style";
 
 //router
-import { router } from "../../../constants";
+import { router,font } from "../../../constants";
 
 import { SERVER_URL } from "../../../constants";
 import { counterContext } from "../../../context/counter";
@@ -43,11 +43,17 @@ export default function Header() {
           setValue( value => value+1)
 
         }}
-        color="success"
+        
+        color="secondary"
         disableElevation
-        sx={{ ...btnStyle }}
+        sx={{ ...btnStyle,"&.MuiButton-root": {
+          fontFamily: `${font.EN_FONT}`,
+          width: "100px",
+          height: 30,
+          fontSize: '12px'
+        }, }}
         size="small"
-        variant="contained"
+        variant="outlined"
         startIcon={<CachedIcon />}
       >
        Reload

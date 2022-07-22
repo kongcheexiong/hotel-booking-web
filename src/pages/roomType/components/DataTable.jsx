@@ -80,33 +80,30 @@ export default function PageSizeCustomOptions() {
   const [popUpConfirm, setPopUpConfirm] = React.useState(false);
 
   const fetchData = async () => {
+    setRoomType([])
     setloading(true);
-    setError(false)
-    
+    setError(false);
 
     await axios
       .get(`${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`, {
         timeout: 5000,
       })
-      .then((res) => {
-        setResData(res.data.roomTypes);
-        setRoomType({
-          ...roomType,
-          roomTypeData: res.data.roomTypes,
-          isLoading: false,
-          hasErr: false,
-          isSuccess: true,
-        });
-        console.log(roomType.roomTypeData)
+      .then( async (res) => {
+        //setResData(res.data.roomTypes);
+        console.log(res.data.roomTypes)
+        
+        //console.log(roomType);
 
-        setloading(false);
         setError(false);
+        
+        await setRoomType(res.data.roomTypes);
+        await setloading(false);
         
       })
       .catch((err) => {
         console.error(err);
-        //setError(true);
-        setloading(false)
+        setError(true);
+        setloading(false);
       });
     // console.log(resData);
   };
@@ -136,12 +133,9 @@ export default function PageSizeCustomOptions() {
       .catch(function (error) {
         console.log(error);
         setDeleteErr(true);
-        if(error.response){
+        if (error.response) {
           alert(error.response.data.message);
-
         }
-
-        
       })
       .finally(() => {
         setDeleteLoading(false);
@@ -154,7 +148,6 @@ export default function PageSizeCustomOptions() {
 
     fetchData();
 
-    console.log(`resdata: ${resData}`);
   }, [value]);
   /// pop up form to view images
 
@@ -174,9 +167,8 @@ export default function PageSizeCustomOptions() {
                 //setConfirmDeleted(true);
                 //setDeletedId(parram.row._id)
                 //alert('dfasd')
-                setDeleteId(parram.row.roomType._id)
-                setPopUpConfirm(true)
-                
+                setDeleteId(parram.row.roomType._id);
+                setPopUpConfirm(true);
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -186,7 +178,6 @@ export default function PageSizeCustomOptions() {
               onClick={async () => {
                 await console.log(parram.row.roomType);
                 await setUpdatedData(parram.row.roomType);
-
                 await console.log(updatedData);
                 handleUpdateForm();
 
@@ -199,27 +190,21 @@ export default function PageSizeCustomOptions() {
         );
       },
     },
-    { field: "_id", headerName: "ລະຫັດ", width: 80,
-    renderCell: (parram) => {
-      return (
-        <div>
-          {parram.row.roomType._id}
-        </div>
-      );
+    {
+      field: "_id",
+      headerName: "ລະຫັດ",
+      width: 80,
+      renderCell: (parram) => {
+        return <div>{parram.row.roomType._id}</div>;
+      },
     },
-  
-  },
     {
       field: "typeName",
       headerName: "ຊື່ປະເພດຫ້ອງ",
       flex: 1,
       sortable: false,
       renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.roomType.typeName}
-          </div>
-        );
+        return <div>{parram.row.roomType.typeName}</div>;
       },
     },
     {
@@ -243,27 +228,21 @@ export default function PageSizeCustomOptions() {
         );
       },
     },
-    { field: "price", headerName: "ລາຄາ", flex: 1,
-    renderCell: (parram) => {
-      return (
-        <div>
-          {parram.row.roomType.price}
-        </div>
-      );
+    {
+      field: "price",
+      headerName: "ລາຄາ",
+      flex: 1,
+      renderCell: (parram) => {
+        return <div>{parram.row.roomType.price}</div>;
+      },
     },
-  
-  },
     {
       field: "numberOfBed",
       headerName: "ຈໍານວນຕຽງ",
       type: "number",
       flex: 1,
       renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.roomType.numberOfBed}
-          </div>
-        );
+        return <div>{parram.row.roomType.numberOfBed}</div>;
       },
     },
     {
@@ -272,11 +251,7 @@ export default function PageSizeCustomOptions() {
       type: "number",
       flex: 1,
       renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.roomType.suggestedGuestAllowed}
-          </div>
-        );
+        return <div>{parram.row.roomType.suggestedGuestAllowed}</div>;
       },
     },
     {
@@ -285,11 +260,7 @@ export default function PageSizeCustomOptions() {
       type: "number",
       flex: 1,
       renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.totalRoom}
-          </div>
-        );
+        return <div>{parram.row.totalRoom}</div>;
       },
     },
     {
@@ -309,123 +280,113 @@ export default function PageSizeCustomOptions() {
       flex: 1.5,
       sortable: false,
       renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.roomType.note}
-          </div>
-        );
+        return <div>{parram.row.roomType.note}</div>;
       },
     },
   ];
 
   return (
     <div>
-      <SearchArea />
-      <br />
-      <Divider/>
-      {error ? <h1>there
-         is an error in loading</h1>: null}
-      {isLoading ? (
-        //<Skeleton variant="rectangular" width="100%" height={660} />
-        <h1>Loading...</h1>
-      ) : (
-        <div style={{ height: 660, width: "100%" }}>
-          {/**table area */}
+      {error ? <h1>there is an error in loading</h1> : null}
+      <div style={{ height: 660, width: "100%" }}>
+        {/**table area */}
+        <Stack direction="row" justifyContent="flex-end">
+          <SearchArea />
+        </Stack>
 
-          <DataGrid
-            sx={{ ...datagridSx, marginTop: "10px" }}
-            getRowId={(row) => row.roomType._id}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
-            pagination
-            rows={roomType.roomTypeData}
-            columns={columns}
-            disableSelectionOnClick
-            loading={isLoading}
-            
-          />
-          {/**show image album */}
-          <Dialog
-            open={popUpImg}
-            onClose={handlePopUpImg}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+        <DataGrid
+          sx={{ ...datagridSx, marginTop: "10px" }}
+          getRowId={(row) => row.roomType._id}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[5, 10, 20]}
+          pagination
+          rows={roomType}
+          columns={columns}
+          disableSelectionOnClick
+          loading={isLoading}
+      
+        />
+        {/**show image album */}
+        <Dialog
+          open={popUpImg}
+          onClose={handlePopUpImg}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            sx={{ fontFamily: "Noto sans lao", fontSize: "18px" }}
+            id="add-new-type"
           >
-            <DialogTitle
-              sx={{ fontFamily: "Noto sans lao", fontSize: "18px" }}
-              id="add-new-type"
-            >
-              {"ຮູບພາບ"}
-            </DialogTitle>
-            <DialogContent>
-              <TitlebarImageList imgData={imgData} />
-            </DialogContent>
-          </Dialog>
-          {/**show update form */}
-          <Dialog
-            open={popUpUpdateForm}
-            onClose={handleUpdateForm}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+            {"ຮູບພາບ"}
+          </DialogTitle>
+          <DialogContent>
+            <TitlebarImageList imgData={imgData} />
+          </DialogContent>
+        </Dialog>
+        {/**show update form */}
+        <Dialog
+          open={popUpUpdateForm}
+          onClose={handleUpdateForm}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <UpdateRoomType updatedData={updatedData} />
+          </DialogContent>
+        </Dialog>
+        {/**show confirm dialog */}
+        <Dialog
+          fullWidth
+          maxWidth="xs"
+          open={popUpConfirm}
+          onClose={() => setPopUpConfirm(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            style={{
+              " & .MuiDialogTitle-root": {
+                fontFamily: `${font.LAO_FONT}`,
+              },
+            }}
+            id="alert-dialog-title"
           >
-            <DialogContent>
-              <UpdateRoomType updatedData={updatedData} />
-            </DialogContent>
-          </Dialog>
-          {/**show confirm dialog */}
-          <Dialog
-            fullWidth
-            maxWidth="xs"
-            open={popUpConfirm}
-            onClose={() => setPopUpConfirm(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle
+            <span
               style={{
-                " & .MuiDialogTitle-root": {
-                  fontFamily: `${font.LAO_FONT}`,
-                },
+                fontFamily: `${font.LAO_FONT}`,
               }}
-              id="alert-dialog-title"
             >
-              <span
-                style={{
-                  fontFamily: `${font.LAO_FONT}`,
-                }}
-              >
-                ຢືນຢັນ
-              </span>
-            </DialogTitle>
-            <DialogContent>
-              <span
-                style={{
-                  fontFamily: `${font.LAO_FONT}`,
-                }}
-              >
-                ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ?{" "}
-              </span>
-            </DialogContent>
-            <DialogActions>
-              <Button sx={{ ...btnStyle }} onClick={ ()=> {
-                setPopUpConfirm(false)
+              ຢືນຢັນ
+            </span>
+          </DialogTitle>
+          <DialogContent>
+            <span
+              style={{
+                fontFamily: `${font.LAO_FONT}`,
+              }}
+            >
+              ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ?{" "}
+            </span>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              sx={{ ...btnStyle }}
+              onClick={() => {
+                setPopUpConfirm(false);
                 deleteRoomType(deleteId);
 
                 setValue(() => value + 1);
-                }}>
-                ຕົກລົງ
-              </Button>
-              <Button
-                sx={{ ...btnStyle }}
-                onClick={() => setPopUpConfirm(false)}
-              >
-                ຍົກເລີກ
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      )}
+              }}
+            >
+              ຕົກລົງ
+            </Button>
+            <Button sx={{ ...btnStyle }} onClick={() => setPopUpConfirm(false)}>
+              ຍົກເລີກ
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 }

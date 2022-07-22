@@ -49,6 +49,7 @@ export default function Table() {
   const [popUpConfirm, setPopUpConfirm] = React.useState(false);
 
   const fetchData = async () => {
+    setResData([])
     setloading(true);
     setSuccess(false);
     setErr(false);
@@ -60,6 +61,7 @@ export default function Table() {
         console.log(res.data.users);
         setTotal(res.data.total);
         setResData(res.data.users);
+      
         setSuccess(true);
         setloading(false);
       })
@@ -201,10 +203,9 @@ export default function Table() {
     <div style={{
       marginTop: '20px'
     }}>
-      {loading && <h1>loading</h1>}
+      
       {err && <h1>there is an error</h1>}
-      {success && (
-        <div style={{ height: 660, width: "100%" }}>
+      <div style={{ height: 660, width: "100%" }}>
           <DataGrid
             sx={{ ...datagridSx, marginTop: "10px" }}
             pageSize={pageSize}
@@ -215,6 +216,7 @@ export default function Table() {
             columns={columns}
             disableSelectionOnClick
             getRowId={(row) => row._id}
+            loading={loading}
           />
           {/**show image album */}
           <Dialog
@@ -312,7 +314,7 @@ export default function Table() {
             </DialogActions>
           </Dialog>
         </div>
-      )}
+      
     </div>
   );
 }
