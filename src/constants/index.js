@@ -21,7 +21,7 @@ export const router = {
     HOTEL_BOOKING: '/hotel_booking',
     DASHBOARD: '/dashboard',
     BOOKING:'/booking',
-    CHECKIN: 'checkin',
+    CHECKIN: '/checkin',
     REPORT:'/report',
     SETTING: '/setting',
     EMPLOYEEMANAGEMENT: '/employee',

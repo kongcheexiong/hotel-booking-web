@@ -24,13 +24,7 @@ export default function Table() {
           <div>
             <IconButton
               onClick={() => {
-                console.log(parram.row.roomType._id);
-                //setConfirmDeleted(true);
-                //setDeletedId(parram.row._id)
-                //alert('dfasd')
-                deleteRoomType(parram.row.roomType._id);
-
-                setValue(() => value + 1);
+                
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -53,122 +47,79 @@ export default function Table() {
         );
       },
     },
-    { field: "_id", headerName: "ລະຫັດ", width: 80,
-    renderCell: (parram) => {
-      return (
-        <div>
-          {parram.row.roomType._id}
-        </div>
-      );
-    },
+    { field: "billId", headerName: "ລະຫັດ", width: 80,
   
   },
     {
-      field: "typeName",
-      headerName: "ຊື່ປະເພດຫ້ອງ",
+      field: "gender",
+      headerName: "ເພດ",
       flex: 1,
-      sortable: false,
-      renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.roomType.typeName}
-          </div>
-        );
-      },
     },
     {
-      field: "images",
-      headerName: "ຮູບ",
+      field: "firstName",
+      headerName: "ຊື່",
       flex: 1,
       sortable: false,
-      renderCell: (parram) => {
-        return (
-          <div
-            className="previewImg"
-            onClick={() => {
-              handlePopUpImg();
-              //setImgSrc(parram.row.images);
-              setImgData(parram.row.roomType);
-              // console.log(parram.row)
-            }}
-          >
-            {parram.row.roomType.images}
-          </div>
-        );
-      },
+      
     },
-    { field: "price", headerName: "ລາຄາ", flex: 1,
-    renderCell: (parram) => {
-      return (
-        <div>
-          {parram.row.roomType.price}
-        </div>
-      );
-    },
+    { field: "lastName", headerName: "ນາມສະກຸນ", flex: 1,
+
   
   },
     {
-      field: "numberOfBed",
-      headerName: "ຈໍານວນຕຽງ",
+      field: "phone",
+      headerName: "ເບີໂທລະສັບ",
       type: "number",
-      flex: 1,
-      renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.roomType.numberOfBed}
-          </div>
-        );
-      },
+
     },
     {
-      field: "suggestedGuestAllowed",
-      headerName: "ຈໍານວນລູກຄ້າແນະນໍາ",
-      type: "number",
+      field: "reference",
+      headerName: "ເອກະສານອ້າງອີງ",
       flex: 1,
-      renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.roomType.suggestedGuestAllowed}
-          </div>
-        );
-      },
+      //renderCell: (parram) => {
+      //  return (
+      //    <div>
+      //      {parram.row.roomType.suggestedGuestAllowed}
+      //    </div>
+      //  );
+      //},
     },
     {
-      field: "totalRoom",
-      headerName: "ຫ້ອງທັງໝົດ",
-      type: "number",
+      field: "verify",
+      headerName: "ເລກທີ",
+
       flex: 1,
-      renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.totalRoom}
-          </div>
-        );
-      },
     },
     {
-      field: "updatedAt",
-      headerName: "ວັນທີ່ສ້າງລາຍການ",
-      type: "date",
+      field: "checkInDate",
+      headerName: "ໄລຍະເວລາ",
+      flex: 1,
+      renderCell: (params)=>{
+        return <span>{`${params.row.checkInDate} - ${params.row.checkOutDate}`}</span>
+      }
+    },
+    {
+      field: "checkedInBy",
+      headerName: "ແຈ້ງເຂົ້າໂດຍ",
+      flex: 1,
+    },
+
+    {
+      field: "isCheckOut",
+      headerName: "ສະຖານະ",
+      type: "boolean",
+      //renderCell: (params) => {
+      //  const date = useFormatDate(params.row.roomType.updatedAt);
+      //  return <span>{date}</span>;
+      //},
+    },
+    {
+      field: "isPaid",
+      headerName: "ຈ່າບແລ້ວ",
+      type: "boolean",
       flex: 1.5,
-      renderCell: (params) => {
-        const date = useFormatDate(params.row.roomType.updatedAt);
-        return <span>{date}</span>;
-      },
-    },
-    {
-      field: "note",
-      headerName: "ໝາຍເຫດ",
-      type: "number",
-      flex: 1.5,
-      sortable: false,
-      renderCell: (parram) => {
-        return (
-          <div>
-            {parram.row.roomType.note}
-          </div>
-        );
-      },
+     
+      
     },
   ];
 

@@ -269,6 +269,7 @@ function Layout() {
       </div>
       {/*** this is header layout */}
       <div style={{ marginLeft: "280px" }}>
+        
         <Stack
           direction="row-reverse"
           alignItems="center"
@@ -279,6 +280,7 @@ function Layout() {
             paddingRight: "30px",
           }}
         >
+          
           <Stack direction="row-reverse" spacing={0} alignItems="center">
             {/**profile */}
             <IconButton
@@ -309,6 +311,7 @@ function Layout() {
               <NotificationsIcon fontSize="medium" />
             </Badge>
           </IconButton>
+          
         </Stack>
         <div style={{ margin: "30px 30px", padding: "", backgroundColor: "" }}>
           <Outlet />

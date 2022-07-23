@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Typography,
 } from "@mui/material";
 import { counterContext } from "../../../context/counter";
 
@@ -49,7 +50,7 @@ export default function Table() {
   const [popUpConfirm, setPopUpConfirm] = React.useState(false);
 
   const fetchData = async () => {
-    setResData([])
+    setResData([]);
     setloading(true);
     setSuccess(false);
     setErr(false);
@@ -61,7 +62,7 @@ export default function Table() {
         console.log(res.data.users);
         setTotal(res.data.total);
         setResData(res.data.users);
-      
+
         setSuccess(true);
         setloading(false);
       })
@@ -156,8 +157,10 @@ export default function Table() {
         return <span>ນາງ</span>;
       },
     },
-    { field: "firstName", headerName: "ຊື່", flex: 1, sortable: false },
-    { field: "lastName", headerName: "ນາມສະກຸນ", flex: 1, sortable: false },
+    { field: "firstName", headerName: "ຊື່ ແລະ ນາມສະກຸນ", flex: 1, sortable: false, renderCell: (params)=>{
+      return <span>{params.row.firstName} {params.row.lastName}</span>
+    } },
+    //{ field: "lastName", headerName: "ນາມສະກຸນ", flex: 1, sortable: false },
     {
       field: "birthday",
       headerName: "ວັນເດືອນປີເກີດ",
@@ -172,9 +175,22 @@ export default function Table() {
         return <span>{date}</span>;
       },
     },
-    { field: "village", headerName: "ບ້ານ", flex: 1, sortable: false },
-    { field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
-    { field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
+    {
+      field: "village",
+      headerName: "ທີ່ຢູ່",
+      flex: 1,
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <span>{params.row.village},{params.row.city},{params.row.province}</span>
+          
+
+        )
+      },
+    },
+    //{ field: "village", headerName: "ບ້ານ", flex: 1, sortable: false },
+   //{ field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
+   //{ field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
     { field: "phone", headerName: "ເບີໂທວະສັບ", flex: 1, sortable: false },
     { field: "role", headerName: "Role", flex: 0.6 },
   ];
@@ -200,121 +216,121 @@ export default function Table() {
   }, [value]);
 
   return (
-    <div style={{
-      marginTop: '20px'
-    }}>
-      
+    <div
+      style={{
+        marginTop: "20px",
+      }}
+    >
       {err && <h1>there is an error</h1>}
       <div style={{ height: 660, width: "100%" }}>
-          <DataGrid
-            sx={{ ...datagridSx, marginTop: "10px" }}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
-            pagination
-            rows={resData}
-            columns={columns}
-            disableSelectionOnClick
-            getRowId={(row) => row._id}
-            loading={loading}
-          />
-          {/**show image album */}
-          <Dialog
-            open={popUpImg}
-            onClose={handlePopUpImg}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+        <DataGrid
+          sx={{ ...datagridSx, marginTop: "10px" }}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[5, 10, 20]}
+          pagination
+          rows={resData}
+          columns={columns}
+          disableSelectionOnClick
+          getRowId={(row) => row._id}
+          loading={loading}
+        />
+        {/**show image album */}
+        <Dialog
+          open={popUpImg}
+          onClose={handlePopUpImg}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            sx={{ fontFamily: "Noto sans lao", fontSize: "18px" }}
+            id="add-new-type"
           >
-            <DialogTitle
-              sx={{ fontFamily: "Noto sans lao", fontSize: "18px" }}
-              id="add-new-type"
-            >
-              {"ຮູບພາບ"}
-            </DialogTitle>
-            <DialogContent>
-              <TitlebarImageList imgData={imgData} />
-            </DialogContent>
-          </Dialog>
-          {/**show update form */}
-          <Dialog
-            fullWidth
-            maxWidth="sm"
-            open={popUpUpdateForm}
-            onClose={() => setPopUpUpdateForm(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+            {"ຮູບພາບ"}
+          </DialogTitle>
+          <DialogContent>
+            <TitlebarImageList imgData={imgData} />
+          </DialogContent>
+        </Dialog>
+        {/**show update form */}
+        <Dialog
+          fullWidth
+          maxWidth="sm"
+          open={popUpUpdateForm}
+          onClose={() => setPopUpUpdateForm(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            style={{
+              " & .MuiDialogTitle-root": {
+                fontFamily: `${font.LAO_FONT}`,
+              },
+            }}
+            id="alert-dialog-title"
           >
-            <DialogTitle
+            <span
               style={{
-                " & .MuiDialogTitle-root": {
-                  fontFamily: `${font.LAO_FONT}`,
-                },
+                fontFamily: `${font.LAO_FONT}`,
               }}
-              id="alert-dialog-title"
             >
-              <span
-                style={{
-                  fontFamily: `${font.LAO_FONT}`,
-                }}
-              >
-                ແກ້ໄຂຂໍ້ມູນພະນັກງານ
-              </span>
-            </DialogTitle>
-            <DialogContent>
-              <EditUser data={updateData} />
-            </DialogContent>
-          </Dialog>
-          {/**show confirm dialog */}
-          <Dialog
-            fullWidth
-            maxWidth="xs"
-            open={popUpConfirm}
-            onClose={() => setPopUpConfirm(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+              ແກ້ໄຂຂໍ້ມູນພະນັກງານ
+            </span>
+          </DialogTitle>
+          <DialogContent>
+            <EditUser data={updateData} />
+          </DialogContent>
+        </Dialog>
+        {/**show confirm dialog */}
+        <Dialog
+          fullWidth
+          maxWidth="xs"
+          open={popUpConfirm}
+          onClose={() => setPopUpConfirm(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            style={{
+              " & .MuiDialogTitle-root": {
+                fontFamily: `${font.LAO_FONT}`,
+              },
+            }}
+            id="alert-dialog-title"
           >
-            <DialogTitle
+            <span
               style={{
-                " & .MuiDialogTitle-root": {
-                  fontFamily: `${font.LAO_FONT}`,
-                },
+                fontFamily: `${font.LAO_FONT}`,
               }}
-              id="alert-dialog-title"
             >
-              <span
-                style={{
-                  fontFamily: `${font.LAO_FONT}`,
-                }}
-              >
-                ຢືນຢັນ
-              </span>
-            </DialogTitle>
-            <DialogContent>
-              <span
-                style={{
-                  fontFamily: `${font.LAO_FONT}`,
-                }}
-              >
-                ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ?{" "}
-              </span>
-            </DialogContent>
-            <DialogActions>
-              <Button sx={{ ...btnStyle }} onClick={ ()=> {
-                setPopUpConfirm(false)
-                deleteUser(deleteId)
-                }}>
-                ຕົກລົງ
-              </Button>
-              <Button
-                sx={{ ...btnStyle }}
-                onClick={() => setPopUpConfirm(false)}
-              >
-                ຍົກເລີກ
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      
+              ຢືນຢັນ
+            </span>
+          </DialogTitle>
+          <DialogContent>
+            <span
+              style={{
+                fontFamily: `${font.LAO_FONT}`,
+              }}
+            >
+              ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ?{" "}
+            </span>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              sx={{ ...btnStyle }}
+              onClick={() => {
+                setPopUpConfirm(false);
+                deleteUser(deleteId);
+              }}
+            >
+              ຕົກລົງ
+            </Button>
+            <Button sx={{ ...btnStyle }} onClick={() => setPopUpConfirm(false)}>
+              ຍົກເລີກ
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 }

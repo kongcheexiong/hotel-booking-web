@@ -151,6 +151,7 @@ export default function PageSizeCustomOptions() {
   ]);
 
   const fetchData = async () => {
+    setRoom([])
     setloading(true);
 
     var config = {
