@@ -12,25 +12,28 @@ import { RegisterProvider } from "./context/register.context";
 import { CreateCheckInProvider } from "./context/createCheckIn.context";
 
 import { NotificationProvider } from "./context/notification";
+import { BookingProvider } from "./context/booking.context";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <CreateCheckInProvider>
-    <NotificationProvider>
-      <RegisterProvider>
-        <DataProvider>
-          <RoomProvider>
-            <RoomTypeProvider>
-              <CounterProvider>
-                <App />
-              </CounterProvider>
-            </RoomTypeProvider>
-          </RoomProvider>
-        </DataProvider>
-      </RegisterProvider>
-    </NotificationProvider>
+      <BookingProvider>
+        <NotificationProvider>
+          <RegisterProvider>
+            <DataProvider>
+              <RoomProvider>
+                <RoomTypeProvider>
+                  <CounterProvider>
+                    <App />
+                  </CounterProvider>
+                </RoomTypeProvider>
+              </RoomProvider>
+            </DataProvider>
+          </RegisterProvider>
+        </NotificationProvider>
+      </BookingProvider>
     </CreateCheckInProvider>
   </React.StrictMode>
 );

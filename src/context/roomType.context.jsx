@@ -1,16 +1,5 @@
 import * as react from 'react'
 
-const initialState =  {
-    id: "",
-    data: {
-      typeName: "",
-      price: '',
-      numberOfBed: '',
-      suggestedGuestAllowed: '',
-      note: '',
-      images: []
-    }
-  }
 
 
 export const roomTypeContext = react.createContext();

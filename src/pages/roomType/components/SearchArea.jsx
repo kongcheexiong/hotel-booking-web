@@ -21,7 +21,7 @@ export default function SearchArea() {
   const hotel = localStorage.getItem("hotel");
 
   const fetchData = async () => {
-    
+    setRoomType([])
     await axios
       .get(`${SERVER_URL}/api/room-type?roomType=${search}&hotelId=${hotel}`, {
         timeout: 5000,

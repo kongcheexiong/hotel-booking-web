@@ -145,8 +145,10 @@ export default function PageSizeCustomOptions() {
 
   React.useEffect(() => {
     //setloading(true);
+ 
+      fetchData();
 
-    fetchData();
+  
 
   }, [value]);
   /// pop up form to view images
@@ -157,7 +159,7 @@ export default function PageSizeCustomOptions() {
       field: "action",
       headerName: "ຕົວເລືອກ",
       width: 100,
-      sortable: false,
+      //sortable: false,
       renderCell: (parram) => {
         return (
           <div>
@@ -189,6 +191,7 @@ export default function PageSizeCustomOptions() {
           </div>
         );
       },
+      valueGetter: (params) => params.row.roomType._id
     },
     {
       field: "_id",
@@ -197,21 +200,24 @@ export default function PageSizeCustomOptions() {
       renderCell: (parram) => {
         return <div>{parram.row.roomType._id}</div>;
       },
+      valueGetter: (params) => params.row.roomType._id
     },
     {
       field: "typeName",
       headerName: "ຊື່ປະເພດຫ້ອງ",
       flex: 1,
-      sortable: false,
+     
       renderCell: (parram) => {
         return <div>{parram.row.roomType.typeName}</div>;
       },
+      valueGetter: (params) => params.row.roomType.typeName
+      
     },
     {
       field: "images",
       headerName: "ຮູບ",
       flex: 1,
-      sortable: false,
+      //sortable: false,
       renderCell: (parram) => {
         return (
           <div
@@ -227,14 +233,19 @@ export default function PageSizeCustomOptions() {
           </div>
         );
       },
+      valueGetter: (params) => params.row.roomType.images
     },
     {
       field: "price",
       headerName: "ລາຄາ",
       flex: 1,
+      type: 'number',
       renderCell: (parram) => {
         return <div>{parram.row.roomType.price}</div>;
       },
+      valueGetter: (params) => params.row.roomType.price
+
+
     },
     {
       field: "numberOfBed",
@@ -244,6 +255,8 @@ export default function PageSizeCustomOptions() {
       renderCell: (parram) => {
         return <div>{parram.row.roomType.numberOfBed}</div>;
       },
+      valueGetter: (params) => params.row.roomType.numberOfBed
+
     },
     {
       field: "suggestedGuestAllowed",
@@ -253,6 +266,7 @@ export default function PageSizeCustomOptions() {
       renderCell: (parram) => {
         return <div>{parram.row.roomType.suggestedGuestAllowed}</div>;
       },
+      valueGetter: (params) => params.row.roomType.suggestedGuestAllowed
     },
     {
       field: "totalRoom",
@@ -262,6 +276,8 @@ export default function PageSizeCustomOptions() {
       renderCell: (parram) => {
         return <div>{parram.row.totalRoom}</div>;
       },
+      valueGetter: (params) => params.row.totalRoom
+      
     },
     {
       field: "updatedAt",
@@ -272,16 +288,18 @@ export default function PageSizeCustomOptions() {
         const date = useFormatDate(params.row.roomType.updatedAt);
         return <span>{date}</span>;
       },
+      valueGetter: (params) => params.row.roomType.updatedAt
     },
     {
       field: "note",
       headerName: "ລາຍລະອຽດ",
-      type: "number",
+      type: "string",
       flex: 1.5,
-      sortable: false,
+      //sortable: false,
       renderCell: (parram) => {
         return <div>{parram.row.roomType.note}</div>;
       },
+      valueGetter: (params) => params.row.note
     },
   ];
 

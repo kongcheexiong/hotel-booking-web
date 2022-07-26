@@ -24,6 +24,7 @@ import { btnStyle, textStyle } from "../../../style";
 import { font,color } from "../../../constants";
 
 import { counterContext } from "../../../context/counter";
+
 export default function Menu() {
   const [startDate, setStartDate] = React.useState();
   const [endDate, setEndDate] = React.useState();
@@ -41,158 +42,24 @@ export default function Menu() {
           size="small"
           startIcon={<GridAddIcon />}
           disableElevation
-          variant="contained"
-          sx={{ ...btnStyle, width: "200px" }}
-          onClick={()=>setOpen(true)}
+          color='secondary'
+          variant="outlined"
+          
+          onClick={()=>{
+            setValue(value => value+1)
+          }}
+          sx={{...btnStyle,
+            "&.MuiButton-root": {
+              fontFamily: `${font.EN_FONT}`,
+              width: '100px'
+
+          }
+          }}
         >
-          ຈອງຫ້ອງ
+          reload
         </Button>
       </Stack>
-      <hr />
-      <Stack direction="row" spacing={3} >
-        {/**start date */}
-        <Stack>
-          <label id="dateOfBirth">ຕັ້ງແຕ່ວັນທີ</label>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              inputFormat="dd/MM/yyyy"
-              value={startDate}
-              onChange={(value) => {
-                const _date = new Date(value);
-                console.log(_date.toLocaleDateString("en-GB"));
-                const saveDate = _date.toLocaleDateString("en-GB");
-                setStartDate(value);
-                //setData({
-                //  ...data,
-                //  birthday: saveDate,
-                //});
-              }}
-              renderInput={(params) => (
-                <TextField
-                  onChange={
-                    (e) => {}
-                    ///setData({
-                    ///  ...data,
-                    ///  birthday: e.target.value,
-                    ///})
-                  }
-                  sx={{ ...textStyle, width: "250px", backgroundColor: 'white' }}
-                  {...params}
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </Stack>
-        {/**End date */}
-        <Stack>
-          <label id="dateOfBirth">ຫາວັນທີ</label>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              inputFormat="dd/MM/yyyy"
-              value={endDate}
-              onChange={(value) => {
-                const _date = new Date(value);
-                console.log(_date.toLocaleDateString("en-GB"));
-                const saveDate = _date.toLocaleDateString("en-GB");
-                setEndDate(value);
-                //setData({
-                //  ...data,
-                //  birthday: saveDate,
-                //});
-              }}
-              renderInput={(params) => (
-                <TextField
-                  onChange={
-                    (e) => {}
-                    ///setData({
-                    ///  ...data,
-                    ///  birthday: e.target.value,
-                    ///})
-                  }
-                  sx={{ ...textStyle, backgroundColor: 'white', width: "250px" }}
-                  {...params}
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </Stack>
-        {/**status filter
-         * <Stack >
-            <label id=""gender>ສະຖານະ</label>
-            <Select
-
-              sx={{ ...textStyle, fontFamily: `${font.LAO_FONT}`, height: 35, width: "200px" }}
-              value={filter}
-            
-
-              onChange={(e) => {
-                //setData({ ...data, gender: e.target.value });
-                setFilter(e.target.value)
-                //setDisplayFilter(e.target.name)
-              }}
-            >
-              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}} value="ALL">ສະແດງທັງໝົດ</MenuItem>
-              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}}  value="PENDING">ລໍຖ້າແຈ້ງເຂົ້າ</MenuItem>
-              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}}  value="CHECKEDOUT"></MenuItem>
-            </Select>
-          </Stack>
-         */}
-        
-        
-        
-       
-      </Stack>
-      <Stack direction='row' spacing={2} justifyContent='center'>
-        {/**search*/ }
-        <Stack justifyContent="flex-end" spacing={2}>
-          <Button
-            size="small"
-            startIcon={<SearchIcon />}
-            disableElevation
-            variant="contained"
-            
-            sx={{
-              ...btnStyle,
-              width: "110px",
-              "&.MuiButton-root": {
-                
-                fontFamily: `${font.EN_FONT}`,
-                height: 35,
-              },
-            }}
-          >
-            Search
-          </Button>
-          
-        </Stack>
-        {/**reload */}
-        
-        <Stack justifyContent="flex-end">
-          <Button
-          onClick={()=>{
-            setValue( value => value+1)
-          }}
-
-            size="small"
-            startIcon={<CachedIcon />}
-            disableElevation
-            variant="contained"
-            color="success"
-            sx={{
-              ...btnStyle,
-              width: "110px",
-              "&.MuiButton-root": {
-                width: "100px",
-                fontFamily: `${font.EN_FONT}`,
-                height: 35,
-              },
-            }}
-          >
-            Reload
-          </Button>
-          
-        </Stack>
-      </Stack>
+      
       {/** add new booking dialog */}
       <Dialog
           open={isOpen}

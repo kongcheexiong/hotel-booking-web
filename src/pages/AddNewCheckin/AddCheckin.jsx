@@ -35,7 +35,7 @@ export default function AddCheckin() {
         alignItems="center"
       >
         <h3>ແຈ້ງເຂົ້າ</h3>
-        <IconButton onClick={() => navigate(`/${router.CHECKIN}`)}>
+        <IconButton onClick={() => navigate(`${router.CHECKIN}`)}>
           <CancelIcon fontSize="large" color="" />
         </IconButton>
       </Stack>

@@ -1,4 +1,11 @@
-import { Stack, TextField, Button, IconButton, Tooltip, Divider } from "@mui/material";
+import {
+  Stack,
+  TextField,
+  Button,
+  IconButton,
+  Tooltip,
+  Divider,
+} from "@mui/material";
 import { Select, MenuItem } from "@mui/material";
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -23,30 +30,33 @@ import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 
 import { counterContext } from "../../../context/counter";
+import { BookingContext } from "../../../context/booking.context";
+
 import { tr } from "date-fns/locale";
 
 export default function Table() {
+  const [startDate, setStartDate] = React.useState("");
+  const [endDate, setEndDate] = React.useState("");
+  const [filter, setFilter] = React.useState("ALL");
 
-  const [startDate, setStartDate] = React.useState();
-  const [endDate, setEndDate] = React.useState();
-  const [filter ,setFilter] = React.useState('ALL')
-  
   const [pageSize, setPageSize] = React.useState(10);
 
-  const [bookings, setbookings] = React.useState([]);
   const hotel = localStorage.getItem("hotel");
   const token = localStorage.getItem("accessToken");
 
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [err, setErr] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
 
   const { value, setValue } = React.useContext(counterContext);
+  // const { bookings, setbookings } = React.useContext(BookingContext);
+  const [bookings, setbookings] = React.useState([]);
 
   const fetchData = async () => {
+    setbookings([]);
     setLoading(true);
     setErr(false);
-    setSuccess(false);
+    //setSuccess(false);
 
     var config = {
       method: "get",
@@ -55,15 +65,42 @@ export default function Table() {
         Authorization: `${token}`,
       },
       timeout: 5000,
-      data: "",
     };
 
-    axios(config)
-      .then(function (response) {
-        setLoading(false);
-        setSuccess(true);
+    await axios(config)
+      .then(async (response) => {
         console.log(response.data.bookings);
-        setbookings(response.data.bookings);
+        await setbookings(response.data.bookings);
+        await setLoading(false);
+        setSuccess(true);
+      })
+      .catch(function (error) {
+        setErr(true);
+        setLoading(false);
+        console.log(error);
+      });
+  };
+
+  const fetchDataByDate = async () => {
+    setbookings([]);
+    setLoading(true);
+    setErr(false);
+    //setSuccess(false);
+    var config = {
+      method: "get",
+      url: `${SERVER_URL}/api/bookings/skip/0/limit/30?hotel=${hotel}&startDate=${startDate}&endDate=${endDate}&status=${filter}`,
+      headers: {
+        Authorization: `${token}`,
+      },
+      timeout: 5000,
+    };
+
+    await axios(config)
+      .then(async (response) => {
+        console.log(response.data.bookings);
+        await setbookings(response.data.bookings);
+        await setLoading(false);
+        setSuccess(true);
       })
       .catch(function (error) {
         setErr(true);
@@ -201,20 +238,21 @@ export default function Table() {
       },
     },
 
-    {
-      field: "note",
-      headerName: "ລາຍລະອຽດ",
-      type: "number",
-      flex: 1.2,
-      sortable: false,
-    },
+    //{
+    //  field: "note",
+    //  headerName: "ລາຍລະອຽດ",
+    //  type: "number",
+    //  flex: 1.2,
+    //  sortable: false,
+    //
+    //
+    //},
     {
       field: "status",
       headerName: "ສະຖານະ",
-      type: "boolean",
       flex: 1.2,
       renderCell: (parram) => {
-        if (!parram.row.status) {
+        if (parram.row.status === "PENDING") {
           return (
             <Chip
               sx={{ fontFamily: "Noto Sans Lao", width: "100px" }}
@@ -224,11 +262,22 @@ export default function Table() {
             />
           );
         }
+        if (parram.row.status === "REJECTED") {
+          return (
+            <Chip
+              sx={{ fontFamily: "Noto Sans Lao", width: "100px" }}
+              color="error"
+              label="ຍົກເລີກ"
+              variant="outlined"
+            />
+          );
+        }
         return (
           <Chip
             sx={{ fontFamily: "Noto Sans Lao", width: "100px" }}
             //color="secondary"
             label="ແຈ້ງເຂົ້າແລ້ວ"
+            color="success"
           />
         );
       },
@@ -241,119 +290,156 @@ export default function Table() {
 
   return (
     <Stack direction="column">
-      <Stack direction='column' spacing={3}>
+      <Stack direction="column" spacing={3}>
         {/**filter */}
-      <Stack direction='row' spacing={1}>
+        <Stack direction="row" spacing={1}>
           {/**start date */}
-        <Stack>
-          <label id="dateOfBirth">ຕັ້ງແຕ່ວັນທີ</label>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-            
-              inputFormat="dd/MM/yyyy"
-              value={startDate}
-              onChange={(value) => {
-                const _date = new Date(value);
-                console.log(_date.toLocaleDateString("en-GB"));
-                const saveDate = _date.toLocaleDateString("en-GB");
-                setStartDate(value);
-                //setData({
-                //  ...data,
-                //  birthday: saveDate,
-                //});
-              }}
-              renderInput={(params) => (
-                <TextField
-                  onChange={
-                    (e) => {}
-                    ///setData({
-                    ///  ...data,
-                    ///  birthday: e.target.value,
-                    ///})
-                  }
-                  sx={{ ...textStyle, width: "250px", backgroundColor: 'white' }}
-                  {...params}
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </Stack>
-        {/**End date */}
-        <Stack>
-          <label id="dateOfBirth">ຫາວັນທີ</label>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              inputFormat="dd/MM/yyyy"
-              value={endDate}
-              onChange={(value) => {
-                const _date = new Date(value);
-                console.log(_date.toLocaleDateString("en-GB"));
-                const saveDate = _date.toLocaleDateString("en-GB");
-                setEndDate(value);
-                //setData({
-                //  ...data,
-                //  birthday: saveDate,
-                //});
-              }}
-              renderInput={(params) => (
-                <TextField
-                  onChange={
-                    (e) => {}
-                    ///setData({
-                    ///  ...data,
-                    ///  birthday: e.target.value,
-                    ///})
-                  }
-                  sx={{ ...textStyle, backgroundColor: 'white', width: "250px" }}
-                  {...params}
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </Stack>
-        {/**status filter */}
-        <Stack >
-            <label id=""gender>ສະຖານະ</label>
+          <Stack>
+            <label id="dateOfBirth">ຕັ້ງແຕ່ວັນທີ</label>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                inputFormat="dd/MM/yyyy"
+                value={startDate}
+                onChange={(value) => {
+                  const _date = new Date(value);
+                  console.log(_date.toLocaleDateString("en-GB"));
+                  const saveDate = _date.toLocaleDateString("en-GB");
+                  setStartDate(value);
+                  //setData({
+                  //  ...data,
+                  //  birthday: saveDate,
+                  //});
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    onChange={
+                      (e) => {}
+                      ///setData({
+                      ///  ...data,
+                      ///  birthday: e.target.value,
+                      ///})
+                    }
+                    sx={{
+                      ...textStyle,
+                      width: "250px",
+                      backgroundColor: "white",
+                    }}
+                    {...params}
+                  />
+                )}
+              />
+            </LocalizationProvider>
+          </Stack>
+          {/**End date */}
+          <Stack>
+            <label id="dateOfBirth">ຫາວັນທີ</label>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                inputFormat="dd/MM/yyyy"
+                value={endDate}
+                onChange={(value) => {
+                  const _date = new Date(value);
+                  console.log(_date.toLocaleDateString("en-GB"));
+                  const saveDate = _date.toLocaleDateString("en-GB");
+                  setEndDate(value);
+                  //setData({
+                  //  ...data,
+                  //  birthday: saveDate,
+                  //});
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    onChange={
+                      (e) => {}
+                      ///setData({
+                      ///  ...data,
+                      ///  birthday: e.target.value,
+                      ///})
+                    }
+                    sx={{
+                      ...textStyle,
+                      backgroundColor: "white",
+                      width: "250px",
+                    }}
+                    {...params}
+                  />
+                )}
+              />
+            </LocalizationProvider>
+          </Stack>
+          {/**status filter */}
+          <Stack>
+            <label id="" gender>
+              ສະຖານະ
+            </label>
             <Select
-
-              sx={{ ...textStyle, fontFamily: `${font.LAO_FONT}`, height: 35, width: "200px" }}
+              sx={{
+                ...textStyle,
+                fontFamily: `${font.LAO_FONT}`,
+                height: 35,
+                width: "200px",
+              }}
               value={filter}
-            
-
               onChange={(e) => {
                 //setData({ ...data, gender: e.target.value });
-                setFilter(e.target.value)
+                setFilter(e.target.value);
                 //setDisplayFilter(e.target.name)
               }}
             >
-              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}} value="ALL">ສະແດງທັງໝົດ</MenuItem>
-              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}}  value="PENDING">ລໍຖ້າແຈ້ງອອກ</MenuItem>
-              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}}  value="CHECKEDOUT">ແຈ້ງອອກແລ້ວ</MenuItem>
+              <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="ALL">
+                ສະແດງທັງໝົດ
+              </MenuItem>
+              <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="PENDING">
+                ລໍຖ້າແຈ້ງເຂົ້າ
+              </MenuItem>
+              <MenuItem
+                sx={{ fontFamily: `${font.LAO_FONT}` }}
+                value="CHECKIN"
+              >
+                ແຈ້ງເຂົ້າແລ້ວ
+              </MenuItem>
+              <MenuItem
+                sx={{ fontFamily: `${font.LAO_FONT}` }}
+                value="REJECTED"
+              >
+                ຍົກເລີກ
+              </MenuItem>
             </Select>
           </Stack>
-
+          <Stack direction='column' justifyContent='flex-end' >
+            <Button
+            color="success"
+            variant="contained"
+            disableElevation
+              sx={{
+                ...btnStyle,
+                marginLeft: '10px',
+                width: '100px'
+              }}
+              onClick={fetchDataByDate}
+            >
+              ຄົ້ນຫາ
+            </Button>
+          </Stack>
         </Stack>
-        <Divider/>
-      {/**search textfield */}
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        spacing={1}
-        
-        alignItems="center"
-      >
-        
-        {/**search */}
-        
-        <span>ຄັ້ນຫາ:</span>
-        <TextField
-          placeholder="ເບີໂທລະສັບ"
-          variant="outlined"
-          sx={{ ...textStyle, width: "200px", backgroundColor: "white" }}
-        />
+        <Divider />
+        {/**search textfield */}
+        <Stack
+          direction="row"
+          justifyContent="flex-end"
+          spacing={1}
+          alignItems="center"
+        >
+          {/**search */}
 
-       
-        {/**
+          <span>ຄັ້ນຫາ:</span>
+          <TextField
+            placeholder="ເບີໂທລະສັບ"
+            variant="outlined"
+            sx={{ ...textStyle, width: "200px", backgroundColor: "white" }}
+          />
+
+          {/**
          *  <Button
             size="small"
             startIcon={<SearchIcon />}
@@ -373,29 +459,25 @@ export default function Table() {
             Search
           </Button>
          */}
+        </Stack>
+        {/**table */}
       </Stack>
-      {/**table */}
 
-      </Stack>
-      
-
-      {loading && <h1>Loading...</h1>}
       {err && <h1>Error while loading</h1>}
-      {success ? (
-        <div style={{ height: 660, width: "100%" }}>
-          <DataGrid
-            sx={{ ...datagridSx, marginTop: "10px" }}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
-            pagination
-            rows={bookings}
-            columns={columns}
-            disableSelectionOnClick
-            getRowId={(row) => row._id}
-          />
-        </div>
-      ) : null}
+      <div style={{ height: 660, width: "100%" }}>
+        <DataGrid
+          sx={{ ...datagridSx, marginTop: "10px" }}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[5, 10, 20]}
+          pagination
+          rows={bookings}
+          columns={columns}
+          disableSelectionOnClick
+          getRowId={(row) => row._id}
+          loading={loading}
+        />
+      </div>
     </Stack>
   );
 }

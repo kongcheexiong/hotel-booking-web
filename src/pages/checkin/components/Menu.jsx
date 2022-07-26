@@ -45,7 +45,7 @@ export default function Menu() {
             },
           }}
           onClick={() => {
-            navigate(`/${router.CHECKIN}/add`);
+            navigate(`${router.CHECKIN}/add`);
           }}
         >
           ແຈ້ງເຂົ້າ

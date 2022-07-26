@@ -16,7 +16,7 @@ function Booking() {
     spacing={2}
     
     >
-      {/**<Menu/> */}
+     <Menu/>
       <hr/>
       <Table/>
 

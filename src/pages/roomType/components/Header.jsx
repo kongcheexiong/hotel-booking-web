@@ -24,13 +24,15 @@ import { btnStyle } from "../../../style";
 import { router, font } from "../../../constants";
 
 import { counterContext } from "../../../context/counter";
+import { roomTypeContext } from "../../../context/roomType.context";
 
 //component
 
 //import {SERVER_URL} from '../../../constants/index'
 
 export default function Header() {
-  const {value, setValue} = React.useContext(counterContext)
+  const { roomType, setRoomTytpe } = React.useContext(roomTypeContext);
+  const { value, setValue } = React.useContext(counterContext);
   const navigate = useNavigate();
   return (
     <Stack direction="column" spacing={2}>
@@ -49,17 +51,22 @@ export default function Header() {
         </Button>
         {/**reload btn */}
         <Button
-          onClick={() => setValue((value) => value + 1)}
+          onClick={() => {
+            //setRoomType([]);
+
+            setValue((value) => value + 1);
+          }}
           disableElevation
           color="secondary"
           variant="outlined"
           size="small"
           sx={{
-            ...btnStyle,"&.MuiButton-root": {
+            ...btnStyle,
+            "&.MuiButton-root": {
               fontFamily: `${font.EN_FONT}`,
               width: "100px",
               height: 30,
-              fontSize: '12px'
+              fontSize: "12px",
             },
           }}
           startIcon={<CachedIcon />}

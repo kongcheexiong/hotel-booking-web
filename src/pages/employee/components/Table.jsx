@@ -124,7 +124,7 @@ export default function Table() {
       },
     },
     { field: "_id", headerName: "ລະຫັດ", width: 70 },
-    { field: "userName", headerName: "ຜູ້ໃຊ້", flex: 1, sortable: false },
+    { field: "userName", headerName: "ຜູ້ໃຊ້", flex: 0.6 },
     {
       field: "image",
       headerName: "ຮູບ",
@@ -157,16 +157,15 @@ export default function Table() {
         return <span>ນາງ</span>;
       },
     },
-    { field: "firstName", headerName: "ຊື່ ແລະ ນາມສະກຸນ", flex: 1, sortable: false, renderCell: (params)=>{
+    { field: "firstName", headerName: "ຊື່ ແລະ ນາມສະກຸນ", flex: 0.7, sortable: false, renderCell: (params)=>{
       return <span>{params.row.firstName} {params.row.lastName}</span>
     } },
     //{ field: "lastName", headerName: "ນາມສະກຸນ", flex: 1, sortable: false },
     {
       field: "birthday",
       headerName: "ວັນເດືອນປີເກີດ",
-      flex: 1,
+      flex: 0.7,
       sortable: false,
-      align: "center",
       renderCell: (params) => {
         if (!params.row.birthday) {
           return <div>null</div>;
@@ -191,8 +190,8 @@ export default function Table() {
     //{ field: "village", headerName: "ບ້ານ", flex: 1, sortable: false },
    //{ field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
    //{ field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
-    { field: "phone", headerName: "ເບີໂທວະສັບ", flex: 1, sortable: false },
-    { field: "role", headerName: "Role", flex: 0.6 },
+    { field: "phone", headerName: "ເບີໂທລະສັບ", flex: 0.6, sortable: false },
+    { field: "role", headerName: "Role", flex: 0.4 },
   ];
 
   const rows = [

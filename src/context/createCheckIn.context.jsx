@@ -3,21 +3,22 @@ import * as react from "react";
 export const CreateCheckInContext = react.createContext();
 
 export const CreateCheckInProvider = (props) => {
+  const hotel = localStorage.getItem('hotel')
   const { children } = props;
   const [checkInData, setCheckInData] = react.useState({
-    
-    hotel: "",
+    hotel: hotel,
     room: "",
     firstName: "",
     lastName: "",
     gender: "",
     phone: "",
     verify: '',
-    checkInDate: "2022/07/12",
-    checkOutDate: "2022/07/20",
+    checkInDate: Date.now(),
+    checkOutDate: "",
     isCheckOOut: false,
     note: "",
-    reference: ''
+    reference: '',
+    isPaid: false
 
   });
 
