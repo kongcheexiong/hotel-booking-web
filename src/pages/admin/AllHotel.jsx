@@ -85,11 +85,12 @@ export default function AllHotel() {
       })
       .catch((err) => console.log(err));
   };
-  const handleSendEmail = async (to, name) => {
+  const handleSendEmail = async (to, name, userId) => {
     await axios
       .post(`${SERVER_URL}/api/send/email`, {
         email: to,
         userName: name,
+        id: userId
       })
       .then((res) => console.log(res.data))
       .catch((err) => console.error(err));
@@ -117,7 +118,7 @@ export default function AllHotel() {
             <IconButton
               onClick={ async () => {
                 console.log(parram.row.hotel._id);
-                await handleSendEmail(parram.row.hotel.email, parram.row.userName);
+                await handleSendEmail(parram.row.hotel.email, parram.row.userName, parram.row._id);
                 await handleUpdateStatus(parram.row.hotel._id);
                 
               }}
