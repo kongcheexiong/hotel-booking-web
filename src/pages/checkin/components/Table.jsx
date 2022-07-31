@@ -8,10 +8,14 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
+import { CheckInContextContext } from "../../../context/checkin.context";
 
 
 export default function Table() {
   const [pageSize, setPageSize] = React.useState(10);
+  const {CheckInContext, setCheckInContext} = React.useContext(CheckInContextContext)
+
+  
 
   const columns = [
     {
