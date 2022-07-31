@@ -13,12 +13,23 @@ import { CreateCheckInProvider } from "./context/createCheckIn.context";
 
 import { NotificationProvider } from "./context/notification";
 import { BookingProvider } from "./context/booking.context";
+import { RegisterProgressProvider } from "./context/registerProgress.context";
+import { PrintProvider } from "./context/print.context";
+
+import { CheckInContextProvider } from "./context/checkin.context";
+import { EmployeeProvider } from "./context/employee.context";
+
+
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <CreateCheckInProvider>
+      <EmployeeProvider>
+      <CheckInContextProvider>
+      <PrintProvider>
+      <RegisterProgressProvider>
       <BookingProvider>
         <NotificationProvider>
           <RegisterProvider>
@@ -34,6 +45,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           </RegisterProvider>
         </NotificationProvider>
       </BookingProvider>
+      </RegisterProgressProvider>
+      </PrintProvider>
+      </CheckInContextProvider>
+      </EmployeeProvider>
     </CreateCheckInProvider>
   </React.StrictMode>
 );

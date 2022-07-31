@@ -1,6 +1,12 @@
 import * as React from "react";
 import axios from "axios";
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  gridVisibleSortedRowIdsSelector,
+  useGridApiContext,
+} from "@mui/x-data-grid";
+import { createSvgIcon } from "@mui/material/utils";
 import {
   IconButton,
   Stack,
@@ -28,10 +34,48 @@ import EditUser from "./EditUser";
 
 import { SERVER_URL } from "../../../constants/index";
 
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import SummarizeIcon from "@mui/icons-material/Summarize";
+
+
+import { EmployeeContext } from "../../../context/employee.context";
+import { PrintContext } from "../../../context/print.context";
+
+const getFilteredRows = ({ apiRef }) => gridVisibleSortedRowIdsSelector(apiRef);
+const ExportIcon = createSvgIcon(
+  <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2z" />,
+  "SaveAlt"
+);
+const CustomToolbar = () => {
+  const apiRef = useGridApiContext();
+
+  const handleExport = (options) => apiRef.current.exportDataAsCsv(options);
+
+  const buttonBaseProps = {
+    color: "primary",
+    size: "small",
+    startIcon: <ExportIcon />,
+  };
+
+  return (
+    <GridToolbarContainer>
+      <Button
+        {...buttonBaseProps}
+        onClick={() => handleExport({ getRowsToExport: getFilteredRows })}
+      >
+        Filtered rows
+      </Button>
+    </GridToolbarContainer>
+  );
+};
+
 export default function Table() {
   const { value, setValue } = React.useContext(counterContext);
   const hotelId = localStorage.getItem("hotel");
   const [pageSize, setPageSize] = React.useState(10);
+
+  //const {Print, setPrint} = React.useContext(PrintContext)
+  const {Employee, setEmployee} = React.useContext(EmployeeContext)
 
   const [total, setTotal] = React.useState();
   const [resData, setResData] = React.useState([]);
@@ -59,9 +103,12 @@ export default function Table() {
         timeout: 5000,
       })
       .then((res) => {
-        console.log(res.data.users);
+       
         setTotal(res.data.total);
         setResData(res.data.users);
+        setEmployee(res.data.users)
+        
+        setErr(false)
 
         setSuccess(true);
         setloading(false);
@@ -157,9 +204,19 @@ export default function Table() {
         return <span>ນາງ</span>;
       },
     },
-    { field: "firstName", headerName: "ຊື່ ແລະ ນາມສະກຸນ", flex: 0.7, sortable: false, renderCell: (params)=>{
-      return <span>{params.row.firstName} {params.row.lastName}</span>
-    } },
+    {
+      field: "firstName",
+      headerName: "ຊື່ ແລະ ນາມສະກຸນ",
+      flex: 0.7,
+      sortable: false,
+      renderCell: (params) => {
+        return (
+          <span>
+            {params.row.firstName} {params.row.lastName}
+          </span>
+        );
+      },
+    },
     //{ field: "lastName", headerName: "ນາມສະກຸນ", flex: 1, sortable: false },
     {
       field: "birthday",
@@ -181,37 +238,26 @@ export default function Table() {
       sortable: false,
       renderCell: (params) => {
         return (
-          <span>{params.row.village},{params.row.city},{params.row.province}</span>
-          
-
-        )
+          <span>
+            {params.row.village},{params.row.city},{params.row.province}
+          </span>
+        );
       },
     },
     //{ field: "village", headerName: "ບ້ານ", flex: 1, sortable: false },
-   //{ field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
-   //{ field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
+    //{ field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
+    //{ field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
     { field: "phone", headerName: "ເບີໂທລະສັບ", flex: 0.6, sortable: false },
     { field: "role", headerName: "Role", flex: 0.4 },
   ];
 
-  const rows = [
-    {
-      _id: 1,
-      userName: "F01",
-      image: "img.png",
-      firstName: "ກົງຈີ",
-      lastName: "ຊົ່ງຕົງສື",
-      DateOfBirth: "03/10/2000",
-      village: "ໂພນເຄັງ",
-      city: "ໄຊເສດຖາ",
-      province: "ນະຄອນຫຼວງວຽງຈັນ",
-      phone: "23826684",
-      role: "Admin",
-    },
-  ];
+  
   React.useEffect(() => {
+
+  
+ 
     fetchData();
-    console.log(resData);
+   
   }, [value]);
 
   return (
@@ -220,7 +266,11 @@ export default function Table() {
         marginTop: "20px",
       }}
     >
-      {err && <h1>there is an error</h1>}
+      {//err && <h1>there is an error</h1>
+      }
+     <Stack direction='row' spacing={2}>
+     
+     </Stack>
       <div style={{ height: 660, width: "100%" }}>
         <DataGrid
           sx={{ ...datagridSx, marginTop: "10px" }}
@@ -233,6 +283,7 @@ export default function Table() {
           disableSelectionOnClick
           getRowId={(row) => row._id}
           loading={loading}
+          //components={{ Toolbar: CustomToolbar }}
         />
         {/**show image album */}
         <Dialog

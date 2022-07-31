@@ -40,3 +40,16 @@
 button {
   font-size: calc(10px + 2vmin);
 }
+
+table, td, th {
+  border: 1px solid;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td{
+  font-size: 12px;
+}

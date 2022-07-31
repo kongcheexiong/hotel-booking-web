@@ -33,7 +33,7 @@ import ShowRoom from "./ShowRoom";
 import { SavedSearch, Today } from "@mui/icons-material";
 
 export default function UserInfo() {
-  const toDay = new Date();
+  const toDay = new Date(Date.now());
   const nextDay = new Date(toDay.setDate(toDay.getDate() + 1));
   const [startDate, setStartDate] = React.useState(Date.now());
   const [endDate, setEndDate] = React.useState(nextDay);
@@ -86,6 +86,28 @@ export default function UserInfo() {
         console.log(error);
       });
   };
+
+  const postCheckIn = async (post)=>{
+
+    var config = {
+      method: 'post',
+      url: 'http://localhost:8080/api/create/check-in',
+      headers: { 
+        'Authorization': localStorage.getItem('accessToken'), 
+        'Content-Type': 'application/json'
+      },
+      timeout: 5000,
+      data : post
+    };
+    
+    axios(config)
+    .then(function (response) {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
 
   const handleSelectRoomType = async (e) => {
     e.preventDefault();
@@ -302,13 +324,13 @@ export default function UserInfo() {
                   onChange={(value) => {
                     const _date = new Date(value);
                     console.log(_date.toLocaleDateString("en-GB"));
-                    const saveDate = _date.toLocaleDateString("en-GB");
+                    const saveDate = _date.toLocaleDateString("en");
                     setStartDate(value);
                     //setData({
                     //  ...data,
                     //  birthday: saveDate,
                     //});
-                    setCheckInData({ ...checkInData, checkInDate: saveDate });
+                    setCheckInData({ ...checkInData, checkInDate: _date });
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -341,13 +363,13 @@ export default function UserInfo() {
                   onChange={(value) => {
                     const _date = new Date(value);
                     console.log(_date.toLocaleDateString("en-GB"));
-                    const saveDate = _date.toLocaleDateString("en-GB");
+                    const saveDate = _date.toLocaleDateString("en");
                     setEndDate(value);
                     //setData({
                     //  ...data,
                     //  birthday: saveDate,
                     //});
-                    setCheckInData({ ...checkInData, checkOutDate: saveDate });
+                    setCheckInData({ ...checkInData, checkOutDate: _date });
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -406,6 +428,7 @@ export default function UserInfo() {
               onClick={async () => {
                 //await setCheckInData({...checkInData, checkInDate: startDate, checkOutDate: endDate, })
                 console.log(checkInData);
+                postCheckIn(checkInData);
               }}
             >
               ແຈ້ງເຂົ້າ

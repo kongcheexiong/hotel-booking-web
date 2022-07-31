@@ -50,24 +50,7 @@ export default function Menu() {
         >
           ແຈ້ງເຂົ້າ
         </Button>
-        <Button
-          size="small"
-          startIcon={<FileDownloadIcon />}
-          disableElevation
-          sx={{
-            ...btnStyle,
-            width: "110px",
-            "&.MuiButton-root": {
-              width: "auto",
-              fontFamily: `${font.EN_FONT}`,
-              height: 30,
-            },
-          }}
-          variant="outlined"
-          color="success"
-        >
-          Export as Excel
-        </Button>
+        
           {/**reload */}
 
           

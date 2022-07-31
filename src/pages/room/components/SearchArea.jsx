@@ -19,11 +19,11 @@ export default function SearchArea() {
   const [search, setSearch] = React.useState("");
   const hotel = localStorage.getItem("hotel");
 
-  const fetchData = async () => {
+  const fetchData = async (data) => {
     setRoom({ ...room, roomLoading: true, roomErr: false, roomSuccess: false });
 
     await axios
-      .get(`${SERVER_URL}/api/room?hotelId=${hotel}&roomName=${search}`, {
+      .get(`${SERVER_URL}/api/room?hotelId=${hotel}&roomName=${data}`, {
         timeout: 5000,
       })
       .then((res) => {

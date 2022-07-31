@@ -18,10 +18,21 @@ import { router,font } from "../../../constants";
 import { SERVER_URL } from "../../../constants";
 import { counterContext } from "../../../context/counter";
 
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+
+import {useReactToPrint} from "react-to-print";
+import { PrintComponent } from "./print.component";
 
 export default function Header() {
-  const {value , setValue} = React.useContext(counterContext)
   const navigate = useNavigate()
+  const {value , setValue} = React.useContext(counterContext)
+  const componentRef = React.useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
+ 
   return (
     <Stack direction="column" spacing={2}>
     <Stack direction="row" spacing={2}>
@@ -58,6 +69,66 @@ export default function Header() {
       >
        Reload
       </Button>
+      
+      {/**print as pdf */}
+      <div
+      style={{ display: "none" }}// This make ComponentToPrint show   only while printing
+      > 
+       <PrintComponent ref={componentRef} />
+      </div>
+ 
+      <Button
+        onClick={() => {
+          //setValue( value => value+1)
+          //generatePDF(resData)
+          handlePrint()
+        }}
+        color="error"
+        disableElevation
+        sx={{
+          ...btnStyle,
+          "&.MuiButton-root": {
+            fontFamily: `${font.LAO_FONT}`,
+            width: "150px",
+            fontWeight: "500",
+            height: 30,
+            fontSize: "14px",
+          },
+        }}
+        size="small"
+        variant="outlined"
+        startIcon={<PictureAsPdfIcon />}
+      >
+        ນໍາອອກເປັນ PDF
+      </Button>
+
+       {/**export as excel
+        * 
+        * <Button
+        onClick={() => {
+          //setValue( value => value+1)
+        }}
+        color="error"
+        disableElevation
+        sx={{
+          ...btnStyle,
+          "&.MuiButton-root": {
+            fontFamily: `${font.LAO_FONT}`,
+            width: "200px",
+            fontWeight: "500",
+            height: 30,
+            fontSize: "14px",
+          },
+        }}
+        size="small"
+        variant="outlined"
+        startIcon={<SummarizeIcon />}
+      >
+        export as Excel
+      </Button>
+        */}
+      
+     
       
     </Stack>
     <Divider/>

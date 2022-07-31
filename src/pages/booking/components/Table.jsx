@@ -25,6 +25,7 @@ import { font, SERVER_URL } from "../../../constants";
 //icon
 import SearchIcon from "@mui/icons-material/Search";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
@@ -33,10 +34,13 @@ import { counterContext } from "../../../context/counter";
 import { BookingContext } from "../../../context/booking.context";
 
 import { tr } from "date-fns/locale";
+import { setDate } from "date-fns/esm";
+import { DeleteForever, SendToMobile } from "@mui/icons-material";
 
 export default function Table() {
-  const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
+  const date = new Date();
+  const [startDate, setStartDate] = React.useState(date);
+  const [endDate, setEndDate] = React.useState(date);
   const [filter, setFilter] = React.useState("ALL");
 
   const [pageSize, setPageSize] = React.useState(10);
@@ -83,12 +87,25 @@ export default function Table() {
 
   const fetchDataByDate = async () => {
     setbookings([]);
+
     setLoading(true);
     setErr(false);
+
     //setSuccess(false);
+    //var sendDate = new Date(setDate(startDate.getDate()-1))
+    // var sendDate = new Date(startDate.getDate()-1);
+
+    // sendDate.toLocaleDateString();
+
+    var today = new Date(startDate);
+    var yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    console.log("==>", yesterday);
+
+    //console.log("====>", sendDate);
     var config = {
       method: "get",
-      url: `${SERVER_URL}/api/bookings/skip/0/limit/30?hotel=${hotel}&startDate=${startDate}&endDate=${endDate}&status=${filter}`,
+      url: `${SERVER_URL}/api/bookingsByFilter/skip/0/limit/30?hotel=${hotel}&startDate=${yesterday}&endDate=${endDate}&status=${filter}`,
       headers: {
         Authorization: `${token}`,
       },
@@ -118,54 +135,42 @@ export default function Table() {
       renderCell: (parram) => {
         return (
           <Stack direction="row" spacing={0}>
-            <Tooltip title="Check in">
+            {parram.row.status === "REJECTED" ||
+            parram.row.status === "CHECKIN" ? (
+              <div></div>
+            ) : parram.row.status === "PENDING" ? (
+              <>
+              <Tooltip title="ຢືນຢັນ">
+                <IconButton onClick={()=>{
+
+                }}>
+                  <HourglassTopIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="ລົບອອກ">
+                <IconButton onClick={()=>{
+                  
+                }}>
+                  <DeleteForever />
+                </IconButton>
+              </Tooltip>
+              
+              </>
+              
+            ) : (
+              <>
+              <Tooltip title="ແຈ້ງເຂົ້າ">
+                <IconButton>
+                  <AssignmentTurnedInIcon />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="ລົບອອກ">
               <IconButton>
-                <AssignmentTurnedInIcon />
+                <DeleteForever />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-            {/***
-           * <Button
-              size="small"
-              disableElevation
-              variant="contained"
-              color="success"
-              sx={{
-                ...btnStyle,
-                width: "110px",
-                borderRadius: "15px",
-
-                "&.MuiButton-root": {
-                  width: "100px",
-                  fontFamily: `${font.LAO_FONT}`,
-                },
-              }}
-            >
-              ແຈ້ງເຂົ້າ
-            </Button>
-            <Button
-              size="small"
-              disableElevation
-              variant="contained"
-              color="success"
-              sx={{
-                ...btnStyle,
-                width: "110px",
-                borderRadius: "15px",
-
-                "&.MuiButton-root": {
-                  width: "100px",
-                  fontFamily: `${font.LAO_FONT}`,
-                },
-              }}
-            >
-              ຍົກເລີກລາຍການ
-            </Button>
- */}
+              </>
+            )}
           </Stack>
         );
       },
@@ -174,7 +179,27 @@ export default function Table() {
       field: "_id",
       headerName: "ລະຫັດ",
       width: 80,
+      
     },
+    {
+      field: "referenceImage",
+      headerName: "ຮູບພາບອ້າງອີງ",
+      width: 80,
+      renderCell: (parram) => {
+        <div
+        className="previewImg"
+        onClick={() => {
+          //handlePopUpImg();
+          ////setImgSrc(parram.row.images);
+          //setImgData(parram.row.roomType);
+          //// console.log(parram.row)
+        }}
+      >
+        {parram.row.referenceImage}
+      </div>
+      },
+    },
+
     {
       field: "Agency",
       headerName: "Agency",
@@ -237,16 +262,6 @@ export default function Table() {
         return <span>{date}</span>;
       },
     },
-
-    //{
-    //  field: "note",
-    //  headerName: "ລາຍລະອຽດ",
-    //  type: "number",
-    //  flex: 1.2,
-    //  sortable: false,
-    //
-    //
-    //},
     {
       field: "status",
       headerName: "ສະຖານະ",
@@ -285,6 +300,9 @@ export default function Table() {
   ];
 
   React.useEffect(() => {
+    //const date = new Date()
+    //setStartDate(date)
+    //setEndDate(date)
     fetchData();
   }, [value]);
 
@@ -392,10 +410,7 @@ export default function Table() {
               <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="PENDING">
                 ລໍຖ້າແຈ້ງເຂົ້າ
               </MenuItem>
-              <MenuItem
-                sx={{ fontFamily: `${font.LAO_FONT}` }}
-                value="CHECKIN"
-              >
+              <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="CHECKIN">
                 ແຈ້ງເຂົ້າແລ້ວ
               </MenuItem>
               <MenuItem
@@ -406,15 +421,15 @@ export default function Table() {
               </MenuItem>
             </Select>
           </Stack>
-          <Stack direction='column' justifyContent='flex-end' >
+          <Stack direction="column" justifyContent="flex-end">
             <Button
-            color="success"
-            variant="contained"
-            disableElevation
+              color="success"
+              variant="contained"
+              disableElevation
               sx={{
                 ...btnStyle,
-                marginLeft: '10px',
-                width: '100px'
+                marginLeft: "10px",
+                width: "100px",
               }}
               onClick={fetchDataByDate}
             >

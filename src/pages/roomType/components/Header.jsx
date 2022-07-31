@@ -26,6 +26,14 @@ import { router, font } from "../../../constants";
 import { counterContext } from "../../../context/counter";
 import { roomTypeContext } from "../../../context/roomType.context";
 
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+
+import { PrintComponent } from "./PrintComponent";
+
+import {useReactToPrint} from "react-to-print";
+
+
 //component
 
 //import {SERVER_URL} from '../../../constants/index'
@@ -34,6 +42,11 @@ export default function Header() {
   const { roomType, setRoomTytpe } = React.useContext(roomTypeContext);
   const { value, setValue } = React.useContext(counterContext);
   const navigate = useNavigate();
+
+  const componentRef = React.useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
   return (
     <Stack direction="column" spacing={2}>
       <Stack direction="row" alignItems="center" spacing={2}>
@@ -73,6 +86,38 @@ export default function Header() {
         >
           reload
         </Button>
+        <div
+      style={{ display: "none" }}// This make ComponentToPrint show   only while printing
+      > 
+       <PrintComponent ref={componentRef} />
+      </div>
+ 
+      <Button
+        onClick={() => {
+          //setValue( value => value+1)
+          //generatePDF(resData)
+          handlePrint()
+        }}
+        color="error"
+        disableElevation
+        sx={{
+          ...btnStyle,
+          "&.MuiButton-root": {
+            fontFamily: `${font.LAO_FONT}`,
+            width: "150px",
+            fontWeight: "500",
+            height: 30,
+            fontSize: "14px",
+          },
+        }}
+        size="small"
+        variant="outlined"
+        startIcon={<PictureAsPdfIcon />}
+      >
+        ນໍາອອກເປັນ PDF
+      </Button>
+
+
       </Stack>
 
       <Divider />
