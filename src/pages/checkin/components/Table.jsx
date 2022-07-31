@@ -1,21 +1,46 @@
-import { Stack, TextField, Button } from "@mui/material";
+import { Stack, TextField, Button,IconButton } from "@mui/material";
 import React from "react";
-import { textStyle,btnStyle,datagridSx } from "../../../style";
-import { font } from "../../../constants";
+import { textStyle, btnStyle, datagridSx } from "../../../style";
+import { font, SERVER_URL } from "../../../constants";
 
-//icon 
-import SearchIcon from '@mui/icons-material/Search';
+//icon
+import SearchIcon from "@mui/icons-material/Search";
+
+import EditIcon from "@mui/icons-material/Edit";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import { CheckInContextContext } from "../../../context/checkin.context";
+import { counterContext } from "../../../context/counter";
 
+import {format} from 'date-fns'
 
 export default function Table() {
   const [pageSize, setPageSize] = React.useState(10);
-  const {CheckInContext, setCheckInContext} = React.useContext(CheckInContextContext)
+  const { CheckInContext, setCheckInContext } = React.useContext(
+    CheckInContextContext
+  );
+  const [loading, setLoading] = React.useState(true)
 
-  
+  const { value, setValue } = React.useContext(counterContext);
+  const fetchCheckIn = async () => {
+    setCheckInContext([])
+    setLoading(true)
+    axios
+      .get(`${SERVER_URL}/api/check-in-data/skip/:skip/limit/:limit`)
+      .then((res) => {
+        console.log(res.data);
+        setCheckInContext(res.data.checkIns);
+        setLoading(false)
+      })
+      .catch((err) => console.error(err));
+  };
+
+  React.useEffect(() => {
+    fetchCheckIn();
+  }, [value]);
 
   const columns = [
     {
@@ -26,11 +51,7 @@ export default function Table() {
       renderCell: (parram) => {
         return (
           <div>
-            <IconButton
-              onClick={() => {
-                
-              }}
-            >
+            <IconButton onClick={() => {}}>
               <DeleteIcon fontSize="small" />
             </IconButton>
 
@@ -51,9 +72,7 @@ export default function Table() {
         );
       },
     },
-    { field: "billId", headerName: "ລະຫັດ", width: 80,
-  
-  },
+    { field: "billId", headerName: "ລະຫັດ", width: 80 },
     {
       field: "gender",
       headerName: "ເພດ",
@@ -64,17 +83,12 @@ export default function Table() {
       headerName: "ຊື່",
       flex: 1,
       sortable: false,
-      
     },
-    { field: "lastName", headerName: "ນາມສະກຸນ", flex: 1,
-
-  
-  },
+    { field: "lastName", headerName: "ນາມສະກຸນ", flex: 0.5 },
     {
       field: "phone",
       headerName: "ເບີໂທລະສັບ",
       type: "number",
-
     },
     {
       field: "reference",
@@ -98,20 +112,26 @@ export default function Table() {
       field: "checkInDate",
       headerName: "ໄລຍະເວລາ",
       flex: 1,
-      renderCell: (params)=>{
-        return <span>{`${params.row.checkInDate} - ${params.row.checkOutDate}`}</span>
-      }
+      renderCell: (params) => {
+        const start = format(new Date(params.row.checkInDate),'dd/MM/yyy')
+        const end = format(new Date(params.row.checkOutDate),'dd/MM/yyy')
+
+        return (
+          <span>{`${start} - ${end}`}</span>
+        );
+      },
     },
-    {
-      field: "checkedInBy",
-      headerName: "ແຈ້ງເຂົ້າໂດຍ",
-      flex: 1,
-    },
+    //{
+    //  field: "checkedInBy",
+    //  headerName: "ແຈ້ງເຂົ້າໂດຍ",
+    //  flex: 1,
+    //},
 
     {
       field: "isCheckOut",
-      headerName: "ສະຖານະ",
+      headerName: "ແຈ້ງອອກ",
       type: "boolean",
+      flex: 0.5,
       //renderCell: (params) => {
       //  const date = useFormatDate(params.row.roomType.updatedAt);
       //  return <span>{date}</span>;
@@ -121,19 +141,25 @@ export default function Table() {
       field: "isPaid",
       headerName: "ຈ່າບແລ້ວ",
       type: "boolean",
-      flex: 1.5,
-     
-      
+      flex: 0.5,
     },
   ];
 
   return (
     <Stack direction="column">
       {/**search textfield */}
-      <Stack direction="row" justifyContent="flex-end" spacing={1} alignItems='center'>
-        
+      <Stack
+        direction="row"
+        justifyContent="flex-end"
+        spacing={1}
+        alignItems="center"
+      >
         <span>ຄັ້ນຫາ :</span>
-        <TextField placeholder="ລະຫັດບິນ" variant="outlined"  sx={{ ...textStyle, width: "200px", backgroundColor: 'white' }} />
+        <TextField
+          placeholder="ລະຫັດບິນ"
+          variant="outlined"
+          sx={{ ...textStyle, width: "200px", backgroundColor: "white" }}
+        />
         {/**
          *  <Button
             size="small"
@@ -154,25 +180,22 @@ export default function Table() {
             Search
           </Button>
          */}
-       
       </Stack>
       {/**table */}
       <div style={{ height: 660, width: "100%" }}>
-      <DataGrid
-            sx={{ ...datagridSx, marginTop: "10px" }}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
-            pagination
-            rows={()=>{}}
-            columns={columns}
-            disableSelectionOnClick
-            getRowId={(row) => row._id}
-          />
-
+        <DataGrid
+          sx={{ ...datagridSx, marginTop: "10px" }}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[5, 10, 20]}
+          pagination
+          rows={CheckInContext}
+          columns={columns}
+          disableSelectionOnClick
+          getRowId={(row) => row._id}
+          loading={loading}
+        />
       </div>
-      
-
     </Stack>
   );
 }
