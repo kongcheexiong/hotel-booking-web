@@ -17,13 +17,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { btnStyle, textStyle } from "../../../style";
 
 import { font, router } from "../../../constants";
-
+import { counterContext } from "../../../context/counter";
 export default function Menu() {
   const navigate = useNavigate();
   const [startDate, setStartDate] = React.useState();
   const [endDate, setEndDate] = React.useState();
 
   const [filter, setFilter] = React.useState("ALL");
+  const {value, setValue} = React.useContext(counterContext)
   //const [displayFilter, setDisplayFilter] = React.useState('ALL')
 
   return (
@@ -68,6 +69,9 @@ export default function Menu() {
                 fontFamily: `${font.EN_FONT}`,
                 height: 30,
               },
+            }}
+            onClick={()=>{
+              setValue(value=> value+1)
             }}
           >
             Reload
