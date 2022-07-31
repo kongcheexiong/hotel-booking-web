@@ -57,11 +57,12 @@ export default function Table() {
 
             <IconButton
               onClick={async () => {
-                await console.log(parram.row.roomType);
-                await setUpdatedData(parram.row.roomType);
 
-                await console.log(updatedData);
-                handleUpdateForm();
+                //await console.log(parram.row.roomType);
+                //await setUpdatedData(parram.row.roomType);
+//
+                //await console.log(updatedData);
+                //handleUpdateForm();
 
                 //navigate(`${router.ROOMTYPEMANAGEMENT}/add`)
               }}
