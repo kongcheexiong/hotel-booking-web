@@ -42,7 +42,7 @@ const {auth, setAuth } = react.useContext(authContext);
   const [pwd, setPwd] = react.useState("");
   const [err, setErr] = react.useState("");
   const [success, setSuccess] = react.useState(false);
-  const [loading, setLoading] = react.useState(true);
+  const [loading, setLoading] = react.useState(false);
 
   react.useEffect(() => {
     setErr("");
@@ -79,6 +79,8 @@ const {auth, setAuth } = react.useContext(authContext);
 
         setUser("");
         setPwd("");
+        setLoading(false)
+        
         setSuccess(true);
         
         localStorage.setItem("accessToken", token);
@@ -91,6 +93,7 @@ const {auth, setAuth } = react.useContext(authContext);
       })
       .catch(function (error) {
         console.log(error);
+        setErr(true)
       });
   };
   if (!token) {
@@ -159,9 +162,21 @@ const {auth, setAuth } = react.useContext(authContext);
       </div>
     );
   }
-  if(success) {
-    setSuccess(false)
+  
+  if(loading) {
+    return <h1>loading</h1>
+
+    if(err){
+      return <h1>Error </h1>
+
+    }
+    
+    if(success){
+      setLoading(false)
+       setSuccess(false)
     return <Navigate to={`${router.DASHBOARD}`} replace />;
+    }
+   
   }
  
   return <Navigate to={`${router.DASHBOARD}`} replace />;

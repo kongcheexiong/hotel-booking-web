@@ -6,6 +6,7 @@ import {
   Alert,
   Select,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import { SERVER_URL } from "../../../constants";
 ///import { roomTypeContext } from "../RoomType.context";
@@ -34,6 +35,7 @@ import "../style.css";
 import { borderRadius } from "@mui/system";
 
 import {font} from '../../../constants/index'
+import { MobileDatePicker } from "@mui/x-date-pickers";
 
 export default function AddEmployee() {
   const navigate = useNavigate();
@@ -114,16 +116,18 @@ export default function AddEmployee() {
           <CancelIcon fontSize="large" color="" />
         </IconButton>
       </Stack>
-      <hr />
+      
+      
       {/**form area */}
       <h3>ລົງທະບຽນ</h3>
 
       <Stack direction="column" spacing={1}>
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "auto auto auto",
-            columnGap: "30px",
+            display: "flex",
+            flexDirection: 'column'
+            //gridTemplateColumns: "auto auto auto",
+            //columnGap: "30px",
           }}
         >
           <Stack width="100%">
@@ -163,9 +167,10 @@ export default function AddEmployee() {
         <h3>ລາຍລະອຽດຜູ້ໃຊ້</h3>
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "auto auto auto",
-            columnGap: "30px",
+            display: "flex",
+           // gridTemplateColumns: "auto auto auto",
+           // columnGap: "30px",
+           flexDirection: 'column'
           }}
         >
            <Stack width="100%">
@@ -204,7 +209,7 @@ export default function AddEmployee() {
             <Stack>
               <label id="dateOfBirth">ວັນເດືອນປີເກີດ</label>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
+                <MobileDatePicker
                   inputFormat = 'dd/MM/yyyy'
                   value={date}
                   onChange={(value) => {
@@ -214,7 +219,7 @@ export default function AddEmployee() {
                     setDate(value);
                     setData({
                       ...data,
-                      birthday: saveDate,
+                      birthday: value,
                     });
                   }}
                   renderInput={(params) => (

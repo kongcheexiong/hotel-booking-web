@@ -3,13 +3,13 @@ import { Outlet, useNavigate } from "react-router-dom";
 import "./sideNav.css";
 import { router } from "../constants";
 //COLOR
-import { color } from "../constants";
+import { color, font, SERVER_URL } from "../constants";
 //import component
 import ImgContainer from "../components/ImgContainer";
 //icon
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import logo from "../logo.svg";
-import { Avatar, Badge, IconButton, Stack } from "@mui/material";
+import { Avatar, Badge, Chip, IconButton, Stack } from "@mui/material";
 import EqualizerIcon from "@mui/icons-material/Equalizer";
 import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
 import BuildIcon from "@mui/icons-material/Build";
@@ -20,6 +20,10 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import BadgeIcon from "@mui/icons-material/Badge";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+///
+import BookOnlineIcon from "@mui/icons-material/BookOnline";
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import BedroomParentIcon from '@mui/icons-material/BedroomParent';
 
 import GradingIcon from "@mui/icons-material/Grading";
 
@@ -28,6 +32,12 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import SummarizeIcon from "@mui/icons-material/Summarize";
 
 import { authContext, authInitialValue } from "../context/authContext";
+import { notificationContext } from "../context/notification";
+
+// io
+import { io } from "socket.io-client";
+
+const socket = io.connect(`${SERVER_URL}`, { transports: ["websocket"] });
 
 const myIcon = (img, title) => {
   return (
@@ -42,81 +52,160 @@ const myIcons = () => {
   <img src="../IMG.JPG" alt="img" height={50} />;
 };
 
-const sideNavData = [
-  {
-    name: "ໜ້າຫຼັກ",
-    icon: <EqualizerIcon fontSize="small" />,
-    router: `${router.DASHBOARD}`,
-  },
-  {
-    name: "ຈັດການຂໍ້ມູນພະນັກງານ",
-    icon: <BadgeIcon fontSize="small" />,
-    router: `${router.EMPLOYEEMANAGEMENT}`,
-  },
-  {
-    name: "ຈັດການຂໍ້ມູນປະເພດຫ້ອງ",
-    icon: <KingBedIcon fontSize="small" />,
-    router: `${router.ROOMTYPEMANAGEMENT}`,
-  },
-  {
-    name: "ຈັດການຂໍ້ມູນຫ້ອງ",
-    icon: <KingBedIcon fontSize="small" />,
-    router: `${router.ROOMMAGEMENT}`,
-  },
-  {
-    name: "ລາຍການຈອງ",
-    icon: <MenuBookIcon fontSize="small" />,
-    router: `${router.BOOKING}`,
-  },
-  {
-    name: "ລາຍການເຊັດອິນ",
-    icon: <GradingIcon fontSize="small" />,
-    router: `${router.CHECKIN}`,
-  },
-  {
-    name: "ລາຍງານ",
-    icon: <SummarizeIcon fontSize="small" />,
-    router: `${router.REPORT}`,
-  },
-];
-
-const SideNav = () => {
+function Layout() {
   const navigate = useNavigate();
-  const hotelName = localStorage.getItem('hotelName')
-  //const {auth,setAuth } = react.useContext(authContext);
+  const hotelName = localStorage.getItem("hotelName");
+  const userRole = localStorage.getItem("role");
+  const hotelID = localStorage.getItem("hotel");
+
+  const play = () => {
+    var beepsound = new Audio(
+      "https://www.soundjay.com/button/sounds/beep-01a.mp3"
+    );
+    //beepsound.play();
+  };
+
+  const { notification, setNotification } =
+    react.useContext(notificationContext);
+
+  const sideNavData = [
+    {
+      name: "ໜ້າຫຼັກ",
+      icon: <EqualizerIcon fontSize="small" />,
+      router: `${router.DASHBOARD}`,
+      access: ["OWNER", "STAFF", "ADMIN"],
+    },
+    {
+      name: "ຈັດການຂໍ້ມູນພະນັກງານ",
+      icon: <PeopleAltIcon fontSize="small" />,
+      router: `${router.EMPLOYEEMANAGEMENT}`,
+      access: ["OWNER", "ADMIN"],
+    },
+    {
+      name: "ຈັດການຂໍ້ມູນປະເພດຫ້ອງ",
+      icon: <BedroomParentIcon fontSize="small" />,
+      router: `${router.ROOMTYPEMANAGEMENT}`,
+      access: ["OWNER", "ADMIN"],
+    },
+    {
+      name: "ຈັດການຂໍ້ມູນຫ້ອງ",
+      icon: <KingBedIcon fontSize="small" />,
+      router: `${router.ROOMMAGEMENT}`,
+      access: ["OWNER", "ADMIN"],
+    },
+  
+    {
+      name: "ຈອງຫ້ອງ",
+      icon: <MenuBookIcon fontSize="small" />,
+      router: `${router.HOTEL_BOOKING}`,
+      access: ["OWNER", "STAFF", "ADMIN"],
+    },
+   
+    {
+      name: "ແຈ້ງເຂົ້າ",
+      icon: <GradingIcon fontSize="small" />,
+      router: `${router.CHECKIN}`,
+      access: ["OWNER", "STAFF", "ADMIN"],
+    },
+    {
+      name: "ລາຍການຈອງອອນໄລ",
+      icon: <BookOnlineIcon fontSize="small" />,
+      router: `${router.BOOKING}`,
+      Notification: notification,
+      access: ["OWNER", "STAFF", "ADMIN"],
+    },
+    {
+      name: "ລາຍງານ",
+      icon: <SummarizeIcon fontSize="small" />,
+      router: `${router.REPORT}`,
+      access: ["OWNER", "STAFF", "ADMIN"],
+    },
+    {
+      name: "ແກ້ໄຂການຂໍ້ມູນໂຮງແຮມ",
+      icon: <SettingsIcon fontSize="small" />,
+      router: `${router.SETTING}`,
+      access: ["OWNER"],
+    },
+  ];
+
+  // react.useEffect(() => {
+  //   socket.emit('hotel', hotelID)
+  //   socket.on('test', data => console.log(data))
+  //   socket.on('total', data => {
+  //     //setNotification(data)
+  //   })
+  // }, [socket]);
+  // const { notification, setNotification } = useContext(notificationContext);
+  //const hotelID = localStorage.getItem("hotel");
+
+  react.useEffect(() => {
+    socket.on("connect", () => {
+      console.log(socket.id);
+      socket.emit("hotel", hotelID);
+      socket.emit("private massage", hotelID);
+      socket.on("test", (data) => console.log(data));
+      socket.on(hotelID, (data) => {
+        play();
+        setNotification(data);
+        console.log(notification);
+      });
+    });
+  }, [socket]);
 
   return (
     <div>
-      <nav>
-        <ul>
-          <div
-            style={{
-              display: "flex",
-              //justifyContent: "space-between",
-              margin: "5px",
-              alignItems: "center",
-              columnGap: "20px",
-            }}
-          >
-            <img src="../IMG.JPG" alt="img" height={50} />
+      {/** this is side nav */}
+      <div>
+        <nav>
+          <ul>
+            {/** side nav header and logo name*/}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                margin: "5px",
+                alignItems: "center",
+                maxHeight: '40px'
+               
+              }}
+            >
+              {/**
+               * <img src="../IMG.JPG" alt="img" height={50} />
+               */}
 
-            <h1 style={{ color: "rgba(27, 21, 76, 1)" }}>{hotelName}</h1>
-          </div>
-          <hr />
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              height: "70%",
-            }}
-          >
-            <div>
-              {sideNavData?.map((data, index) => {
-                return (
-                  <a
+              <h1
+                style={{
+                  color: "rgba(27, 21, 76, 1)",
+                  fontFamily: `${font.LAO_FONT}`,
+                }}
+              >
+                {hotelName}
+              </h1>
+            </div>
+            <hr />
+            {/**side nav menu */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                height: "85%",
+              }}
+            >
+              {/** user menu */}
+              <div>
+                {sideNavData?.map((data, index) => {
+                  return (
+                    <a
                     key={index}
-                    onClick={() => navigate(data?.router)}
+                    onClick={() => {
+                   
+                      if(!data.router == ''){
+                        navigate(data?.router)
+
+                      }
+                      
+                    }}
                     style={{
                       backgroundColor:
                         location.pathname.split("/")[1] ===
@@ -125,41 +214,62 @@ const SideNav = () => {
                           : `rgba(255, 255, 255, 1)`,
                     }}
                   >
-                    <Stack direction="row" alignItems="center" spacing={2}>
-                      {data?.icon}
-                      <div>{data?.name}</div>
+                    <Stack direction='column'>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      justifyContent="space-between"
+                      sx={{
+                        paddingRight: "30px",
+                      }}
+                    >
+                      <Stack direction="row" spacing={1}>
+                        <div>{data?.icon}</div>
+                        <div>{data?.name}</div>
+                      </Stack>
+                      <div>
+                        {data.Notification > 0 ? (
+                          <Chip
+                            label={notification}
+                            color="error"
+                            size="small"
+                          />
+                        ) : null}
+                      </div>
                     </Stack>
-                  </a>
-                );
-              })}
-            </div>
-            <div>
-              <a>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <LogoutIcon fontSize="small" />
-                  <div
-                    onClick={() => {
-                      localStorage.clear()
-                      navigate(`/`)
-                    }}
-                  >
-                    ອອກຈາກລະບົບ
-                  </div>
-                </Stack>
-              </a>
-            </div>
-          </div>
-        </ul>
-      </nav>
-    </div>
-  );
-};
 
-function Layout() {
-  return (
-    <div>
-      <SideNav />
+                    </Stack>
+                   
+                    
+                  </a>
+                  
+                  );
+                })}
+              </div>
+              {/** log out menu */}
+              <div>
+                <a>
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <LogoutIcon fontSize="small" />
+                    <div
+                      onClick={() => {
+                        localStorage.clear();
+                        navigate(`/`);
+                      }}
+                    >
+                      ອອກຈາກລະບົບ
+                    </div>
+                  </Stack>
+                </a>
+              </div>
+            </div>
+          </ul>
+        </nav>
+      </div>
+      {/*** this is header layout */}
       <div style={{ marginLeft: "280px" }}>
+        
         <Stack
           direction="row-reverse"
           alignItems="center"
@@ -167,15 +277,21 @@ function Layout() {
           sx={{
             backgroundColor: "#F8F9FA",
             height: "60px",
-            paddingRight: "50px",
+            paddingRight: "30px",
           }}
         >
+          
           <Stack direction="row-reverse" spacing={0} alignItems="center">
             {/**profile */}
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                play();
+                console.log("test beep");
+              }}
+            >
               <Avatar
                 alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
+                //src="/static/images/avatar/1.jpg"
                 sx={{ width: 30, height: 30 }}
               />
             </IconButton>
@@ -185,16 +301,17 @@ function Layout() {
               className="en"
               style={{ fontSize: "16px", fontWeight: "500" }}
             >
-              {localStorage.getItem('userName')}
+              {localStorage.getItem("userName")}
             </span>
           </Stack>
 
           {/**notification */}
           <IconButton>
-            <Badge color="secondary" badgeContent={12}>
+            <Badge color="secondary" badgeContent={notification}>
               <NotificationsIcon fontSize="medium" />
             </Badge>
           </IconButton>
+          
         </Stack>
         <div style={{ margin: "30px 30px", padding: "", backgroundColor: "" }}>
           <Outlet />

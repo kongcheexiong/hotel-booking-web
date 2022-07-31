@@ -1,9 +1,19 @@
 import * as React from "react";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
-import { IconButton, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import {
+  IconButton,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Stack,
+  TextField,
+  DialogActions,
+  Button
+} from "@mui/material";
 
-import SearchArea from './SearchArea'
+import SearchArea from "./SearchArea";
 
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -11,22 +21,25 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Chip } from "@mui/material";
 
 import { font } from "../../../constants/index";
-import { datagridSx } from "../../../style";
+import { datagridSx, btnStyle } from "../../../style";
 import { useFormatDate } from "../../../services/formateDate";
 import { counterContext } from "../../../context/counter";
 import { roomContext } from "../../../context/room.context";
 
-import EditForm from './EditForm'
+import EditForm from "./EditForm";
 import { SERVER_URL } from "../../../constants/index";
+
+import { textStyle } from "../../../style";
+
+const rows = [{ _id: 1, roomNumber: "F01", type: "VIP 1", isAvailable: true }];
 
 export default function PageSizeCustomOptions() {
   //const roomType = React.useContext(roomTypeContext)
-  const [editOpen, setEditOpen] = React.useState(false)
-  const handleOpenEditForm = ()=> setEditOpen(!editOpen)
-  const [updatedData, setUpdatedData] = React.useState()
+  const [editOpen, setEditOpen] = React.useState(false);
+  const handleOpenEditForm = () => setEditOpen(!editOpen);
+  const [updatedData, setUpdatedData] = React.useState();
 
-
-  const {room, setRoom} = React.useContext(roomContext)
+  const { room, setRoom } = React.useContext(roomContext);
   const { value, setValue } = React.useContext(counterContext);
 
   const hotelID = localStorage.getItem("hotel");
@@ -41,14 +54,19 @@ export default function PageSizeCustomOptions() {
 
   const [isLoading, setloading] = React.useState(true);
   //const [imgSrc, setImgSrc] = React.useState([]);
+
+  const [deleteId, setDeleteId] = React.useState({});
+  const [popUpConfirm, setPopUpConfirm] = React.useState(false);
+
   const [sortModel, setSortModel] = React.useState([
     {
-      field: 'updatedAt',
-      sort: 'desc'
+      field: "updatedAt",
+      sort: "desc",
     },
   ]);
 
   const fetchData = async () => {
+    setRoom([]);
     setloading(true);
 
     var config = {
@@ -62,10 +80,8 @@ export default function PageSizeCustomOptions() {
 
     await axios(config)
       .then((response) => {
-        //console.log(response.data);
-        //setResData(response.data);
-        setRooms(response.data.rooms);
-        setRoom({...room, roomData: response.data.rooms})
+        setRoom(response.data.rooms);
+
         setloading(false);
         setError(false);
       })
@@ -74,12 +90,8 @@ export default function PageSizeCustomOptions() {
         setError(true);
         setloading(false);
       });
-
   };
-  const deleteUser = async ({ room = "", roomtype = "" }) => {
-   
- 
-
+  const deleteUser = async () => {
     var config = {
       method: "delete",
       url: `${SERVER_URL}/api/delete/room`,
@@ -88,8 +100,8 @@ export default function PageSizeCustomOptions() {
       },
       timeout: 5000,
       data: {
-        id: room,
-        roomType: roomtype,
+        id: deleteId.room,
+        roomType: deleteId.roomtype,
       },
     };
 
@@ -97,7 +109,7 @@ export default function PageSizeCustomOptions() {
       .then((res) => {
         console.log(res.data);
         setValue((value) => value + 1);
-        alert("Deleted successfully");
+        //alert("Deleted successfully");
       })
       .catch((err) => {
         console.log(err);
@@ -112,6 +124,29 @@ export default function PageSizeCustomOptions() {
   }, [value]);
 
   const [pageSize, setPageSize] = React.useState(10);
+
+  const [search, setSearch] = React.useState("");
+  const hotel = localStorage.getItem("hotel");
+
+  const fetchDataById = async (data) => {
+    setRoom([])
+    setloading(true)
+    // setRoom({ ...room, roomLoading: true, roomErr: false, roomSuccess: false });
+    await axios
+      .get(`${SERVER_URL}/api/room?hotelId=${hotel}&roomName=${data}`, {
+        timeout: 5000,
+      })
+      .then((res) => {
+        setRoom(res.data);
+        console.log(room);
+        setloading(false)
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err);
+      });
+  };
+
   const columns = [
     {
       field: "action",
@@ -127,11 +162,11 @@ export default function PageSizeCustomOptions() {
                   room: "" + parram.row._id,
                   roomtype: "" + parram.row.roomType._id,
                 });
-
-                deleteUser({
-                  room: "" + parram.row._id,
-                  roomtype: "" + parram.row.roomType._id,
+                setDeleteId({
+                  room: parram.row._id,
+                  roomtype: parram.row.roomType._id,
                 });
+                setPopUpConfirm(true)
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -139,8 +174,8 @@ export default function PageSizeCustomOptions() {
             <IconButton
               onClick={() => {
                 console.log(parram.row);
-                setUpdatedData(parram.row)
-                handleOpenEditForm()
+                setUpdatedData(parram.row);
+                handleOpenEditForm();
                 //console.log(resData);
               }}
             >
@@ -203,48 +238,130 @@ export default function PageSizeCustomOptions() {
     },
   ];
 
-  const rows = [
-    { _id: 1, roomNumber: "F01", type: "VIP 1", isAvailable: true },
-  ];
-
   return (
     <div>
-      <SearchArea/>
-      <br/>
-      <hr/>
-
-      {error && <h1>there is an error in loading</h1>}
-      {isLoading ? (
-        <h1>Loading...</h1>
-      ) : (
-        <div style={{ height: 660, width: "100%" }}>
-          <DataGrid
-            sx={{ ...datagridSx, marginTop: "10px" }}
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[5, 10, 20]}
-            pagination
-            rows={room.roomData}
-            columns={columns}
-            disableSelectionOnClick
-            disableColumnMenu
-            getRowId={(row) => row._id}
-            sortModel={sortModel}
-            onSortModelChange = {(model)=> setSortModel(model)}
+      <br />
+      <Divider />
+      <Stack
+        direction="row"
+        spacing={1}
+        justifyContent="flex-end"
+        alignItems="center"
+      >
+        {/**search */}
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          sx={{ marginTop: "20px" }}
+        >
+          <label>ຄົ້ນຫາ:</label>
+          <TextField
+            placeholder="ເບີຫ້ອງ"
+            sx={{ ...textStyle, width: 200 }}
+            onChange={(e) => {
+              e.preventDefault();
+              setSearch(e.target.value);
+              
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (e.target.value === "") {
+                  fetchData();
+                  return;
+                }
+                fetchDataById(e.target.value)
+              }
+            }}
           />
-          {/**show update form */}
-          <Dialog
-            open={editOpen}
-            onClose={handleOpenEditForm}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
+        </Stack>
+        {/**end of search */}
+      </Stack>
+      <div style={{ height: 660, width: "100%" }}>
+        {/**table */}
+        <DataGrid
+          sx={{ ...datagridSx, marginTop: "10px" }}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[5, 10, 20]}
+          pagination
+          rows={room}
+          columns={columns}
+          disableSelectionOnClick
+          disableColumnMenu
+          getRowId={(row) => row._id}
+          sortModel={sortModel}
+          onSortModelChange={(model) => setSortModel(model)}
+          loading={isLoading}
+          //error={error}
+        />
+        {/**show update form */}
+        <Dialog
+          open={editOpen}
+          onClose={handleOpenEditForm}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <EditForm updatedData={updatedData} />
+          </DialogContent>
+        </Dialog>
+        {/**show confirm dialog */}
+        <Dialog
+          fullWidth
+          maxWidth="xs"
+          open={popUpConfirm}
+          onClose={() => setPopUpConfirm(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            style={{
+              " & .MuiDialogTitle-root": {
+                fontFamily: `${font.LAO_FONT}`,
+              },
+            }}
+            id="alert-dialog-title"
           >
-            <DialogContent>
-              <EditForm updatedData={updatedData} />
-            </DialogContent>
-          </Dialog>
-        </div>
-      )}
+            <span
+              style={{
+                fontFamily: `${font.LAO_FONT}`,
+              }}
+            >
+              ຢືນຢັນ
+            </span>
+          </DialogTitle>
+          <DialogContent>
+            <span
+              style={{
+                fontFamily: `${font.LAO_FONT}`,
+              }}
+            >
+              ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ?{" "}
+            </span>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              sx={{ ...btnStyle }}
+              onClick={() => {
+                setPopUpConfirm(false);
+                if(deleteId.room && deleteId.roomtype){
+                  deleteUser()
+                  setValue(() => value + 1);
+
+                }
+                
+                
+              }}
+            >
+              ຕົກລົງ
+            </Button>
+            <Button sx={{ ...btnStyle }} onClick={() => setPopUpConfirm(false)}>
+              ຍົກເລີກ
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 }
