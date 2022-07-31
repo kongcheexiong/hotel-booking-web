@@ -28,7 +28,13 @@ export const router = {
     ROOMMAGEMENT:'/room',
     ROOMTYPEMANAGEMENT: '/roomType',
     LOGIN: '/login',
-    REGISTER: '/register'
+    REGISTER: '/register',
+    //route for system admin
+    ADMIN: '/admin_page_login',
+    ADMIN_DASHBOARD: '/admin_dashboard',
+    ALL_HOTEL: '/all_hotel',
+    ALL_USER: '/all_customer',
+    MAP: '/hotel_map'
 
 
 }

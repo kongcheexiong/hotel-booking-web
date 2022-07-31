@@ -29,6 +29,11 @@ import { roomContext } from "../../../context/room.context";
 
 import axios from "axios";
 
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { PrintComponent } from "./PrintComponent";
+import { PrintContext } from "../../../context/print.context";
+import {useReactToPrint} from 'react-to-print'
+
 export default function Header() {
   const {room ,setRoom} =react.useContext(roomContext)
 
@@ -49,6 +54,11 @@ export default function Header() {
   const [err,setErr] = react.useState(false)
   const [success,setSuccess] = react.useState(false)
   const [loading,setLoading] = react.useState(false)
+
+  const componentRef = react.useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
   const getRoomtypeData = async () => {
     await axios
@@ -152,6 +162,36 @@ export default function Header() {
         >
           reload
         </Button>
+        <div
+      style={{ display: "none" }}// This make ComponentToPrint show   only while printing
+      > 
+       <PrintComponent ref={componentRef} />
+      </div>
+ 
+      <Button
+        onClick={() => {
+          //setValue( value => value+1)
+          //generatePDF(resData)
+          handlePrint()
+        }}
+        color="error"
+        disableElevation
+        sx={{
+          ...btnStyle,
+          "&.MuiButton-root": {
+            fontFamily: `${font.LAO_FONT}`,
+            width: "150px",
+            fontWeight: "500",
+            height: 30,
+            fontSize: "14px",
+          },
+        }}
+        size="small"
+        variant="outlined"
+        startIcon={<PictureAsPdfIcon />}
+      >
+        ນໍາອອກເປັນ PDF
+      </Button>
         {/** show pop up to add new room */}
         <Dialog
           open={isOpen}

@@ -30,6 +30,8 @@ import EditForm from "./EditForm";
 import { SERVER_URL } from "../../../constants/index";
 
 import { textStyle } from "../../../style";
+import { PrintContext } from "../../../context/print.context";
+
 
 const rows = [{ _id: 1, roomNumber: "F01", type: "VIP 1", isAvailable: true }];
 
@@ -58,6 +60,9 @@ export default function PageSizeCustomOptions() {
   const [deleteId, setDeleteId] = React.useState({});
   const [popUpConfirm, setPopUpConfirm] = React.useState(false);
 
+
+  const {Print, setPrint} = React.useContext(PrintContext)
+
   const [sortModel, setSortModel] = React.useState([
     {
       field: "updatedAt",
@@ -66,6 +71,8 @@ export default function PageSizeCustomOptions() {
   ]);
 
   const fetchData = async () => {
+    setPrint([])
+ 
     setRoom([]);
     setloading(true);
 
@@ -81,6 +88,7 @@ export default function PageSizeCustomOptions() {
     await axios(config)
       .then((response) => {
         setRoom(response.data.rooms);
+        
 
         setloading(false);
         setError(false);
@@ -138,6 +146,7 @@ export default function PageSizeCustomOptions() {
       })
       .then((res) => {
         setRoom(res.data);
+        setPrint(res.data)
         console.log(room);
         setloading(false)
       })

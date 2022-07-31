@@ -22,8 +22,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 ///
 import BookOnlineIcon from "@mui/icons-material/BookOnline";
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import BedroomParentIcon from '@mui/icons-material/BedroomParent';
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import BedroomParentIcon from "@mui/icons-material/BedroomParent";
 
 import GradingIcon from "@mui/icons-material/Grading";
 
@@ -93,14 +93,14 @@ function Layout() {
       router: `${router.ROOMMAGEMENT}`,
       access: ["OWNER", "ADMIN"],
     },
-  
+
     {
       name: "ຈອງຫ້ອງ",
       icon: <MenuBookIcon fontSize="small" />,
       router: `${router.HOTEL_BOOKING}`,
       access: ["OWNER", "STAFF", "ADMIN"],
     },
-   
+
     {
       name: "ແຈ້ງເຂົ້າ",
       icon: <GradingIcon fontSize="small" />,
@@ -125,6 +125,24 @@ function Layout() {
       icon: <SettingsIcon fontSize="small" />,
       router: `${router.SETTING}`,
       access: ["OWNER"],
+    },
+    {
+      name: "ຈັດການຂໍ້ມູນໂຮງແຮມ",
+      icon: <SettingsIcon fontSize="small" />,
+      router: `${router.ALL_HOTEL}`,
+      access: ["SYSTEM"],
+    },
+    {
+      name: "ແຜນທີ່ໂຮງແຮມ",
+      icon: <SettingsIcon fontSize="small" />,
+      router: `${router.MAP}`,
+      access: ["SYSTEM"],
+    },
+    {
+      name: "ຂໍ້ມູນຜູ້ໃຊ້ແອັບ BanHao",
+      icon: <SettingsIcon fontSize="small" />,
+      router: `${router.ALL_USER}`,
+      access: ["SYSTEM"],
     },
   ];
 
@@ -165,8 +183,7 @@ function Layout() {
                 justifyContent: "center",
                 margin: "5px",
                 alignItems: "center",
-                maxHeight: '40px'
-               
+                maxHeight: "40px",
               }}
             >
               {/**
@@ -195,56 +212,51 @@ function Layout() {
               {/** user menu */}
               <div>
                 {sideNavData?.map((data, index) => {
-                  return (
-                    <a
-                    key={index}
-                    onClick={() => {
-                   
-                      if(!data.router == ''){
-                        navigate(data?.router)
-
-                      }
-                      
-                    }}
-                    style={{
-                      backgroundColor:
-                        location.pathname.split("/")[1] ===
-                        data?.router.split("/")[1]
-                          ? "#F8F9FA"
-                          : `rgba(255, 255, 255, 1)`,
-                    }}
-                  >
-                    <Stack direction='column'>
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      justifyContent="space-between"
-                      sx={{
-                        paddingRight: "30px",
-                      }}
-                    >
-                      <Stack direction="row" spacing={1}>
-                        <div>{data?.icon}</div>
-                        <div>{data?.name}</div>
-                      </Stack>
-                      <div>
-                        {data.Notification > 0 ? (
-                          <Chip
-                            label={notification}
-                            color="error"
-                            size="small"
-                          />
-                        ) : null}
-                      </div>
-                    </Stack>
-
-                    </Stack>
-                   
-                    
-                  </a>
-                  
-                  );
+                  if (data.access.includes(userRole)) {
+                    return (
+                      <a
+                        key={index}
+                        onClick={() => {
+                          if (!data.router == "") {
+                            navigate(data?.router);
+                          }
+                        }}
+                        style={{
+                          backgroundColor:
+                            location.pathname.split("/")[1] ===
+                            data?.router.split("/")[1]
+                              ? "#F8F9FA"
+                              : `rgba(255, 255, 255, 1)`,
+                        }}
+                      >
+                        <Stack direction="column">
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={2}
+                            justifyContent="space-between"
+                            sx={{
+                              paddingRight: "30px",
+                            }}
+                          >
+                            <Stack direction="row" spacing={1}>
+                              <div>{data?.icon}</div>
+                              <div>{data?.name}</div>
+                            </Stack>
+                            <div>
+                              {data.Notification > 0 ? (
+                                <Chip
+                                  label={notification}
+                                  color="error"
+                                  size="small"
+                                />
+                              ) : null}
+                            </div>
+                          </Stack>
+                        </Stack>
+                      </a>
+                    );
+                  }
                 })}
               </div>
               {/** log out menu */}
@@ -269,7 +281,6 @@ function Layout() {
       </div>
       {/*** this is header layout */}
       <div style={{ marginLeft: "280px" }}>
-        
         <Stack
           direction="row-reverse"
           alignItems="center"
@@ -280,7 +291,6 @@ function Layout() {
             paddingRight: "30px",
           }}
         >
-          
           <Stack direction="row-reverse" spacing={0} alignItems="center">
             {/**profile */}
             <IconButton
@@ -311,7 +321,6 @@ function Layout() {
               <NotificationsIcon fontSize="medium" />
             </Badge>
           </IconButton>
-          
         </Stack>
         <div style={{ margin: "30px 30px", padding: "", backgroundColor: "" }}>
           <Outlet />

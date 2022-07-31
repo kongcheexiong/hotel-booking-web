@@ -1,6 +1,7 @@
 import * as react from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
+import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
 //components
 
@@ -18,6 +19,14 @@ import AddEmployee from "../pages/employee/components/AddEmployee";
 import Register from "../pages/register/Register";
 import RegisterInfo from "../pages/registerInfo/register.info";
 import AddCheckin from "../pages/AddNewCheckin/AddCheckin";
+import Landing from "../pages/advertise";
+
+//system route
+import AdminLogin from "../pages/admin/Login";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import HotelMap from "../pages/admin/HotelMap";
+import AllHotel from "../pages/admin/AllHotel";
+import AllCustom from "../pages/admin/AllCustom";
 
 import PageNotFound from "../pages/pageNotFound";
 
@@ -27,6 +36,11 @@ import { authContext } from "../context/authContext";
 
 //router
 import { router } from "../constants/index";
+import { Hotel } from "@mui/icons-material";
+
+import UserDetail from "../pages/registerInfo/components/userDetail";
+import HotelDetail from "../pages/registerInfo/components/hotelDetail";
+
 const Test = () => <h1>test</h1>;
 
 function MyRouter() {
@@ -71,15 +85,48 @@ function MyRouter() {
       myRoute: `${router.CHECKIN}/add`,
       component: <AddCheckin />,
     },
-
+  ];
+  const adminRoute = [
+    {
+      myRoute: `${router.ADMIN_DASHBOARD}`,
+      component: <AdminDashboard />,
+    },
+    {
+      myRoute: `${router.ALL_HOTEL}`,
+      component: <AllHotel />,
+    },
+    {
+      myRoute: `${router.ALL_USER}`,
+      component: <AllCustom />,
+    },
+    {
+      myRoute: `${router.MAP}`,
+      component: <HotelMap />,
+    },
   ];
   return (
     <Router>
       <Routes>
         {/** not log in */}
+        <Route exact path={router.ADMIN} element={<AdminLogin />} />
+
+        <Route exact path="/public" element={<Landing />} />
         <Route exact path="/" element={<Login />} />
-        <Route exact path={router.REGISTER} element={<Register/>} />
-        <Route exact path= {`${router.REGISTER}/info`} element={<RegisterInfo/>}/>
+        <Route exact path={router.REGISTER} element={<Register />} />
+
+        <Route element={<RegisterInfo />}>
+          <Route
+            exact
+            path={`${router.REGISTER}/info`}
+            element={<UserDetail />}
+          />
+          <Route
+            exact
+            path={`${router.REGISTER}/hotel`}
+            element={<HotelDetail />}
+          />
+        </Route>
+
         {/**log in successfully */}
         <Route element={<Layout />}>
           {privateRoute.map((data, index) => {
@@ -93,7 +140,22 @@ function MyRouter() {
             );
           })}
         </Route>
-        <Route exact path= '*' element={<PageNotFound/>}/>
+        {/**admin user in successfully */}
+        <Route element={<Layout />}>
+          {adminRoute.map((data, index) => {
+            return (
+              <Route
+                key={index}
+                exact
+                path={data.myRoute}
+                element={
+                  <ProtectedAdminRoute>{data.component}</ProtectedAdminRoute>
+                }
+              />
+            );
+          })}
+        </Route>
+        <Route exact path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   );

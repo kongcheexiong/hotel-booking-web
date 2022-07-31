@@ -15,7 +15,7 @@ export const CreateCheckInProvider = (props) => {
     verify: '',
     checkInDate: Date.now(),
     checkOutDate: "",
-    isCheckOOut: false,
+    isCheckOut: false,
     note: "",
     reference: '',
     isPaid: false

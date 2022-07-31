@@ -3,7 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 
 import MyRouter from "./routes/index";
-import Test from "./routes/index.test";
+
 import { SERVER_URL } from "./constants";
 import { notificationContext } from "./context/notification";
 

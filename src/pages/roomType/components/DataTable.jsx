@@ -42,6 +42,8 @@ import { fontFamily } from "@mui/system";
 import SearchArea from "./SearchArea";
 import { SERVER_URL } from "../../../constants/index";
 
+import { PrintContext } from "../../../context/print.context";
+
 export default function PageSizeCustomOptions() {
   const { roomType, setRoomType } = React.useContext(roomTypeContext);
 
@@ -68,6 +70,7 @@ export default function PageSizeCustomOptions() {
   //const [dataRows, setDataRows] = React.useState([]);
   const [error, setError] = React.useState(false);
 
+
   const [isLoading, setloading] = React.useState(true);
   //const [imgSrc, setImgSrc] = React.useState([]);
   const [confirmDeleted, setConfirmDeleted] = React.useState(false);
@@ -78,6 +81,8 @@ export default function PageSizeCustomOptions() {
 
   const [deleteId, setDeleteId] = React.useState();
   const [popUpConfirm, setPopUpConfirm] = React.useState(false);
+
+  const {Print, setPrint} = React.useContext(PrintContext)
 
   const fetchData = async () => {
     setRoomType([])
@@ -98,6 +103,7 @@ export default function PageSizeCustomOptions() {
         
         await setRoomType(res.data.roomTypes);
         await setloading(false);
+        setPrint(res.data.roomTypes)
         
       })
       .catch((err) => {
@@ -145,6 +151,7 @@ export default function PageSizeCustomOptions() {
 
   React.useEffect(() => {
     //setloading(true);
+    setPrint([])
  
       fetchData();
 
