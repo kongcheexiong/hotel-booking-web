@@ -126,6 +126,17 @@ export default function Table() {
       });
   };
 
+  const cancelBooking = async (id)=>{
+    axios.put(`${SERVER_URL}/api/cancel/booking`,{
+      id: id
+    })
+    .then((res)=> {
+      console.log(res.data)
+      setValue(value => value+1)
+    })
+    .catch((err)=> console.log(err))
+  }
+
   const columns = [
     {
       field: "action",
@@ -149,6 +160,7 @@ export default function Table() {
               </Tooltip>
               <Tooltip title="ລົບອອກ">
                 <IconButton onClick={()=>{
+                  cancelBooking(parram.row._id)
                   
                 }}>
                   <DeleteForever />

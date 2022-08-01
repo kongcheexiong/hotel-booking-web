@@ -19,35 +19,33 @@ import { PrintProvider } from "./context/print.context";
 import { CheckInContextProvider } from "./context/checkin.context";
 import { EmployeeProvider } from "./context/employee.context";
 
-
-
 import "mapbox-gl/dist/mapbox-gl.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <CreateCheckInProvider>
       <EmployeeProvider>
-      <CheckInContextProvider>
-      <PrintProvider>
-      <RegisterProgressProvider>
-      <BookingProvider>
-        <NotificationProvider>
-          <RegisterProvider>
-            <DataProvider>
-              <RoomProvider>
-                <RoomTypeProvider>
-                  <CounterProvider>
-                    <App />
-                  </CounterProvider>
-                </RoomTypeProvider>
-              </RoomProvider>
-            </DataProvider>
-          </RegisterProvider>
-        </NotificationProvider>
-      </BookingProvider>
-      </RegisterProgressProvider>
-      </PrintProvider>
-      </CheckInContextProvider>
+        <CheckInContextProvider>
+          <PrintProvider>
+            <RegisterProgressProvider>
+              <BookingProvider>
+                <NotificationProvider>
+                  <RegisterProvider>
+                    <DataProvider>
+                      <RoomProvider>
+                        <RoomTypeProvider>
+                          <CounterProvider>
+                            <App />
+                          </CounterProvider>
+                        </RoomTypeProvider>
+                      </RoomProvider>
+                    </DataProvider>
+                  </RegisterProvider>
+                </NotificationProvider>
+              </BookingProvider>
+            </RegisterProgressProvider>
+          </PrintProvider>
+        </CheckInContextProvider>
       </EmployeeProvider>
     </CreateCheckInProvider>
   </React.StrictMode>
