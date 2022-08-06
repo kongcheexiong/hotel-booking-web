@@ -11,17 +11,17 @@ import MapGl, {
 } from "react-map-gl";
 
 import RoomIcon from "@mui/icons-material/Room";
-import {registerContext} from '../../../context/register.context'
+import { registerContext } from "../../../context/register.context";
 export default function Map() {
   const [popup, setPopup] = React.useState(true);
-  const {registerInfo, setRegisterInfo} = React.useContext(registerContext)
+  const { registerInfo, setRegisterInfo } = React.useContext(registerContext);
 
   const [marker, setMarker] = React.useState({
     lat: "",
     lng: "",
   });
 
-  const currentLocate = ()=>{
+  const currentLocate = () => {
     navigator.geolocation.getCurrentPosition((pos) => {
       setMarker({
         ...marker,
@@ -30,7 +30,7 @@ export default function Map() {
       });
       console.log(marker);
     });
-  }
+  };
 
   React.useEffect(() => {
     navigator.geolocation.getCurrentPosition((pos) => {
@@ -39,10 +39,9 @@ export default function Map() {
         lat: pos.coords.latitude,
         lng: pos.coords.longitude,
       });
-      setRegisterInfo({...registerInfo, lat: marker.lat, lng: marker.lng})
+      setRegisterInfo({ ...registerInfo, lat: marker.lat, lng: marker.lng });
       console.log(marker);
     });
-    
   }, []);
 
   return (
@@ -61,15 +60,18 @@ export default function Map() {
         latitude={marker.lat}
         anchor="center"
         draggable
-        
         onDragEnd={(e) => {
           setMarker({
             lat: e.lngLat.lat,
             lng: e.lngLat.lng,
           });
-          setRegisterInfo({...registerInfo, lat: marker.lat, lng: marker.lng})
+          setRegisterInfo({
+            ...registerInfo,
+            lat: e.lngLat.lat,
+            lng: e.lngLat.lng,
+          });
 
-          console.log(marker)
+          console.log(marker);
         }}
       >
         <RoomIcon color="error" />
@@ -79,7 +81,6 @@ export default function Map() {
         trackUserLocation={true}
         showAccuracyCircle={false}
       />
-      
 
       <NavigationControl />
       {/*popup && (

@@ -10,9 +10,13 @@ import {
   Divider,
   Tooltip,
   TextField,
+  Autocomplete,
+  Box,
+  MenuItem,
+  Select,
 } from "@mui/material";
 
-import TitlebarImageList from "../employee/components/ImageList";
+import TitlebarImageList from "./ImageList";
 import * as React from "react";
 import axios from "axios";
 import { textStyle } from "../../style";
@@ -41,11 +45,25 @@ import MapDialog from "./map.dialog";
 
 import CloudDoneIcon from "@mui/icons-material/CloudDone";
 
+import MapDialogEdit from "./map.dialog.editform";
+
+import { EditHotelContext } from "../../context/edithotel.context";
+
+import laoInfo from "../../../lao.json";
+
 export default function AllHotel() {
+  const { EditHotel, setEditHotel } = React.useContext(EditHotelContext);
   const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false);
   const [popUpImg, setPopupImg] = React.useState(false);
   const handlePopUpImg = () => setPopupImg(!popUpImg);
   const [imgData, setImgData] = React.useState();
+
+  const [popUpHotelUpdate, setPopupHotelUpdate] = React.useState(false);
+  const [hotelUpdateData, setHotelUpdateData] = React.useState({});
+
+  const [province, setProvince] = React.useState([]);
+  const [district, setDistrict] = React.useState([]);
+  const [village, setVillage] = React.useState([]);
 
   const [map, setMap] = React.useState();
 
@@ -54,6 +72,44 @@ export default function AllHotel() {
   const [resData, setResData] = React.useState([]);
 
   const { value, setValue } = React.useContext(counterContext);
+
+  const [showVillage, setShowVillage] = React.useState("");
+  const [showDistrict, setShowDistrict] = React.useState("");
+  const [showProvince, setShowProvince] = React.useState("");
+  const [files, setFiles] = React.useState("");
+
+  const [updating, setUpdating] = React.useState(false);
+  const [updateSuccess, setUpdateSuccess] = React.useState(false);
+  const [updateErr, setUpdateErr] = React.useState(false);
+
+  const [popUpConfirm, setPopUpConfirm] = React.useState(false)
+
+
+
+  const handleUploadImg = async () => {
+    setLoading(true);
+    let data = new FormData();
+
+    for (const i of Object.keys(files)) {
+      data.append("file", files[i]);
+    }
+
+    var config = {
+      method: "post",
+      url: `${SERVER_URL}/api/upload/images`,
+      data: data,
+      timeout: 40000,
+    };
+
+    await axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+        setUpdateErr(true);
+      });
+  };
 
   const fetchData = async () => {
     setResData([]);
@@ -99,6 +155,31 @@ export default function AllHotel() {
       .then((res) => console.log(res.data))
       .catch((err) => console.error(err));
   };
+  const deleteHotel = async (hotelId)=>{
+    axios
+      .delete(`${SERVER_URL}/api/delete/all-user-hotel?hotelId=${hotelId}`)
+      .then(res => {
+        console.log(res.data)
+        setValue(value => value+1)
+      })
+      .catch(err => console.error(err));
+
+  }
+
+  const updateDataHotel = async () => {
+    axios
+      .put(`${SERVER_URL}/api/update/hotel`, {
+        id: hotelUpdateData?._id,
+        data: EditHotel
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        setUpdateErr(true);
+      });
+  };
 
   const columns = [
     {
@@ -107,19 +188,29 @@ export default function AllHotel() {
       width: 100,
       sortable: false,
       renderCell: (parram) => {
-        if (parram.row.hotel.isApproved) {
+        if (parram.row?.hotel?.isApproved) {
           return (
             <Stack direction="row" justifyContent="center">
               <Tooltip title="ແກ້ໄຂ">
-                <IconButton onClick={() => {setPopUpUpdateForm(true)}}>
+                <IconButton
+                  onClick={() => {
+                    setPopupHotelUpdate(true);
+                    setMap(parram.row);
+                    setHotelUpdateData(parram.row.hotel);
+                    setEditHotel(parram.row.hotel);
+                  }}
+                >
                   <EditIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
               <Tooltip title="ລົບ">
-              <IconButton onClick={() => {}}>
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-          </Tooltip>
+                <IconButton onClick={() => {
+                  setPopUpConfirm(true)
+                  setEditHotel(parram.row.hotel);
+                }}>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Stack>
           );
         }
@@ -422,7 +513,7 @@ export default function AllHotel() {
         </DialogContent>
       </Dialog>
 
-      {/**show update form */}
+      {/**show map */}
       <Dialog
         fullWidth
         maxWidth="sm"
@@ -455,8 +546,10 @@ export default function AllHotel() {
       <Dialog
         fullWidth
         maxWidth="sm"
-        open={popUpUpdateForm}
-        onClose={() => {}}
+        open={popUpHotelUpdate}
+        onClose={() => {
+          setPopupHotelUpdate(false);
+        }}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -473,12 +566,177 @@ export default function AllHotel() {
               fontFamily: `${font.LAO_FONT}`,
             }}
           >
-            ແຜນທີ່
+            ແກ້ໄຂຂໍ້ມູນໂຮງແຮມ
           </span>
         </DialogTitle>
         <DialogContent>
-          <MapDialog data={map} />
+          <div
+            style={{
+              height: "80%",
+              rowGap: "20px",
+            }}
+          >
+            <Stack>
+              <label htmlFor="">ຊື່ໂຮງແຮມ</label>
+              <TextField
+                sx={{ ...textStyle, width: "100%" }}
+                defaultValue={hotelUpdateData?.hotelName}
+                onChange={(e) => {
+                  setEditHotel({ ...EditHotel, hotelName: e.target.value });
+                }}
+              />
+            </Stack>
+            <Stack>
+              <label htmlFor="">ເບີໂທ</label>
+              <TextField
+                defaultValue={hotelUpdateData?.phone}
+                sx={{ ...textStyle, width: "100%" }}
+                onChange={(e) => {
+                  setEditHotel({ ...EditHotel, phone: e.target.value });
+                }}
+              />
+            </Stack>
+            <Stack>
+              <label htmlFor="">Email</label>
+              <TextField
+                defaultValue={hotelUpdateData?.email}
+                sx={{ ...textStyle, width: "100%" }}
+                onChange={(e) => {
+                  setEditHotel({ ...EditHotel, email: e.target.value });
+                }}
+              />
+            </Stack>
+            <Stack spacing={0}>
+              <label>ແຂວງ</label>
+              <TextField
+                defaultValue={hotelUpdateData?.province}
+                sx={{ ...textStyle, width: "100%" }}
+                onChange={(e) => {
+                  setEditHotel({ ...EditHotel, province: e.target.value });
+                }}
+              />
+            </Stack>
+            <Stack spacing={0}>
+              <label>ເມືອງ</label>
+              <TextField
+                defaultValue={hotelUpdateData?.city}
+                sx={{ ...textStyle, width: "100%" }}
+                onChange={(e) => {
+                  setEditHotel({ ...EditHotel, city: e.target.value });
+                }}
+              />
+            </Stack>
+            <Stack spacing={0}>
+              <label>ບ້ານ</label>
+              <TextField
+                defaultValue={hotelUpdateData?.village}
+                sx={{ ...textStyle, width: "100%" }}
+                onChange={(e) => {
+                  setEditHotel({ ...EditHotel, village: e.target.value });
+                }}
+              />
+            </Stack>
+            <Stack spacing={0}>
+              <label>ເພີ່ມຮູບພາບໂຮງແຮມ (ສາມາດເລືອກໄດ້ຫຼາຍກວ່າ 1 ຮູບ)</label>
+              <input
+                accept="image/png, image/gif, image/jpeg"
+                style={{ width: "200px" }}
+                name="filefield"
+                multiple="multiple"
+                type="file"
+                onChange={(event) => {
+                  event.preventDefault();
+                  const file = event.target.files;
+                  setFiles(file);
+                  //const frmdata = new FormData();
+                  const fileImage = [];
+                  for (var x = 0; x < file.length; x++) {
+                    //  frmdata.append("file", file[x]);
+                    fileImage.push(file[x].name);
+                  }
+                  setEditHotel({
+                    ...EditHotel,
+                    images: fileImage,
+                  });
+                }}
+              />
+            </Stack>
+            <Stack>
+              <label htmlFor="">ແຜນທີ່</label>
+              <MapDialogEdit data={map} />
+            </Stack>
+
+            <br />
+            <Stack>
+            <Button
+              variant="contained"
+              sx={{ ...btnStyle, width: "100px" }}
+              onClick={async () => {
+                setUpdating(true);
+                await updateDataHotel();
+                await handleUploadImg();
+                setUpdating(false);
+                setUpdateSuccess(true);
+                setValue(value => value+1)
+                //console.log(EditHotel);
+              }}
+            >
+              ຕົກລົງ
+            </Button>
+            {updating? <span>ແກ້ໄຂຂໍ້ມູນ...</span>: updateSuccess? <span>ສໍາເລັດ</span> : updateErr? <span>Something went wrong</span> : null}
+            </Stack>
+          
+          </div>
         </DialogContent>
+      </Dialog>
+          {/**show confirm delete hotel */}
+          <Dialog
+        fullWidth
+        maxWidth="xs"
+        open={popUpConfirm}
+        onClose={() => {
+          setPopUpConfirm(false);
+        }}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          style={{
+            " & .MuiDialogTitle-root": {
+              fontFamily: `${font.LAO_FONT}`,
+            },
+          }}
+          id="alert-dialog-title"
+        >
+          <span
+            style={{
+              fontFamily: `${font.LAO_FONT}`,
+            }}
+          >
+            ຢືນຢັນ
+          </span>
+        </DialogTitle>
+        <DialogContent>
+          <div
+            style={{
+              height: "80%",
+              rowGap: "20px",
+            }}
+          >
+            ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ?
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>{
+            
+            deleteHotel(EditHotel?._id)
+            setValue(value => value+1)
+          }} sx={{
+            ...btnStyle
+          }}>
+            ຕົກລົງ
+          </Button>
+        </DialogActions>
       </Dialog>
     </Stack>
   );

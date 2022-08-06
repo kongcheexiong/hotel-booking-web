@@ -174,7 +174,7 @@ export default function HotelDetail() {
         <Stack spacing={0}>
           <label>ເມືອງ</label>
           <Autocomplete
-            //value={`${registerInfo.district}`}
+            //value={EfitHotel}
 
             disabled={registerInfo.province ? false : true}
             size="small"
