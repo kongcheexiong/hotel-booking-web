@@ -12,9 +12,7 @@ import {
   Stack,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { IconButton } from "@mui/material";
 //icon
-import CancelIcon from "@mui/icons-material/Cancel";
 import CachedIcon from "@mui/icons-material/Cached";
 
 //style
@@ -27,7 +25,6 @@ import { counterContext } from "../../../context/counter";
 import { roomTypeContext } from "../../../context/roomType.context";
 
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import SummarizeIcon from '@mui/icons-material/Summarize';
 
 import { PrintComponent } from "./PrintComponent";
 

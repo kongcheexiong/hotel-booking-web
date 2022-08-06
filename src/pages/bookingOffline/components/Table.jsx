@@ -12,9 +12,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import EditIcon from "@mui/icons-material/Edit";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { Chip } from "@mui/material";
 
 import React from "react";
@@ -24,19 +21,15 @@ import { font, SERVER_URL, router } from "../../../constants";
 import { useNavigate } from "react-router-dom";
 
 //icon
-import SearchIcon from "@mui/icons-material/Search";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 
 import { counterContext } from "../../../context/counter";
-import { BookingContext } from "../../../context/booking.context";
 
-import { tr } from "date-fns/locale";
-import { setDate } from "date-fns/esm";
-import { DeleteForever, SendToMobile } from "@mui/icons-material";
+import { DeleteForever } from "@mui/icons-material";
+import { BookingContext } from "../../../context/booking.context";
 
 export default function Table() {
   const navigate = useNavigate();
@@ -44,11 +37,13 @@ export default function Table() {
   const [startDate, setStartDate] = React.useState(new Date());
   const [endDate, setEndDate] = React.useState(new Date());
   const [filter, setFilter] = React.useState("ALL");
-
+  const [bookingSearchPhone, setbookingsSearchPhone] = React.useState([]);
+  const [phoneSearch, setPhoneSearch] = React.useState(false);
   const [pageSize, setPageSize] = React.useState(10);
 
   const hotel = localStorage.getItem("hotel");
   const token = localStorage.getItem("accessToken");
+  const {bookingContext,setbookingContext} = React.useContext(BookingContext)
 
   const [loading, setLoading] = React.useState(true);
   const [err, setErr] = React.useState(false);
@@ -77,6 +72,7 @@ export default function Table() {
       .then(async (response) => {
         // console.log(response.data.bookings);
         await setbookings(response.data.bookings);
+        await setbookingContext(response.data.bookings)
         await setLoading(false);
         setSuccess(true);
       })
@@ -118,6 +114,7 @@ export default function Table() {
       .then(async (response) => {
         // console.log(response.data.bookings);
         await setbookings(response.data.bookings);
+        await setbookingContext(response.data.bookings)
         await setLoading(false);
         setSuccess(true);
       })
@@ -166,29 +163,29 @@ export default function Table() {
       width: 100,
       sortable: false,
       renderCell: (parram) => {
-        if(parram.row.status === "REJECTED"){
+        if (parram.row.status === "REJECTED") {
           return <div></div>
         }
         return (
           <Stack direction="row" spacing={0}>
             <Tooltip title="ແຈ້ງເຂົ້າ">
-                  <IconButton
-                    onClick={() => {
-                      navigate(`${router.CHECKIN}/add`, { state: parram.row });
-                    }}
-                  >
-                    <HourglassTopIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="ລົບອອກ">
-                  <IconButton
-                    onClick={() => {
-                      cancelBooking(parram.row._id);
-                    }}
-                  >
-                    <DeleteForever />
-                  </IconButton>
-                </Tooltip>
+              <IconButton
+                onClick={() => {
+                  navigate(`${router.CHECKIN}/add`, { state: parram.row });
+                }}
+              >
+                <HourglassTopIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="ລົບອອກ">
+              <IconButton
+                onClick={() => {
+                  cancelBooking(parram.row._id);
+                }}
+              >
+                <DeleteForever />
+              </IconButton>
+            </Tooltip>
           </Stack>
         );
       },
@@ -198,9 +195,9 @@ export default function Table() {
       headerName: "ລະຫັດ",
       width: 80,
     },
-  
 
-  
+
+
 
     {
       field: "customerPhone",
@@ -318,7 +315,7 @@ export default function Table() {
                 renderInput={(params) => (
                   <TextField
                     onChange={
-                      (e) => {}
+                      (e) => { }
                       ///setData({
                       ///  ...data,
                       ///  birthday: e.target.value,
@@ -355,7 +352,7 @@ export default function Table() {
                 renderInput={(params) => (
                   <TextField
                     onChange={
-                      (e) => {}
+                      (e) => { }
                       ///setData({
                       ///  ...data,
                       ///  birthday: e.target.value,
@@ -439,6 +436,18 @@ export default function Table() {
             placeholder="ເບີໂທລະສັບ"
             variant="outlined"
             sx={{ ...textStyle, width: "200px", backgroundColor: "white" }}
+            onChange={(e) => {
+
+              if (e.target.value !== "") {
+                setPhoneSearch(true);
+              } else { setPhoneSearch(false) }
+
+              let filtered = bookings.filter(b => b.customerPhone.includes(e.target.value));
+              setbookingContext(response.data.bookings)
+              setbookingsSearchPhone(
+                filtered
+              );
+            }}
           />
 
           {/**
@@ -473,7 +482,7 @@ export default function Table() {
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 20]}
           pagination
-          rows={bookings}
+          rows={phoneSearch ? bookingSearchPhone : bookings}
           columns={columns}
           disableSelectionOnClick
           getRowId={(row) => row._id}

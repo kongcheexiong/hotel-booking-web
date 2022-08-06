@@ -41,6 +41,11 @@ export class PrintComponent extends React.PureComponent {
           />
           <h3>BanHao Hotel Booking </h3>
         </Stack>
+        <Stack>
+          <span>ໂຮງແຮມ: {localStorage.getItem("hotelName")}</span>
+          <span>ຜູ້ລາຍງານ: {localStorage.getItem("userName")}</span>
+          <span>ວັນທີລາຍງານ: {format(new Date(), "dd/MM/yyyy")}</span>
+        </Stack>
         {/**table */}
         <div>
           <h4>ລາຍງານຂໍ້ມູນພະນັກງານ</h4>

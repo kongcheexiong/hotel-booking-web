@@ -1,12 +1,12 @@
 import { Stack } from "@mui/material";
 import React from "react";
-import {format} from 'date-fns'
+import { format } from 'date-fns'
 
 import { PrintContext } from "../../../context/print.context";
-import { roomTypeContext } from "../../../context/roomType.context";
+import { CheckInContextContext } from "../../../context/checkin.context";
 
 export class PrintComponent extends React.PureComponent {
-  static contextType = roomTypeContext;
+  static contextType = CheckInContextContext;
   constructor(props) {
     super(props);
     this.state = {};
@@ -14,8 +14,8 @@ export class PrintComponent extends React.PureComponent {
 
   render() {
     //const { state, setState } = this.context;
-    console.log(this.context);
-    const roomTypes = this.context.roomType;
+    // console.log('========>', this.context);
+    const roomTypes = this.context.CheckInContext;
     return (
       <div
         style={{
@@ -23,7 +23,7 @@ export class PrintComponent extends React.PureComponent {
           display: "flex",
           flexDirection: "column",
           fontSize: "14px",
-          rowGap: "30px",
+          rowGap: "15px",
         }}
       >
         {/**header */}
@@ -48,33 +48,36 @@ export class PrintComponent extends React.PureComponent {
         </Stack>
         {/**table */}
         <div>
-          <h4>ລາຍງານຂໍ້ມູນປະເພດຫ້ອງທັງໝົດ</h4>
+          <h4>ລາຍງານຂໍ້ມູນແຈ້ງເຂົ້າ-ແຈ້ງອອກ</h4>
           <table>
             <thead>
-            <th>ລໍາດັບ</th>
-              <th>ປະເພດຫ້ອງ</th>
-              
-              <th>ລາຄາ</th>
-              <th>ຈໍານວນລູກຄ້າແນະນໍາ</th>
-              <th>ຈໍານວນຕຽງ</th>
-              <th>ຈໍານວນຫ້ອງທັງໝົດ</th>
-              <th>ໝາຍເຫດ</th>
-              
+              <th>ລໍາດັບ</th>
+              <th>ຊື່ ແລະ ນາມສະກຸນ</th>
+
+              <th>ຫ້ອງ</th>
+              <th>ເບີໂທລະສັບ</th>
+              <th>ເອກະສານອ້າງອິງ</th>
+              <th>ເລກທີ</th>
+              <th>ໄລຍະພັກເຊົາ</th>
+              <th>ແຈ້ງອອກ</th>
+              <th>ຈ່າຍແລ້ວ</th>
+
             </thead>
             <tbody>
               {roomTypes?.map((val, index) => {
                 //const date = format(new Date(val.birthday), 'dd-MM-yyyy')
                 return (
                   <tr key={index}>
-                    <td align="center">{index+1}</td>
-                    <td>{val.roomType?.typeName}</td>
-                    <td>{val.roomType?.price}</td>
-                    <td>{val.roomType?.suggestedGuestAllowed}</td>
-                    <td>{val.roomType?.numberOfBed}</td>
+                    <td align="center">{index + 1}</td>
+                    <td>{val?.gender} {val?.firstName}  {val?.lastName}</td>
+                    <td>{val?.room?.roomName}</td>
+                    <td>{val?.phone}</td>
+                    <td>{val?.reference}</td>
 
-                    <td>{val.totalRoom}</td>
-                    <td>{val.roomType?.note}</td>
-                    
+                    <td>{val?.verify}</td>
+                    <td>{format(new Date(val?.checkInDate), 'dd/MM/yyyy')} - {format(new Date(val?.checkOutDate), 'dd/MM/yyyy')}</td>
+                    <td>{val?.isCheckOut.toString()}</td>
+                    <td>{val?.isPaid.toString()}</td>
                   </tr>
                 );
               })}

@@ -29,12 +29,21 @@ import { font,color } from "../../../constants";
 import { counterContext } from "../../../context/counter";
 import AddNewBookingDialog from "./AddNewBookingDialog";
 
+import { useReactToPrint } from "react-to-print";
+import { PrintComponent } from "./PrintComponent";
+
 export default function Menu() {
   const [startDate, setStartDate] = React.useState();
   const [endDate, setEndDate] = React.useState();
 
   const [filter ,setFilter] = React.useState('ALL')
   const [isOpen, setOpen]= React.useState(false)
+
+  const componentRef = React.useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
 
   const {value, setValue} = React.useContext(counterContext)
 
@@ -84,6 +93,11 @@ export default function Menu() {
         >
           reload
         </Button>
+        <div
+          style={{ display: "none" }} // This make ComponentToPrint show   only while printing
+        >
+          <PrintComponent ref={componentRef}  />
+        </div>
         <Button
         onClick={() => {
           //setValue( value => value+1)

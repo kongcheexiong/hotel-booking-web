@@ -17,7 +17,7 @@ function Checkin() {
       spacing={2}
     >
     
-      <Menu />
+      {/* <Menu /> */}
       <hr />
       <Table />
     </Stack>

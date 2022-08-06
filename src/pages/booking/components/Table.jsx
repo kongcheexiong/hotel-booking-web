@@ -33,6 +33,8 @@ import { counterContext } from "../../../context/counter";
 
 import { DeleteForever } from "@mui/icons-material";
 
+import { BookingContext } from "../../../context/booking.context";
+
 export default function Table() {
   const navigate = useNavigate();
   // const date = new Date();
@@ -40,6 +42,8 @@ export default function Table() {
   const [endDate, setEndDate] = React.useState(new Date());
   const [filter, setFilter] = React.useState("ALL");
   const [imgData, setImgData] = React.useState();
+
+  const {bookingContext,setbookingContext} = React.useContext(BookingContext)
 
   const [pageSize, setPageSize] = React.useState(10);
 
@@ -51,16 +55,17 @@ export default function Table() {
   const [success, setSuccess] = React.useState(false);
 
   const { value, setValue } = React.useContext(counterContext);
-  // const { bookings, setbookings } = React.useContext(BookingContext);
-  const [bookings, setbookings] = React.useState([]);
-  const [bookingSearchPhone, setbookingsSearchPhone] = React.useState([]);
+  // const { bookings, setBooking } = React.useContext(BookingContext);
+  const [bookings, setBooking] = React.useState([]);
+  const [bookingSearchPhone, setBookingSearchPhone] = React.useState([]);
+  
   const [phoneSearch, setPhoneSearch] = React.useState(false);
 
   const [popUpImg, setPopupImg] = React.useState(false);
   const handlePopUpImg = () => setPopupImg(!popUpImg);
 
   const fetchData = async () => {
-    setbookings([]);
+    setBooking([]);
     setLoading(true);
     setErr(false);
     //setSuccess(false);
@@ -77,19 +82,25 @@ export default function Table() {
     await axios(config)
       .then(async (response) => {
         console.log(response.data.bookings);
-        await setbookings(response.data.bookings);
+        await setBooking(response.data.bookings);
+        await setbookingContext(response.data.bookings)
         await setLoading(false);
         setSuccess(true);
+        setErr(false)
+        console.log('context',booking)
+       
       })
       .catch(function (error) {
         setErr(true);
         setLoading(false);
+        setSuccess(false)
         // console.log(error);
       });
   };
 
   const fetchDataByDate = async () => {
-    setbookings([]);
+    setBooking([]);
+    setSuccess(false)
 
     setLoading(true);
     setErr(false);
@@ -118,14 +129,19 @@ export default function Table() {
     await axios(config)
       .then(async (response) => {
         // console.log(response.data.bookings);
-        await setbookings(response.data.bookings);
+        await setBooking(response.data.bookings);
+        await setbookingContext(response.data.bookings)
         await setLoading(false);
+        setErr(false)
         setSuccess(true);
+        setBooking(response.data.bookings)
+
       })
       .catch(function (error) {
         setErr(true);
         setLoading(false);
         console.log(error);
+        setSuccess(false)
       });
   };
 
@@ -486,7 +502,8 @@ export default function Table() {
               } else { setPhoneSearch(false) }
 
               let filtered = bookings.filter(b => b.customerPhone.includes(e.target.value));
-              setbookingsSearchPhone(
+              setbookingContext(filtered)
+              setBookingSearchPhone(
                 filtered
               );
             }}
@@ -533,7 +550,7 @@ export default function Table() {
         </DialogContent>
       </Dialog>
 
-      {err && <h1>Error while loading</h1>}
+      
       <div style={{ height: 660, width: "100%" }}>
         <DataGrid
           sx={{ ...datagridSx, marginTop: "10px" }}

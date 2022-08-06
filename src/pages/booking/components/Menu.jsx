@@ -25,6 +25,9 @@ import { font,color } from "../../../constants";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 import { counterContext } from "../../../context/counter";
+import { useReactToPrint } from "react-to-print";
+import { PrintComponent } from "./PrintComponent";
+
 
 export default function Menu() {
   const [startDate, setStartDate] = React.useState();
@@ -34,6 +37,13 @@ export default function Menu() {
   const [isOpen, setOpen]= React.useState(false)
 
   const {value, setValue} = React.useContext(counterContext)
+
+  const componentRef = React.useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
 
   return (
     <Stack direction="column" spacing={3}>
@@ -59,6 +69,11 @@ export default function Menu() {
         >
           reload
         </Button>
+        <div
+          style={{ display: "none" }} // This make ComponentToPrint show   only while printing
+        >
+          <PrintComponent ref={componentRef}  />
+        </div>
         <Button
           size="small"
           startIcon={<PictureAsPdfIcon />}
@@ -68,6 +83,7 @@ export default function Menu() {
           
           onClick={()=>{
             //setValue(value => value+1)
+            handlePrint()
           }}
           sx={{...btnStyle,
             "&.MuiButton-root": {

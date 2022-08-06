@@ -4,9 +4,9 @@ export const BookingContext = react.createContext();
 
 export const BookingProvider = (props) => {
   const { children } = props;
-  const [booking, setbookings] = react.useState([]);
+  const [bookingContext, setbookingContext] = react.useState([]);
   return (
-    <BookingContext.Provider value={{ booking, setbookings }}>
+    <BookingContext.Provider value={{ bookingContext, setbookingContext }}>
       {children}
     </BookingContext.Provider>
   );
