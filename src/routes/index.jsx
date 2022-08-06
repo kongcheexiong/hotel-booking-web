@@ -40,11 +40,17 @@ import { Hotel } from "@mui/icons-material";
 
 import UserDetail from "../pages/registerInfo/components/userDetail";
 import HotelDetail from "../pages/registerInfo/components/hotelDetail";
+import BookingOffline from "../pages/bookingOffline/Booking";
+import Success from "../pages/registerInfo/components/succes";
 
 const Test = () => <h1>test</h1>;
 
 function MyRouter() {
   const privateRoute = [
+    {
+      myRoute: `${router.HOTEL_BOOKING}`,
+      component: <BookingOffline />,
+    },
     {
       myRoute: `${router.DASHBOARD}`,
       component: <Dashboard />,
@@ -125,6 +131,12 @@ function MyRouter() {
             path={`${router.REGISTER}/hotel`}
             element={<HotelDetail />}
           />
+             <Route
+            exact
+            path={`${router.REGISTER}/hotel/success`}
+            element={<Success />}
+          />
+          
         </Route>
 
         {/**log in successfully */}

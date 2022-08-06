@@ -10,6 +10,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
 import axios from "axios";
+import { io } from "socket.io-client";
+import { notificationContext } from "../../context/notification";
+
 
 // auth
 import { authContext, authInitialValue } from "../../context/authContext";
@@ -21,6 +24,8 @@ import { textStyle, btnStyle } from "../../style";
 import { SERVER_URL } from "../../constants/index.js";
 
 //logo
+const socket = io.connect(`${SERVER_URL}`, { transports: ["websocket"] });
+
 
 function Login(props) {
   {
@@ -53,12 +58,24 @@ const {auth, setAuth } = react.useContext(authContext);
       password: pwd,
     }),
   };
+  const { notification, setNotification } =
+  react.useContext(notificationContext);
+
+  const fetchNotification  = async(hotelID)=>{
+    await socket.emit("private massage", hotelID);
+    socket.on(hotelID, async (data) => {
+      await setNotification(data);
+       console.log(notification);
+     });
+
+  
+
+  }
 
   const handleLogin = async (e) => {
     setLoading(true);
-
     await axios(config)
-      .then(function (response) {
+      .then(async function (response) {
         //const res = JSON.parse(response)
         const res = response.data;
         console.log(res);
@@ -66,8 +83,10 @@ const {auth, setAuth } = react.useContext(authContext);
 
         const userId = res.user._id;
         const userName = res.user.userName;
-        const hotelId = res.user.hotel._id;
+        const hotelId = await res.user.hotel._id;
         const userRole = res.user.role;
+        await fetchNotification(hotelId)
+        console.log(notification)
 
         setUser("");
         setPwd("");
@@ -85,6 +104,8 @@ const {auth, setAuth } = react.useContext(authContext);
       .catch(function (error) {
         console.log(error);
         setErr(true);
+        setLoading(false)
+        setSuccess(true)
       });
   };
   if (!token) {
@@ -190,6 +211,7 @@ const {auth, setAuth } = react.useContext(authContext);
                 sx={{ ...textStyle }}
               />
               <br />
+              { loading? <span>ກຳລັງເຂົ້າສູ່ລະບົບ...</span>: err ? <span>ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍຖືກຕ້ອງ</span>: null}
               {/**login button */}
               <Stack justifyContent="center">
                 <Button

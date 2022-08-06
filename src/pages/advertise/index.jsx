@@ -15,6 +15,7 @@ import { btnStyle } from "../../style";
 import Image from "../../../nature.jpg";
 import { Stack } from "@mui/material";
 import { font, router } from "../../constants";
+import MyRouter from "../../routes";
 export default function Landing() {
   const navigate = useNavigate();
   return (
@@ -34,7 +35,12 @@ export default function Landing() {
           </Typography>
 
           <Stack direction="row" spacing={2} marginRight="20px">
-            <Button variant="outlined" sx={{ ...btnStyle }}>
+            <Button variant="outlined" sx={{ ...btnStyle }} onClick={()=>{
+              navigate(`/register`, {
+                replace: true,
+              });
+
+            }}>
               ລົງທະບຽນ
             </Button>
             <Button

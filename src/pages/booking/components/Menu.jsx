@@ -22,6 +22,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { btnStyle, textStyle } from "../../../style";
 
 import { font,color } from "../../../constants";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 import { counterContext } from "../../../context/counter";
 
@@ -37,7 +38,7 @@ export default function Menu() {
   return (
     <Stack direction="column" spacing={3}>
       {/** action button */}
-      <Stack>
+      <Stack direction='row' spacing={2}>
         <Button
           size="small"
           startIcon={<GridAddIcon />}
@@ -58,7 +59,29 @@ export default function Menu() {
         >
           reload
         </Button>
+        <Button
+          size="small"
+          startIcon={<PictureAsPdfIcon />}
+          disableElevation
+          color='error'
+          variant="outlined"
+          
+          onClick={()=>{
+            //setValue(value => value+1)
+          }}
+          sx={{...btnStyle,
+            "&.MuiButton-root": {
+              fontFamily: `${font.LAO_FONT}`,
+              width: '150px'
+
+          }
+          }}
+        >
+          ລາຍງານຂໍ້ມູນ
+        </Button>
       </Stack>
+
+      
       
       {/** add new booking dialog */}
       <Dialog

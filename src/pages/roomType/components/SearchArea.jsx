@@ -24,7 +24,7 @@ export default function SearchArea() {
     setRoomType([])
     await axios
       .get(`${SERVER_URL}/api/room-type?roomType=${search}&hotelId=${hotel}`, {
-        timeout: 5000,
+        timeout: 40000,
       })
       .then((res) => {
         console.log(res.data.roomTypes);

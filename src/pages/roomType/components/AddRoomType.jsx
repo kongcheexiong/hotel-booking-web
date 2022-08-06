@@ -69,7 +69,7 @@ export default function AddRoomType() {
         "Content-Type": "application/json",
       },
       data: JSON.stringify(data),
-      timeout: 5000,
+      timeout: 40000,
     };
     await axios(config)
       .then(function (response) {

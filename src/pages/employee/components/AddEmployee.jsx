@@ -7,6 +7,8 @@ import {
   Select,
   MenuItem,
   Divider,
+  Snackbar,
+  Backdrop,
 } from "@mui/material";
 import { SERVER_URL } from "../../../constants";
 ///import { roomTypeContext } from "../RoomType.context";
@@ -34,10 +36,16 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import "../style.css";
 import { borderRadius } from "@mui/system";
 
-import {font} from '../../../constants/index'
+import { font } from "../../../constants/index";
 import { MobileDatePicker } from "@mui/x-date-pickers";
+import { Data } from "@react-google-maps/api";
+import MuiAlert from "@mui/material/Alert";
 
 export default function AddEmployee() {
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   const navigate = useNavigate();
   const hotelID = localStorage.getItem("hotel");
 
@@ -49,7 +57,7 @@ export default function AddEmployee() {
     hotel: hotelID,
     userName: "",
     password: "",
-    role: "",
+    role: "STAFF",
     firstName: "",
     lastName: "",
     gender: "",
@@ -59,7 +67,7 @@ export default function AddEmployee() {
     province: "",
     image: "",
     phone: "",
-    detail: "",
+    //detail: "",
   });
   const [files, setFiles] = React.useState();
   const accessToken = localStorage.getItem("accessToken");
@@ -77,21 +85,19 @@ export default function AddEmployee() {
         "Content-Type": "application/json",
       },
       data: JSON.stringify(data),
-      timeout: 5000,
+      timeout: 40000,
     };
     await axios(config)
       .then(function (response) {
         console.log(JSON.stringify(response.data));
         setLoading(false);
         setSuccess(true);
-        
-
         //  console.log('submited')
       })
       .catch(function (error) {
         console.log(error);
         // console.log('error')
-        alert('Please fill out the form properly')
+        alert("Please fill out the form properly");
         setSuccess(false);
         setLoading(false);
         setErr(true);
@@ -116,8 +122,7 @@ export default function AddEmployee() {
           <CancelIcon fontSize="large" color="" />
         </IconButton>
       </Stack>
-      
-      
+
       {/**form area */}
       <h3>ລົງທະບຽນ</h3>
 
@@ -125,7 +130,7 @@ export default function AddEmployee() {
         <div
           style={{
             display: "flex",
-            flexDirection: 'column'
+            flexDirection: "column",
             //gridTemplateColumns: "auto auto auto",
             //columnGap: "30px",
           }}
@@ -133,6 +138,7 @@ export default function AddEmployee() {
           <Stack width="100%">
             <label id="userName">User name</label>
             <TextField
+              required
               onChange={(e) => {
                 setData({ ...data, userName: e.target.value });
               }}
@@ -148,19 +154,7 @@ export default function AddEmployee() {
               sx={{ ...textStyle, width: "100%" }}
             />
           </Stack>
-          <Stack width="100%">
-            <label id="role">Role</label>
-            <Select
-              sx={{ ...textStyle, height: 35, width: "100%" }}
-              value={data.role}
-              onChange={(e) => {
-                setData({ ...data, role: e.target.value });
-              }}
-            >
-              <MenuItem value="ADMIN">Admin</MenuItem>
-              <MenuItem value="STAFF">Staff</MenuItem>
-            </Select>
-          </Stack>
+        
         </div>
         <br />
         {/**detail info */}
@@ -168,23 +162,33 @@ export default function AddEmployee() {
         <div
           style={{
             display: "flex",
-           // gridTemplateColumns: "auto auto auto",
-           // columnGap: "30px",
-           flexDirection: 'column'
+            // gridTemplateColumns: "auto auto auto",
+            // columnGap: "30px",
+            flexDirection: "column",
           }}
         >
-           <Stack width="100%">
-            <label id=""gender>ເພດ</label>
+          <Stack width="100%">
+            <label id="" gender>
+              ເພດ
+            </label>
             <Select
-
-              sx={{ ...textStyle, fontFamily: `${font.LAO_FONT}`, height: 35, width: "100%" }}
+              sx={{
+                ...textStyle,
+                fontFamily: `${font.LAO_FONT}`,
+                height: 35,
+                width: "100%",
+              }}
               value={data.gender}
               onChange={(e) => {
                 setData({ ...data, gender: e.target.value });
               }}
             >
-              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}} value="MALE">ຊາຍ</MenuItem>
-              <MenuItem sx={{fontFamily: `${font.LAO_FONT}`}}  value="FEMALE">ຍິງ</MenuItem>
+              <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="MALE">
+                ຊາຍ
+              </MenuItem>
+              <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="FEMALE">
+                ຍິງ
+              </MenuItem>
             </Select>
           </Stack>
           <Stack sx={{ width: "100%" }}>
@@ -210,12 +214,12 @@ export default function AddEmployee() {
               <label id="dateOfBirth">ວັນເດືອນປີເກີດ</label>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDatePicker
-                  inputFormat = 'dd/MM/yyyy'
+                  inputFormat="dd/MM/yyyy"
                   value={date}
                   onChange={(value) => {
                     const _date = new Date(value);
                     console.log(_date.toLocaleDateString("en-GB"));
-                    const saveDate = _date.toLocaleDateString("en-GB")
+                    const saveDate = _date.toLocaleDateString("en-GB");
                     setDate(value);
                     setData({
                       ...data,
@@ -277,7 +281,7 @@ export default function AddEmployee() {
               sx={{ ...textStyle, width: "100%" }}
             />
           </Stack>
-          <Stack>
+          {/*<Stack>
             <label id="detail">ໝາຍເຫດ</label>
             <TextField
               onChange={(e) => {
@@ -286,9 +290,10 @@ export default function AddEmployee() {
               sx={{ ...textStyle, width: "100%" }}
             />
           </Stack>
+            */}
         </div>
 
-        <span>ເພີ່ມຮູບພາບປະກອບ</span>
+        <span>ເລືອກຮູບພາບ</span>
         <Stack>
           <input
             accept="image/png, image/gif, image/jpeg"
@@ -308,14 +313,21 @@ export default function AddEmployee() {
               setData({ ...data, image: fileImage[0] });
             }}
           />
-          <br />
 
-          {err ? (
-            <Alert severity="error">
-              This is an error alert — check it out!
-            </Alert>
+          
+          {loading ? (
+            <Backdrop
+              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              open={loading}
+              //onClick={handleClose}
+            >
+              <CircularProgress color="inherit" />
+            </Backdrop>
           ) : null}
-          {loading ? <CircularProgress /> : null}
+          {err ? <Alert severity="success">
+              This is a success alert — check it out!
+            </Alert>
+           : null}
           {success ? (
             <Alert severity="success">
               This is a success alert — check it out!
@@ -327,13 +339,23 @@ export default function AddEmployee() {
       <Stack sx={{ marginTop: "50px" }} direction="row" justifyContent="">
         <Button
           onClick={async () => {
-           // console.log(data)
-           setLoading(true);
-           setErr(false);
-           setSuccess(false)
-           await handleSubmit();
-           await handleUploadImg(files)
-           console.log(data);
+            //console.log(data);
+           
+            let exists = Object.keys(data).some((key) => data[key] === "");
+            if (exists) {
+              alert("Please fill up the form properly");
+              return;
+            }
+            if (loading) {
+              return null;
+            }
+
+            // console.log(data)
+            setLoading(true);
+            setErr(false);
+            setSuccess(false);
+            await handleSubmit();
+            await handleUploadImg(files);
           }}
           variant="contained"
           sx={{ ...btnStyle }}

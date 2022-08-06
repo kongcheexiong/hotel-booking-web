@@ -16,7 +16,7 @@ export const handleUploadImg = async (files) => {
       method: "post",
       url: `${SERVER_URL}/api/upload/images`,
       data: data,
-     // timeout: 5000,
+     // timeout: 40000,
     };
 
     await axios(config)

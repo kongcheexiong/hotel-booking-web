@@ -69,12 +69,12 @@ function Layout() {
     react.useContext(notificationContext);
 
   const sideNavData = [
-    {
-      name: "ໜ້າຫຼັກ",
-      icon: <EqualizerIcon fontSize="small" />,
-      router: `${router.DASHBOARD}`,
-      access: ["OWNER", "STAFF", "ADMIN"],
-    },
+   {
+     name: "ໜ້າຫຼັກ",
+     icon: <EqualizerIcon fontSize="small" />,
+     router: `${router.DASHBOARD}`,
+     access: ["OWNER", "STAFF", "ADMIN"],
+   },
     {
       name: "ຈັດການຂໍ້ມູນພະນັກງານ",
       icon: <PeopleAltIcon fontSize="small" />,
@@ -94,12 +94,12 @@ function Layout() {
       access: ["OWNER", "ADMIN"],
     },
 
-    {
-      name: "ຈອງຫ້ອງ",
-      icon: <MenuBookIcon fontSize="small" />,
-      router: `${router.HOTEL_BOOKING}`,
-      access: ["OWNER", "STAFF", "ADMIN"],
-    },
+   {
+     name: "ຈອງຫ້ອງ",
+     icon: <MenuBookIcon fontSize="small" />,
+     router: `${router.HOTEL_BOOKING}`,
+     access: ["OWNER", "STAFF", "ADMIN"],
+   },
 
     {
       name: "ແຈ້ງເຂົ້າ",
@@ -112,20 +112,21 @@ function Layout() {
       icon: <BookOnlineIcon fontSize="small" />,
       router: `${router.BOOKING}`,
       Notification: notification,
+    
       access: ["OWNER", "STAFF", "ADMIN"],
     },
-    {
-      name: "ລາຍງານ",
-      icon: <SummarizeIcon fontSize="small" />,
-      router: `${router.REPORT}`,
-      access: ["OWNER", "STAFF", "ADMIN"],
-    },
-    {
-      name: "ແກ້ໄຂການຂໍ້ມູນໂຮງແຮມ",
-      icon: <SettingsIcon fontSize="small" />,
-      router: `${router.SETTING}`,
-      access: ["OWNER"],
-    },
+   //{
+   //  name: "ລາຍງານ",
+   //  icon: <SummarizeIcon fontSize="small" />,
+   //  router: `${router.REPORT}`,
+   //  access: ["OWNER", "STAFF", "ADMIN"],
+   //},
+   ///{
+   ///  name: "ແກ້ໄຂການຂໍ້ມູນໂຮງແຮມ",
+   ///  icon: <SettingsIcon fontSize="small" />,
+   ///  router: `${router.SETTING}`,
+   ///  access: ["OWNER"],
+   ///},
     {
       name: "ຈັດການຂໍ້ມູນໂຮງແຮມ",
       icon: <SettingsIcon fontSize="small" />,
@@ -155,19 +156,34 @@ function Layout() {
   // }, [socket]);
   // const { notification, setNotification } = useContext(notificationContext);
   //const hotelID = localStorage.getItem("hotel");
+  const fetchNotification  = async()=>{
+    await socket.on("connect", () => {
+        console.log(socket.id);
+        socket.emit("hotel", hotelID);
+        socket.emit("private massage", hotelID);
+        socket.on("test", (data) => console.log(data));
+        socket.on(hotelID, (data) => {
+          play();
+          setNotification(data);
+          console.log(notification);
+        });
+      });
+
+  }
 
   react.useEffect(() => {
-    socket.on("connect", () => {
-      console.log(socket.id);
-      socket.emit("hotel", hotelID);
-      socket.emit("private massage", hotelID);
-      socket.on("test", (data) => console.log(data));
-      socket.on(hotelID, (data) => {
-        play();
-        setNotification(data);
-        console.log(notification);
-      });
-    });
+    fetchNotification()
+    //socket.on("connect", () => {
+    //  console.log(socket.id);
+    //  socket.emit("hotel", hotelID);
+    //  socket.emit("private massage", hotelID);
+    //  socket.on("test", (data) => console.log(data));
+    //  socket.on(hotelID, (data) => {
+    //    play();
+    //    setNotification(data);
+    //    console.log(notification);
+    //  });
+    //});
   }, [socket]);
 
   return (

@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 import Map from "./map";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { color, font } from "../../../constants";
 import {
   Button,
@@ -30,11 +30,28 @@ import { SERVER_URL } from "../../../constants";
 import { router } from "../../../constants";
 
 import { RegisterProgressContext } from "../../../context/registerProgress.context";
+import MyRouter from "../../../routes";
+
+const SuccessRegister = ()=>{
+
+  return(
+    <div style={{
+      width: '500px',
+      height: '600px',
+      display:'flex',
+      flexDirection: 'column',
+      rowGap: '20px'}}>
+         <h3> ສໍາເລັດການລົງທະບຽນຂໍ້ມູນ, ກາລຸນາລໍຖ້າການຢືນຢັນຈາກລະບົບ</h3>
+          
+          </div>
+  )
+}
 
 export default function HotelDetail() {
   const { RegisterProgress, setRegisterProgress } = React.useContext(
     RegisterProgressContext
   );
+  const navigate = useNavigate();
 
   const { registerInfo, setRegisterInfo } = React.useContext(registerContext);
   const [province, setProvince] = React.useState([]);
@@ -64,7 +81,7 @@ export default function HotelDetail() {
       headers: {
         "Content-Type": "application/json",
       },
-      timeout: 5000,
+      timeout: 40000,
       data: data,
     };
 
@@ -230,7 +247,7 @@ export default function HotelDetail() {
         </Stack>
        
         <Stack spacing={0}>
-          <label>ອັບໂຫລດຮູບພາບໂຮງແຮມ (ທ່ານຕ້ອງແກ້ລົບລາຍການນີ້ແທ້ບໍ)</label>
+          <label>ອັບໂຫລດຮູບພາບໂຮງແຮມ (ສາມາດເລືອກໄດ້ຫຼາຍກວ່າ 1 ຮູບ)</label>
           <input
             accept="image/png, image/gif, image/jpeg"
             style={{ width: "200px" }}
@@ -264,6 +281,8 @@ export default function HotelDetail() {
           await handleUploadImg(files)
           setRegisterProgress(2);
           console.log(registerInfo)
+          navigate(`${router.REGISTER}/hotel/success`)
+          
         }}
         
         variant="contained"

@@ -5,10 +5,6 @@ import {
   IconButton,
   Tooltip,
   Divider,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
 } from "@mui/material";
 import { Select, MenuItem } from "@mui/material";
 
@@ -20,16 +16,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Chip } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
-
-import DomainVerificationIcon from "@mui/icons-material/DomainVerification";
 
 import React from "react";
 import { useFormatDate } from "../../../services/formateDate";
 import { textStyle, btnStyle, datagridSx } from "../../../style";
 import { font, SERVER_URL, router } from "../../../constants";
 import { useNavigate } from "react-router-dom";
-import TitlebarImageList from "./ImageList";
 
 //icon
 import SearchIcon from "@mui/icons-material/Search";
@@ -52,7 +44,6 @@ export default function Table() {
   const [startDate, setStartDate] = React.useState(date);
   const [endDate, setEndDate] = React.useState(date);
   const [filter, setFilter] = React.useState("ALL");
-  const [imgData, setImgData] = React.useState();
 
   const [pageSize, setPageSize] = React.useState(10);
 
@@ -67,9 +58,6 @@ export default function Table() {
   // const { bookings, setbookings } = React.useContext(BookingContext);
   const [bookings, setbookings] = React.useState([]);
 
-  const [popUpImg, setPopupImg] = React.useState(false);
-  const handlePopUpImg = () => setPopupImg(!popUpImg);
-
   const fetchData = async () => {
     setbookings([]);
     setLoading(true);
@@ -78,7 +66,7 @@ export default function Table() {
 
     var config = {
       method: "get",
-      url: `${SERVER_URL}/api/bookings/skip/0/limit/30?hotel=${hotel}&isOnline=${true}`,
+      url: `${SERVER_URL}/api/bookings/skip/0/limit/30?hotel=${hotel}&isOnline=${false}`,
       headers: {
         Authorization: `${token}`,
       },
@@ -87,7 +75,7 @@ export default function Table() {
 
     await axios(config)
       .then(async (response) => {
-        console.log(response.data.bookings);
+        // console.log(response.data.bookings);
         await setbookings(response.data.bookings);
         await setLoading(false);
         setSuccess(true);
@@ -119,7 +107,7 @@ export default function Table() {
     //console.log("====>", sendDate);
     var config = {
       method: "get",
-      url: `${SERVER_URL}/api/bookingsByFilter/skip/0/limit/30?hotel=${hotel}&startDate=${yesterday}&endDate=${endDate}&status=${filter}&isOnline=${true}`,
+      url: `${SERVER_URL}/api/bookingsByFilter/skip/0/limit/30?hotel=${hotel}&startDate=${startDate}&endDate=${endDate}&status=${filter}&isOnline=${false}`,
       headers: {
         Authorization: `${token}`,
       },
@@ -177,32 +165,29 @@ export default function Table() {
       width: 100,
       sortable: false,
       renderCell: (parram) => {
-        if (
-          parram.row.status === "REJECTED" ||
-          parram.row.status === "CHECKIN"
-        ) {
-          return <div></div>;
+        if(parram.row.status === "REJECTED"){
+          return <div></div>
         }
         return (
           <Stack direction="row" spacing={0}>
             <Tooltip title="ແຈ້ງເຂົ້າ">
-              <IconButton
-                onClick={() => {
-                  navigate(`${router.CHECKIN}/add`, { state: parram.row });
-                }}
-              >
-                <DomainVerificationIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="ລົບອອກ">
-              <IconButton
-                onClick={() => {
-                  cancelBooking(parram.row._id);
-                }}
-              >
-                <DeleteForever />
-              </IconButton>
-            </Tooltip>
+                  <IconButton
+                    onClick={() => {
+                      navigate(`${router.CHECKIN}/add`, { state: parram.row });
+                    }}
+                  >
+                    <HourglassTopIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="ລົບອອກ">
+                  <IconButton
+                    onClick={() => {
+                      cancelBooking(parram.row._id);
+                    }}
+                  >
+                    <DeleteForever />
+                  </IconButton>
+                </Tooltip>
           </Stack>
         );
       },
@@ -212,43 +197,9 @@ export default function Table() {
       headerName: "ລະຫັດ",
       width: 80,
     },
-    {
-      field: "images",
-      headerName: "ຮູບພາບອ້າງອີງ",
-      width: 80,
-      renderCell: (parram) => {
-        return <div
-          className="previewImg"
-        
-          onClick={() => {
+  
 
-            console.log(parram.row.referenceImage);
-            handlePopUpImg();
-            setImgData(parram.row.referenceImage);
-          }}
-        >
-    
-          {parram.row.referenceImage}
-        </div>;
-      },
-    },
-
-    {
-      field: "Agency",
-      headerName: "Agency",
-      width: 80,
-      renderCell: (parram) => {
-        if (!parram.row.onlineCustomer) {
-          return <>STAFF</>;
-        }
-        return (
-          <>
-            {parram.row.onlineCustomer.firstName}{" "}
-            {parram.row.onlineCustomer.lastName}
-          </>
-        );
-      },
-    },
+  
 
     {
       field: "customerPhone",
@@ -320,17 +271,14 @@ export default function Table() {
             />
           );
         }
-        if (parram.row.status === "CHECKIN") {
-          return (
-            <Chip
-              sx={{ fontFamily: "Noto Sans Lao", width: "100px" }}
-              //color="secondary"
-              label="ແຈ້ງເຂົ້າແລ້ວ"
-              color="success"
-            />
-          );
-        }
-        return <></>;
+        return (
+          <Chip
+            sx={{ fontFamily: "Noto Sans Lao", width: "100px" }}
+            //color="secondary"
+            label="ແຈ້ງເຂົ້າແລ້ວ"
+            color="success"
+          />
+        );
       },
     },
   ];
@@ -513,23 +461,6 @@ export default function Table() {
         </Stack>
         {/**table */}
       </Stack>
-      {/*** show image dialog */}
-      <Dialog
-        open={popUpImg}
-        onClose={handlePopUpImg}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle
-          sx={{ fontFamily: "Noto sans lao", fontSize: "18px" }}
-          id="add-new-type"
-        >
-          {"ຮູບພາບ"}
-        </DialogTitle>
-        <DialogContent>
-          <TitlebarImageList imgData={imgData} />
-        </DialogContent>
-      </Dialog>
 
       {err && <h1>Error while loading</h1>}
       <div style={{ height: 660, width: "100%" }}>

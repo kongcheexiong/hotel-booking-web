@@ -18,6 +18,7 @@ import { btnStyle, textStyle } from "../../../style";
 
 import { font, router } from "../../../constants";
 import { counterContext } from "../../../context/counter";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 export default function Menu() {
   const navigate = useNavigate();
   const [startDate, setStartDate] = React.useState();
@@ -75,6 +76,27 @@ export default function Menu() {
             }}
           >
             Reload
+          </Button>
+          <Button
+            size="small"
+            startIcon={<PictureAsPdfIcon />}
+            disableElevation
+            variant="outlined"
+            color="error"
+            sx={{
+              ...btnStyle,
+              width: "110px",
+              "&.MuiButton-root": {
+                width: "130px",
+                fontFamily: `${font.LAO_FONT}`,
+                height: 30,
+              },
+            }}
+            onClick={()=>{
+              setValue(value=> value+1)
+            }}
+          >
+            ລາຍງານຂໍ້ມູນ
           </Button>
    
       </Stack>

@@ -8,11 +8,14 @@ import {
   Button,
   Typography,
   Divider,
+  Tooltip,
+  TextField,
 } from "@mui/material";
 
 import TitlebarImageList from "../employee/components/ImageList";
 import * as React from "react";
 import axios from "axios";
+import { textStyle } from "../../style";
 
 import EditIcon from "@mui/icons-material/Edit";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -36,13 +39,15 @@ import MapIcon from "@mui/icons-material/Map";
 
 import MapDialog from "./map.dialog";
 
+import CloudDoneIcon from "@mui/icons-material/CloudDone";
+
 export default function AllHotel() {
   const [popUpUpdateForm, setPopUpUpdateForm] = React.useState(false);
   const [popUpImg, setPopupImg] = React.useState(false);
   const handlePopUpImg = () => setPopupImg(!popUpImg);
   const [imgData, setImgData] = React.useState();
 
-  const [updateData, setUpdatedData] = React.useState();
+  const [map, setMap] = React.useState();
 
   const [loading, setLoading] = React.useState(true);
   const [pageSize, setPageSize] = React.useState(10);
@@ -55,7 +60,7 @@ export default function AllHotel() {
     // setloading(true);
     await axios
       .get(`${SERVER_URL}/api/hotels_owner/skip/:skip/limit/:limit`, {
-        timeout: 5000,
+        timeout: 40000,
       })
       .then((res) => {
         console.log(res.data.users);
@@ -81,7 +86,6 @@ export default function AllHotel() {
       .then(async (res) => {
         console.log(res.data);
         setValue((value) => value + 1);
-        
       })
       .catch((err) => console.log(err));
   };
@@ -90,7 +94,7 @@ export default function AllHotel() {
       .post(`${SERVER_URL}/api/send/email`, {
         email: to,
         userName: name,
-        id: userId
+        id: userId,
       })
       .then((res) => console.log(res.data))
       .catch((err) => console.error(err));
@@ -103,28 +107,50 @@ export default function AllHotel() {
       width: 100,
       sortable: false,
       renderCell: (parram) => {
+        if (parram.row.hotel.isApproved) {
+          return (
+            <Stack direction="row" justifyContent="center">
+              <Tooltip title="ແກ້ໄຂ">
+                <IconButton onClick={() => {setPopUpUpdateForm(true)}}>
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="ລົບ">
+              <IconButton onClick={() => {}}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+          </Tooltip>
+            </Stack>
+          );
+        }
         return (
           <Stack direction="row" justifyContent="center">
-            <IconButton
-              onClick={() => {
-                let data = parram.row;
-                setUpdatedData(data);
-                console.log(updateData);
-                setPopUpUpdateForm(true);
-              }}
-            >
-              <MapIcon fontSize="small" />
-            </IconButton>
-            <IconButton
-              onClick={ async () => {
-                console.log(parram.row.hotel._id);
-                await handleSendEmail(parram.row.hotel.email, parram.row.userName, parram.row._id);
-                await handleUpdateStatus(parram.row.hotel._id);
-                
-              }}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
+            {/*<Tooltip title="ແກ້ໄຂ">
+              <IconButton onClick={() => {}}>
+                <EditIcon fontSize="small" />
+              </IconButton>
+        </Tooltip>*/}
+
+            <Tooltip title="ຢືນຢັນ">
+              <IconButton
+                onClick={async () => {
+                  console.log(parram.row.hotel._id);
+                  await handleSendEmail(
+                    parram.row.hotel.email,
+                    parram.row.userName,
+                    parram.row._id
+                  );
+                  await handleUpdateStatus(parram.row.hotel._id);
+                }}
+              >
+                <CloudDoneIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            {/*<Tooltip title="ລົບ">
+              <IconButton onClick={() => {}}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+              </Tooltip>*/}
           </Stack>
         );
       },
@@ -247,6 +273,28 @@ export default function AllHotel() {
     //{ field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
     //{ field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
     {
+      field: "map",
+      headerName: "ແຜນທີ່",
+      width: 70,
+      sortable: false,
+      renderCell: (parram) => {
+        return (
+          <div
+            className="previewImg"
+            onClick={() => {
+              let data = parram.row;
+              setMap(data);
+              console.log(map);
+              setPopUpUpdateForm(true);
+            }}
+          >
+            ແຜນທີ່
+          </div>
+        );
+      },
+    },
+
+    {
       field: "contact",
       headerName: "ຂໍ້ມູນການຕິດຕໍ່",
       flex: 0.7,
@@ -278,7 +326,7 @@ export default function AllHotel() {
     {
       field: "status",
       headerName: "status",
-      flex: 0.6,
+      width: 100,
 
       renderCell: (param) => {
         if (param.row.hotel?.isApproved) {
@@ -331,6 +379,14 @@ export default function AllHotel() {
         Reload
       </Button>
       <Divider />
+      <Stack direction="row" justifyContent="flex-end" alignItems="center">
+        <span>ຄັ້ນຫາ:</span>
+        <TextField
+          placeholder="ໂຮງແຮມ"
+          variant="outlined"
+          sx={{ ...textStyle, width: "200px", backgroundColor: "white" }}
+        />
+      </Stack>
       <div style={{ height: 860, width: "100%" }}>
         <DataGrid
           sx={{ ...datagridSx, marginTop: "10px" }}
@@ -388,11 +444,40 @@ export default function AllHotel() {
               fontFamily: `${font.LAO_FONT}`,
             }}
           >
-            ແກ້ໄຂຂໍ້ມູນພະນັກງານ
+            ແຜນທີ່
           </span>
         </DialogTitle>
         <DialogContent>
-          <MapDialog data={updateData} />
+          <MapDialog data={map} />
+        </DialogContent>
+      </Dialog>
+      {/**show updated hotel form */}
+      <Dialog
+        fullWidth
+        maxWidth="sm"
+        open={popUpUpdateForm}
+        onClose={() => {}}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          style={{
+            " & .MuiDialogTitle-root": {
+              fontFamily: `${font.LAO_FONT}`,
+            },
+          }}
+          id="alert-dialog-title"
+        >
+          <span
+            style={{
+              fontFamily: `${font.LAO_FONT}`,
+            }}
+          >
+            ແຜນທີ່
+          </span>
+        </DialogTitle>
+        <DialogContent>
+          <MapDialog data={map} />
         </DialogContent>
       </Dialog>
     </Stack>

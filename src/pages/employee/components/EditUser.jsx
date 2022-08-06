@@ -79,7 +79,7 @@ export default function EditUser(props) {
         headers: { 
           'Content-Type': 'application/json'
         },
-        timeout: 5000,
+        timeout: 40000,
         data : updateData
       };
       

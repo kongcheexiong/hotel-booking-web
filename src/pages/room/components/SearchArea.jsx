@@ -24,7 +24,7 @@ export default function SearchArea() {
 
     await axios
       .get(`${SERVER_URL}/api/room?hotelId=${hotel}&roomName=${data}`, {
-        timeout: 5000,
+        timeout: 40000,
       })
       .then((res) => {
         console.log(res.data);

@@ -93,7 +93,7 @@ export default function TitlebarImageList(props) {
           />
         </ImageListItem>
       ))}
-      {err && <h3>there is an err</h3>}
+      {err && <h3>Something went wrong</h3>}
       {loading ? <h3>Loading...</h3> : null}
     </ImageList>
   );

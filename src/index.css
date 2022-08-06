@@ -73,3 +73,11 @@ code {
   padding: 20px;
   text-align: center;
 }
+.previewImg{
+  cursor: pointer;
+}
+.previewImg:hover{
+  color: red;
+  text-decoration: underline;
+  
+}
