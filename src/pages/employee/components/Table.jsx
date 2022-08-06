@@ -100,7 +100,7 @@ export default function Table() {
     setErr(false);
     await axios
       .get(`${SERVER_URL}/api/users/skip/0/limit/30?hotelId=${hotelId}`, {
-        timeout: 5000,
+        timeout: 40000,
       })
       .then((res) => {
        
@@ -127,7 +127,7 @@ export default function Table() {
         data: {
           id: userID,
         },
-        timeout: 5000,
+        timeout: 40000,
       })
       .then((res) => {
         console.log(res.data);

@@ -8,7 +8,6 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  DialogActions,
 } from "@mui/material";
 import { Select, MenuItem } from "@mui/material";
 
@@ -16,11 +15,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-import EditIcon from "@mui/icons-material/Edit";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { Chip } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
 
 import DomainVerificationIcon from "@mui/icons-material/DomainVerification";
 
@@ -31,26 +26,18 @@ import { font, SERVER_URL, router } from "../../../constants";
 import { useNavigate } from "react-router-dom";
 import TitlebarImageList from "./ImageList";
 
-//icon
-import SearchIcon from "@mui/icons-material/Search";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import HourglassTopIcon from "@mui/icons-material/HourglassTop";
-
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 
 import { counterContext } from "../../../context/counter";
-import { BookingContext } from "../../../context/booking.context";
 
-import { tr } from "date-fns/locale";
-import { setDate } from "date-fns/esm";
-import { DeleteForever, SendToMobile } from "@mui/icons-material";
+import { DeleteForever } from "@mui/icons-material";
 
 export default function Table() {
   const navigate = useNavigate();
-  const date = new Date();
-  const [startDate, setStartDate] = React.useState(date);
-  const [endDate, setEndDate] = React.useState(date);
+  // const date = new Date();
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [endDate, setEndDate] = React.useState(new Date());
   const [filter, setFilter] = React.useState("ALL");
   const [imgData, setImgData] = React.useState();
 
@@ -66,6 +53,8 @@ export default function Table() {
   const { value, setValue } = React.useContext(counterContext);
   // const { bookings, setbookings } = React.useContext(BookingContext);
   const [bookings, setbookings] = React.useState([]);
+  const [bookingSearchPhone, setbookingsSearchPhone] = React.useState([]);
+  const [phoneSearch, setPhoneSearch] = React.useState(false);
 
   const [popUpImg, setPopupImg] = React.useState(false);
   const handlePopUpImg = () => setPopupImg(!popUpImg);
@@ -119,7 +108,7 @@ export default function Table() {
     //console.log("====>", sendDate);
     var config = {
       method: "get",
-      url: `${SERVER_URL}/api/bookingsByFilter/skip/0/limit/30?hotel=${hotel}&startDate=${yesterday}&endDate=${endDate}&status=${filter}&isOnline=${true}`,
+      url: `${SERVER_URL}/api/bookingsByFilter/skip/0/limit/100?hotel=${hotel}&startDate=${yesterday}&endDate=${endDate}&status=${filter}&isOnline=true`,
       headers: {
         Authorization: `${token}`,
       },
@@ -219,7 +208,7 @@ export default function Table() {
       renderCell: (parram) => {
         return <div
           className="previewImg"
-        
+
           onClick={() => {
 
             console.log(parram.row.referenceImage);
@@ -227,7 +216,7 @@ export default function Table() {
             setImgData(parram.row.referenceImage);
           }}
         >
-    
+
           {parram.row.referenceImage}
         </div>;
       },
@@ -291,6 +280,8 @@ export default function Table() {
       type: "date",
       flex: 1.2,
       renderCell: (params) => {
+        // var today = new Date(params.row.createdAt);
+        // today.setHours(today.getHours() + 7);
         const date = useFormatDate(params.row.createdAt);
         return <span>{date}</span>;
       },
@@ -367,7 +358,7 @@ export default function Table() {
                 renderInput={(params) => (
                   <TextField
                     onChange={
-                      (e) => {}
+                      (e) => { }
                       ///setData({
                       ///  ...data,
                       ///  birthday: e.target.value,
@@ -404,7 +395,7 @@ export default function Table() {
                 renderInput={(params) => (
                   <TextField
                     onChange={
-                      (e) => {}
+                      (e) => { }
                       ///setData({
                       ///  ...data,
                       ///  birthday: e.target.value,
@@ -467,7 +458,7 @@ export default function Table() {
                 marginLeft: "10px",
                 width: "100px",
               }}
-              onClick={fetchDataByDate}
+              onClick={() => { fetchDataByDate() }}
             >
               ຄົ້ນຫາ
             </Button>
@@ -488,6 +479,17 @@ export default function Table() {
             placeholder="ເບີໂທລະສັບ"
             variant="outlined"
             sx={{ ...textStyle, width: "200px", backgroundColor: "white" }}
+            onChange={(e) => {
+
+              if (e.target.value !== "") {
+                setPhoneSearch(true);
+              } else { setPhoneSearch(false) }
+
+              let filtered = bookings.filter(b => b.customerPhone.includes(e.target.value));
+              setbookingsSearchPhone(
+                filtered
+              );
+            }}
           />
 
           {/**
@@ -539,13 +541,13 @@ export default function Table() {
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 20]}
           pagination
-          rows={bookings}
+          rows={phoneSearch ? bookingSearchPhone : bookings}
           columns={columns}
           disableSelectionOnClick
           getRowId={(row) => row._id}
           loading={loading}
         />
       </div>
-    </Stack>
+    </Stack >
   );
 }

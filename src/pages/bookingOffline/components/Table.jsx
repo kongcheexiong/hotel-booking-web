@@ -41,8 +41,8 @@ import { DeleteForever, SendToMobile } from "@mui/icons-material";
 export default function Table() {
   const navigate = useNavigate();
   const date = new Date();
-  const [startDate, setStartDate] = React.useState(date);
-  const [endDate, setEndDate] = React.useState(date);
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [endDate, setEndDate] = React.useState(new Date());
   const [filter, setFilter] = React.useState("ALL");
 
   const [pageSize, setPageSize] = React.useState(10);
@@ -107,7 +107,7 @@ export default function Table() {
     //console.log("====>", sendDate);
     var config = {
       method: "get",
-      url: `${SERVER_URL}/api/bookingsByFilter/skip/0/limit/30?hotel=${hotel}&startDate=${startDate}&endDate=${endDate}&status=${filter}&isOnline=${false}`,
+      url: `${SERVER_URL}/api/bookingsByFilter/skip/0/limit/100?hotel=${hotel}&startDate=${yesterday}&endDate=${endDate}&status=${filter}&isOnline=false`,
       headers: {
         Authorization: `${token}`,
       },
@@ -127,6 +127,7 @@ export default function Table() {
         console.log(error);
       });
   };
+
 
   const cancelBooking = async (id) => {
     // console.log('id: ', id);
@@ -242,6 +243,8 @@ export default function Table() {
       type: "date",
       flex: 1.2,
       renderCell: (params) => {
+        // var today = new Date(params.row.createdAt);
+        // today.setHours(today.getHours() + 7);
         const date = useFormatDate(params.row.createdAt);
         return <span>{date}</span>;
       },
@@ -415,7 +418,7 @@ export default function Table() {
                 marginLeft: "10px",
                 width: "100px",
               }}
-              onClick={fetchDataByDate}
+              onClick={() => { fetchDataByDate() }}
             >
               ຄົ້ນຫາ
             </Button>

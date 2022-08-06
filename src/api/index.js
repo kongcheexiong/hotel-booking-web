@@ -2,7 +2,7 @@ import axios from "axios";
 import * as react from "react";
 
 import { SERVER_URL } from "../constants";
-const timeOut = 5000;
+const timeOut = 40000;
 const hotelID = localStorage.getItem("hotel");
 
 //context

@@ -36,7 +36,7 @@ import ShowRoom from "./ShowRoom";
 import { SavedSearch, Today } from "@mui/icons-material";
 
 export default function UserInfo() {
-  const day =new Date( Date.now())
+  const day = new Date(Date.now())
   const toDay = new Date(day.setDate(day.getDate()));
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ export default function UserInfo() {
 
   const width = "auto";
   const [verifys, setVerify] = React.useState("");
-  const [gender, setGender] = React.useState("");
+  const [gender, setGender] = React.useState("MALE");
   const [selectedRoomType, setSelectedRoomType] = React.useState("");
   const [selectedRoom, setSelectedRoom] = React.useState("");
   const [paid, setPaid] = React.useState(false)
@@ -65,11 +65,11 @@ export default function UserInfo() {
   // get booking data
   const location = useLocation();
   var bookingData = location.state;
-  console.log('data: ', bookingData);
+  // console.log('data: ', bookingData);
 
-  const [sending,setSending] = React.useState(false)
-  const [err ,setErr] = React.useState(false)
-  const [success,setSuccess] = React.useState(false)
+  const [sending, setSending] = React.useState(false)
+  const [err, setErr] = React.useState(false)
+  const [success, setSuccess] = React.useState(false)
 
   const fetchAllRoomType = async () => {
     await axios
@@ -96,8 +96,10 @@ export default function UserInfo() {
   }
 
   const postCheckIn = async (post) => {
+    if (Object.keys(checkInData).length < 13 || endDate === '') { return alert('ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຕາມຈໍານວນ Field') }
     setSending(true)
     // console.log('dssssssssssssssss')
+
     var config = {
       method: 'post',
       url: `${SERVER_URL}/api/create/check-in`,
@@ -133,11 +135,13 @@ export default function UserInfo() {
       await roomData.push({ _id: rooms[i]._id })
       await checkInDatas.push({ ...checkInData, room: rooms[i]._id })
     }
+    if (Object.keys(checkInDatas[0]).length < 13 || endDate === '') {return alert('ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຕາມຈໍານວນ Field') }
     var data = {
       bookingID: bookingData._id,
       roomData: roomData,
       checkInData: checkInDatas
     };
+    // console.log('====>', checkInDatas)
     var config = {
       method: 'post',
       url: `${SERVER_URL}/api/create/check-in/booking-list`,
@@ -151,12 +155,12 @@ export default function UserInfo() {
 
     await axios(config)
       .then(function (response) {
-         console.log(response.data);
-    setSending(false)
-    navigate(`${router.CHECKIN}`);
+        console.log(response.data);
+        setSending(false)
+        navigate(`${router.CHECKIN}`);
       })
       .catch(function (error) {
-         console.log(error);
+        console.log(error);
       });
   }
 
@@ -164,10 +168,8 @@ export default function UserInfo() {
     e.preventDefault();
     await setSelectedRoomType(e.target.value);
     setSelectedRoom("");
-    setCheckInData({ ...checkInData, room: "" });
-    // await fetchRoomByType(e.target.value);
+    setCheckInData({ ...checkInData, roomType: e.target.value });
     fetchRoomsData(e.target.value);
-    // console.log(selectedRoomType);
   };
 
   const handleSelectRoom = async (e) => {
@@ -178,19 +180,35 @@ export default function UserInfo() {
     }
     await setSelectedRoom(e.target.value);
     await setCheckInData({ ...checkInData, room: e.target.value });
-    // console.log(e.target.value);
   };
 
   React.useEffect(() => {
-    // fetchRoomByType(bookingData.roomType._id);
+    setCheckInData({});
     if (bookingData !== null) {
       fetchRoomsData(bookingData.roomType._id);
+      setGender(bookingData?.onlineCustomer?.gender);
+      setCheckInData({
+        gender: bookingData?.onlineCustomer?.gender,
+        firstName: bookingData?.onlineCustomer?.firstName,
+        lastName: bookingData?.onlineCustomer?.lastName,
+        hotel: hotelID,
+        isCheckOut: false,
+        isPaid: false,
+        phone: bookingData?.customerPhone,
+        roomType: bookingData?.roomType?._id,
+        checkInDate: startDate,
+
+      });
+    } else {
+      setCheckInData({
+        hotel: hotelID,
+        gender: gender,
+        isCheckOut: false,
+        isPaid: false,
+        checkInDate: startDate,
+      });
     }
     fetchAllRoomType();
-    console.log('===================================<><>', rooms);
-    // console.log(roomType);
-    // console.log(room);
-    // console.log(checkInData);
   }, []);
 
   return (
@@ -225,6 +243,7 @@ export default function UserInfo() {
           <label>ຊື່</label>
           <TextField
             placeholder="First name"
+            defaultValue={bookingData?.onlineCustomer?.firstName}
             variant="outlined"
             sx={{
               ...textStyle,
@@ -242,6 +261,7 @@ export default function UserInfo() {
           <label>ນາມສະກຸນ</label>
           <TextField
             placeholder="Last name"
+            defaultValue={bookingData?.onlineCustomer?.lastName}
             variant="outlined"
             sx={{
               ...textStyle,
@@ -259,6 +279,7 @@ export default function UserInfo() {
           <label>ເບີໂທລະສັບ</label>
           <TextField
             placeholder="020 XXX XXXXX"
+            defaultValue={bookingData?.customerPhone}
             variant="outlined"
             sx={{
               ...textStyle,
@@ -321,31 +342,28 @@ export default function UserInfo() {
         </Stack>
         {loading ? <b>Loading...</b> : bookingData !== null && rooms.length !== 0 ?
           (
-          <>
-          <Stack direction='row' spacing={2}>
-           <Stack direction= 'row' spacing={1}>
-            ປະເພດຫ້ອງ:
-           <b style={{ color: `${color.BLUE_COLOR}`, marginLeft: 10 }}>{bookingData.roomType.typeName ?? '-'}</b>
-           </Stack>
-           <Stack  direction= 'row' spacing={1}>
-           ຈໍານວນ:
-              <b style={{ color: `${color.BLUE_COLOR}`, marginLeft: 10 }}>{bookingData.quantity ?? '-'} ຫ້ອງ</b>
-            
-           </Stack>
-          
-           
+            <>
+              <Stack direction='row' spacing={2}>
+                <Stack direction='row' spacing={1}>
+                  ປະເພດຫ້ອງ:
+                  <b style={{ color: `${color.BLUE_COLOR}`, marginLeft: 10 }}>{bookingData.roomType.typeName ?? '-'}</b>
+                </Stack>
+                <Stack direction='row' spacing={1}>
+                  ຈໍານວນ:
+                  <b style={{ color: `${color.BLUE_COLOR}`, marginLeft: 10 }}>{bookingData.quantity ?? '-'} ຫ້ອງ</b>
 
-           
-          </Stack>
-          {
-              _.times(bookingData.quantity, (i) => (
-                <Stack key={i} >
-                 
-                  <Stack direction='row'>
-                    <label> + ຫ້ອງທີ {i + 1}</label>
-                    {<b style={{ color: `${color.BLUE_COLOR}`, marginLeft: 10 }}>{rooms[i]?.roomName}</b>}
-                    {/*<ShowRoom room={room} />*/}
-                    {/* <Select
+                </Stack>
+
+              </Stack>
+              {
+                _.times(bookingData.quantity, (i) => (
+                  <Stack key={i} >
+
+                    <Stack direction='row'>
+                      <label> + ຫ້ອງທີ {i + 1}</label>
+                      {<b style={{ color: `${color.BLUE_COLOR}`, marginLeft: 10 }}>{rooms[i]?.roomName}</b>}
+                      {/*<ShowRoom room={room} />*/}
+                      {/* <Select
                     sx={{
                       ...textStyle,
                       fontFamily: `${font.LAO_FONT}`,
@@ -368,12 +386,12 @@ export default function UserInfo() {
                       );
                     })}
                   </Select> */}
+                    </Stack>
                   </Stack>
-                </Stack>
-              ))
-            }
-          
-          </>) :
+                ))
+              }
+
+            </>) :
           (<Stack>
             <label>ເລືອກປະເພດຫ້ອງ</label>
             <Select
@@ -544,21 +562,22 @@ export default function UserInfo() {
             variant="contained"
             sx={{ ...btnStyle, width: "100px" }}
             onClick={async () => {
-              //await setCheckInData({...checkInData, checkInDate: startDate, checkOutDate: endDate, })
-               console.log(checkInData);
-             if (bookingData !== null) {
-               return postCheckInBookingList();
-             }
-  
-             postCheckIn(checkInData);
+              console.log(checkInData)
+              await setCheckInData({ ...checkInData, checkInDate: startDate, checkOutDate: endDate, })
 
-           //console.log(checkInData)
+              if (bookingData !== null) {
+                return postCheckInBookingList();
+              }
+
+              postCheckIn(checkInData);
+
+              //console.log(checkInData)
             }}
           >
             ແຈ້ງເຂົ້າ
           </Button>
-          { sending? <span>ກຳລັງສ້າງຂໍ້ມູນ...</span>: err? <span>ເກີດຂໍ້ຜິດພາດ !!!</span>: success? <span>ສ້າງຂໍ້ມູນສໍາເລັດ</span> : null}
-         
+          {sending ? <span>ກຳລັງສ້າງຂໍ້ມູນ...</span> : err ? <span>ເກີດຂໍ້ຜິດພາດ !!!</span> : success ? <span>ສ້າງຂໍ້ມູນສໍາເລັດ</span> : null}
+
         </Stack>
       </Stack>
     </Stack >
