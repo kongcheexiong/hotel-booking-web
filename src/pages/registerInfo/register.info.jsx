@@ -57,7 +57,7 @@ export default function RegisterInfo() {
       headers: {
         "Content-Type": "application/json",
       },
-      timeout: 5000,
+      timeout: 40000,
       data: data,
     };
 
@@ -91,7 +91,7 @@ export default function RegisterInfo() {
       headers: {
         "Content-Type": "application/json",
       },
-      timeout: 5000,
+      timeout: 40000,
       data: data,
     };
 

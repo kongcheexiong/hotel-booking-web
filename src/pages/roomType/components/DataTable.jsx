@@ -91,7 +91,7 @@ export default function PageSizeCustomOptions() {
 
     await axios
       .get(`${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`, {
-        timeout: 5000,
+        timeout: 40000,
       })
       .then( async (res) => {
         //setResData(res.data.roomTypes);
@@ -151,7 +151,7 @@ export default function PageSizeCustomOptions() {
 
   React.useEffect(() => {
     //setloading(true);
-    setPrint([])
+   
  
       fetchData();
 
@@ -312,7 +312,7 @@ export default function PageSizeCustomOptions() {
 
   return (
     <div>
-      {error ? <h1>there is an error in loading</h1> : null}
+      {error ? <h1>Something went wrongor in loading</h1> : null}
       <div style={{ height: 660, width: "100%" }}>
         {/**table area */}
         <Stack direction="row" justifyContent="flex-end">

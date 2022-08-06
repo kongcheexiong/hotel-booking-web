@@ -58,7 +58,7 @@ const {auth, setAuth } = react.useContext(authContext);
 
     localStorage.setItem("role", "SYSTEM");
     localStorage.setItem("adminToken", "SYSTEM");
-    navigate(`${router.ADMIN_DASHBOARD}`)
+    navigate(`${router.ALL_HOTEL}`)
   };
   if (!token) {
     return (

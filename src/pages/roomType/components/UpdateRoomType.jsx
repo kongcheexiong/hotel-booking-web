@@ -62,7 +62,7 @@ export default function UpdateRoomType(props) {
       method: "post",
       url: `${SERVER_URL}/api/upload/images`,
       data: data,
-      timeout: 5000,
+      timeout: 40000,
     };
 
     await axios(config)
@@ -86,7 +86,7 @@ export default function UpdateRoomType(props) {
         "Content-Type": "application/json",
       },
       data: JSON.stringify(data),
-      timeout: 5000,
+      timeout: 40000,
     };
     await axios(config)
       .then(function (response) {
@@ -113,7 +113,7 @@ export default function UpdateRoomType(props) {
       data: {
         id: "",
       },
-      timeout: 5000
+      timeout: 40000
     };
 
     await axios(config)
@@ -261,7 +261,7 @@ export default function UpdateRoomType(props) {
             }}
           />
           {loading ? <CircularProgress /> : null}
-          {err ? <h1>There is an error reload and try again</h1> : null}
+          {err ? <h1>Something went wrongor reload and try again</h1> : null}
           {success && <Alert severity="success">This is a success alert — check it out!</Alert>}
         </Stack>
       </Stack>

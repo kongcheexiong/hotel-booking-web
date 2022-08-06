@@ -21,11 +21,6 @@ export const textStyle = {
   width: "300px",
   backgroundColor: "rgba(250, 250, 251, 1)",
   borderRadius: "5px",
-  
-  
- 
-
-
   "& .MuiInputBase-root": {
     fontFamily: "Noto Sans Lao",
     height: 35,

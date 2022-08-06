@@ -175,7 +175,7 @@ export default function UserDetail() {
         variant="contained"
         sx={{ ...btnStyle }}
       >
-        ສໍາເລັດ
+        next
       </Button>
     </div>
   );

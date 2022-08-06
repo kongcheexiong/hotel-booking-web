@@ -1,7 +1,8 @@
-import { Stack, TextField, Button,IconButton } from "@mui/material";
+import { Stack, TextField, Button,IconButton,Dialog,DialogContent,DialogActions, DialogTitle } from "@mui/material";
 import React from "react";
 import { textStyle, btnStyle, datagridSx } from "../../../style";
-import { font, SERVER_URL } from "../../../constants";
+import { font, SERVER_URL,color } from "../../../constants";
+import CheckOutComponent from "./checkOut.component";
 
 //icon
 import SearchIcon from "@mui/icons-material/Search";
@@ -15,7 +16,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import { CheckInContextContext } from "../../../context/checkin.context";
 import { counterContext } from "../../../context/counter";
 
+import LogoutIcon from '@mui/icons-material/Logout';
+
 import {format} from 'date-fns'
+import CancelIcon from "@mui/icons-material/Cancel";
 
 export default function Table() {
   const [pageSize, setPageSize] = React.useState(10);
@@ -25,11 +29,14 @@ export default function Table() {
   const [loading, setLoading] = React.useState(true)
 
   const { value, setValue } = React.useContext(counterContext);
+  const [checkOutData, setCheckOutData] = React.useState()
+
+  const [isOpenCheckout,setIsOpenCheckout] =React.useState(false)
   const fetchCheckIn = async () => {
     setCheckInContext([])
     setLoading(true)
     axios
-      .get(`${SERVER_URL}/api/check-in-data/skip/:skip/limit/:limit`)
+      .get(`${SERVER_URL}/api/check-in-data/skip/0/limit/30?hotel=${localStorage.getItem('hotel')}`)
       .then((res) => {
         console.log(res.data);
         setCheckInContext(res.data.checkIns);
@@ -38,8 +45,11 @@ export default function Table() {
       .catch((err) => console.error(err));
   };
 
+ 
+
   React.useEffect(() => {
     fetchCheckIn();
+    setIsOpenCheckout(false)
   }, [value]);
 
   const columns = [
@@ -51,29 +61,23 @@ export default function Table() {
       renderCell: (parram) => {
         return (
           <div>
-            <IconButton onClick={() => {}}>
-              <DeleteIcon fontSize="small" />
+            <IconButton onClick={() => {
+              setCheckOutData(parram.row)
+              console.log(parram.row)
+              setIsOpenCheckout(true)
+            }}>
+              <LogoutIcon fontSize="small" />
             </IconButton>
 
-            <IconButton
-              onClick={async () => {
-
-                //await console.log(parram.row.roomType);
-                //await setUpdatedData(parram.row.roomType);
-//
-                //await console.log(updatedData);
-                //handleUpdateForm();
-
-                //navigate(`${router.ROOMTYPEMANAGEMENT}/add`)
-              }}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
           </div>
         );
       },
     },
     { field: "billId", headerName: "ລະຫັດ", width: 80 },
+    { field: "roomName", headerName: "ຫ້ອງ", width: 80, renderCell: param=>{
+      return <span> {param.row.room?.roomName}</span>
+
+    } },
     {
       field: "gender",
       headerName: "ເພດ",
@@ -114,12 +118,21 @@ export default function Table() {
       headerName: "ໄລຍະເວລາ",
       flex: 1,
       renderCell: (params) => {
-        const start = format(new Date(params.row.checkInDate),'dd/MM/yyy')
-        const end = format(new Date(params.row.checkOutDate),'dd/MM/yyy')
+        if(params.row?.checkInDate && params.row?.checkOutDate){
+          const start = format(new Date(params.row?.checkInDate),'dd/MM/yyy')
+          const end = format(new Date(params.row?.checkOutDate),'dd/MM/yyy')
+  
+          return (
+            <Stack>
+              <span>{`${start}`}</span>
+            <span>{`${end} `}</span>
+            </Stack>
 
-        return (
-          <span>{`${start} - ${end}`}</span>
-        );
+          );
+          return <></>
+
+        }
+      
       },
     },
     //{
@@ -197,6 +210,48 @@ export default function Table() {
           loading={loading}
         />
       </div>
+      {/**checkout dialog */}
+      <Dialog
+          open={isOpenCheckout}
+          onClose={() => {
+            setIsOpenCheckout(false)
+            
+          }}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle
+            sx={{
+              fontFamily: "Noto sans lao",
+              fontSize: "18px",
+              backgroundColor: `${color.BLUE_COLOR}`,
+              fontWeight: 500,
+              color: "white",
+            }}
+            id="add-new-type"
+          >
+            <Stack direction='row' justifyContent='space-between' alignItems='center'>
+              <span>{"ຢືນຢັນການແຈ້ງອອກ"}</span>
+             
+            <IconButton onClick={()=> setIsOpenCheckout(false)}>
+              <CancelIcon fontSize=""/>
+            </IconButton>
+              
+
+            </Stack>
+            
+          </DialogTitle>
+          <DialogContent>
+         
+            <CheckOutComponent data={checkOutData} />
+           
+            
+          </DialogContent>
+          <DialogActions>
+           
+       
+          </DialogActions>
+        </Dialog>
     </Stack>
   );
 }

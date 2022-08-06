@@ -10,7 +10,9 @@ import {
   Stack,
   TextField,
   DialogActions,
-  Button
+  Button,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 import SearchArea from "./SearchArea";
@@ -31,7 +33,6 @@ import { SERVER_URL } from "../../../constants/index";
 
 import { textStyle } from "../../../style";
 import { PrintContext } from "../../../context/print.context";
-
 
 const rows = [{ _id: 1, roomNumber: "F01", type: "VIP 1", isAvailable: true }];
 
@@ -55,13 +56,15 @@ export default function PageSizeCustomOptions() {
   const [error, setError] = React.useState(false);
 
   const [isLoading, setloading] = React.useState(true);
+
+  const [selectedRoomType, setSelectedRoomType] = React.useState("none");
   //const [imgSrc, setImgSrc] = React.useState([]);
 
   const [deleteId, setDeleteId] = React.useState({});
   const [popUpConfirm, setPopUpConfirm] = React.useState(false);
+  const [roomType, setRoomType] = React.useState([]);
 
-
-  const {Print, setPrint} = React.useContext(PrintContext)
+  const { Print, setPrint } = React.useContext(PrintContext);
 
   const [sortModel, setSortModel] = React.useState([
     {
@@ -71,8 +74,8 @@ export default function PageSizeCustomOptions() {
   ]);
 
   const fetchData = async () => {
-    setPrint([])
- 
+    setPrint([]);
+
     setRoom([]);
     setloading(true);
 
@@ -82,13 +85,12 @@ export default function PageSizeCustomOptions() {
       headers: {
         "Content-Type": "application/json",
       },
-      timeout: 5000,
+      timeout: 40000,
     };
 
     await axios(config)
       .then((response) => {
         setRoom(response.data.rooms);
-        
 
         setloading(false);
         setError(false);
@@ -106,7 +108,7 @@ export default function PageSizeCustomOptions() {
       headers: {
         "Content-Type": "application/json",
       },
-      timeout: 5000,
+      timeout: 40000,
       data: {
         id: deleteId.room,
         roomType: deleteId.roomtype,
@@ -124,9 +126,23 @@ export default function PageSizeCustomOptions() {
         alert(err);
       });
   };
+  const fetchAllRoomType = async () => {
+    await axios
+      .get(`${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`, {
+        timeout: 40000,
+      })
+      .then(async (res) => {
+        await setRoomType(res.data.roomTypes);
+        // await console.log(roomType);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
 
   React.useEffect(() => {
     fetchData();
+    fetchAllRoomType();
     console.log(hotelID);
     console.log(resData);
   }, [value]);
@@ -135,25 +151,78 @@ export default function PageSizeCustomOptions() {
 
   const [search, setSearch] = React.useState("");
   const hotel = localStorage.getItem("hotel");
+  const [status, setStatus] = React.useState("none");
 
   const fetchDataById = async (data) => {
-    setRoom([])
-    setloading(true)
+    setRoom([]);
+    setloading(true);
     // setRoom({ ...room, roomLoading: true, roomErr: false, roomSuccess: false });
     await axios
       .get(`${SERVER_URL}/api/room?hotelId=${hotel}&roomName=${data}`, {
-        timeout: 5000,
+        timeout: 40000,
       })
       .then((res) => {
         setRoom(res.data);
-        setPrint(res.data)
+        setPrint(res.data);
         console.log(room);
-        setloading(false)
+        setloading(false);
       })
       .catch((err) => {
         console.error(err);
         alert(err);
       });
+  };
+
+  const fetchDataByType = async (roomType = "none", status = "none") => {
+    setloading(true);
+    setRoom([]);
+    if (selectedRoomType !== "none" && status !== "none") {
+      await axios
+        .get(
+          `${SERVER_URL}/api/rooms-by-room-type?roomType=${roomType}&status=${status}&hotelId=${hotel}`
+        )
+        .then((res) => {
+          setloading(false);
+          console.log(res.data);
+          setRoom(res.data.rooms);
+        })
+        .catch((err) => console.error(err));
+    } else if (selectedRoomType !== "none") {
+      await axios
+        .get(
+          `${SERVER_URL}/api/rooms-by-room-type?roomType=${roomType}&hotelId=${hotel}`
+        )
+        .then((res) => {
+          setloading(false);
+          console.log(res.data);
+          setRoom(res.data.rooms);
+        })
+        .catch((err) => console.error(err));
+    } else if (status !== "none") {
+      await axios
+        .get(
+          `${SERVER_URL}/api/rooms-by-room-type?status=${status}&hotelId=${hotel}`
+        )
+        .then((res) => {
+          setloading(false);
+          console.log(res.data);
+          setRoom(res.data.rooms);
+        })
+
+        .catch((err) => console.error(err));
+    }else{
+      await axios
+        .get(
+          `${SERVER_URL}/api/rooms-by-room-type?&hotelId=${hotel}`
+        )
+        .then((res) => {
+          setloading(false);
+          console.log(res.data);
+          setRoom(res.data.rooms);
+        })
+
+        .catch((err) => console.error(err));
+    }
   };
 
   const columns = [
@@ -175,7 +244,7 @@ export default function PageSizeCustomOptions() {
                   room: parram.row._id,
                   roomtype: parram.row.roomType._id,
                 });
-                setPopUpConfirm(true)
+                setPopUpConfirm(true);
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -249,6 +318,81 @@ export default function PageSizeCustomOptions() {
 
   return (
     <div>
+      <Stack direction="row" spacing={2}>
+        <Stack>
+          <label>ຄົ້ນຫາຕາມປະເພດຫ້ອງ</label>
+          <Select
+            sx={{
+              ...textStyle,
+              fontFamily: `${font.LAO_FONT}`,
+              height: 35,
+              width: `200px`,
+            }}
+            value={selectedRoomType}
+            onChange={(e) => {
+              e.preventDefault();
+              setSelectedRoomType(e.target.value);
+            }}
+            variant="outlined"
+          >
+            <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="none">
+              {`none`}
+            </MenuItem>
+
+            {roomType?.map((val, idx) => {
+              return (
+                <MenuItem
+                  key={idx}
+                  sx={{ fontFamily: `${font.LAO_FONT}` }}
+                  value={val.roomType._id}
+                >
+                  {val.roomType.typeName}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </Stack>
+        <Stack>
+          <label>ສະຖານະ</label>
+          <Select
+            sx={{
+              ...textStyle,
+              fontFamily: `${font.LAO_FONT}`,
+              height: 35,
+              width: `150px`,
+            }}
+            value={status}
+            onChange={(e) => {
+              e.preventDefault();
+              setStatus(e.target.value);
+            }}
+            variant="outlined"
+          >
+            <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value={"none"}>
+              {"none"}
+            </MenuItem>
+            <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value={false}>
+              {"ຫວ່າງ"}
+            </MenuItem>
+            <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value={true}>
+              {"ບໍຫວ່າງ"}
+            </MenuItem>
+          </Select>
+        </Stack>
+        <Stack justifyContent="flex-end">
+          <Button
+            onClick={() => {
+              fetchDataByType(selectedRoomType, status);
+            }}
+            variant="contained"
+            disableElevation
+            sx={{ ...btnStyle, height: "35px" }}
+          >
+            {" "}
+            ຄັ້ນຫາ
+          </Button>
+        </Stack>
+      </Stack>
       <br />
       <Divider />
       <Stack
@@ -271,7 +415,6 @@ export default function PageSizeCustomOptions() {
             onChange={(e) => {
               e.preventDefault();
               setSearch(e.target.value);
-              
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -279,7 +422,7 @@ export default function PageSizeCustomOptions() {
                   fetchData();
                   return;
                 }
-                fetchDataById(e.target.value)
+                fetchDataById(e.target.value);
               }
             }}
           />
@@ -354,13 +497,10 @@ export default function PageSizeCustomOptions() {
               sx={{ ...btnStyle }}
               onClick={() => {
                 setPopUpConfirm(false);
-                if(deleteId.room && deleteId.roomtype){
-                  deleteUser()
+                if (deleteId.room && deleteId.roomtype) {
+                  deleteUser();
                   setValue(() => value + 1);
-
                 }
-                
-                
               }}
             >
               ຕົກລົງ

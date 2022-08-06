@@ -1,7 +1,7 @@
 import * as react from "react";
 import { useNavigate } from "react-router-dom";
 //route
-import { router, color,font } from "../../../constants";
+import { router, color, font } from "../../../constants";
 
 //import material ui component
 import Button from "@mui/material/Button";
@@ -29,19 +29,19 @@ import { roomContext } from "../../../context/room.context";
 
 import axios from "axios";
 
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { PrintComponent } from "./PrintComponent";
 import { PrintContext } from "../../../context/print.context";
-import {useReactToPrint} from 'react-to-print'
+import { useReactToPrint } from "react-to-print";
 
 export default function Header() {
-  const {room ,setRoom} =react.useContext(roomContext)
+  const { room, setRoom } = react.useContext(roomContext);
 
   const [isOpen, setOpen] = react.useState(false);
   const handlePopUp = () => setOpen(!isOpen);
   const navigate = useNavigate();
   // const {auth,setAuth} = react.useContext(authContext)
-  const {value,setValue} = react.useContext(counterContext)
+  const { value, setValue } = react.useContext(counterContext);
   const hotelID = localStorage.getItem("hotel");
 
   const [roomTypeData, setRoomTypeData] = react.useState([]);
@@ -50,10 +50,10 @@ export default function Header() {
   //add new room
   const [roomNumber, setRoomNumber] = react.useState("");
   const [type, setType] = react.useState("");
-  const [note, setNote] = react.useState('');
-  const [err,setErr] = react.useState(false)
-  const [success,setSuccess] = react.useState(false)
-  const [loading,setLoading] = react.useState(false)
+  const [note, setNote] = react.useState("");
+  const [err, setErr] = react.useState(false);
+  const [success, setSuccess] = react.useState(false);
+  const [loading, setLoading] = react.useState(false);
 
   const componentRef = react.useRef();
   const handlePrint = useReactToPrint({
@@ -62,10 +62,9 @@ export default function Header() {
 
   const getRoomtypeData = async () => {
     await axios
-      .get(
-        `${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`,
-        { timeout: 5000 }
-      )
+      .get(`${SERVER_URL}/api/room-types/skip/0/limit/30?hotelId=${hotelID}`, {
+        timeout: 40000,
+      })
       .then((res) => {
         setRoomTypeData(res.data.roomTypes);
         //setloading(false);
@@ -78,29 +77,32 @@ export default function Header() {
   };
 
   const handleAddNewRoom = async () => {
-    setLoading(true)
+    setLoading(true);
     await axios
       .post(
-        `${SERVER_URL}/api/create/room`, {
+        `${SERVER_URL}/api/create/room`,
+        {
           hotel: hotelID,
           roomType: type,
           roomName: roomNumber,
           status: false,
           isDeleted: false,
           note: note,
-        },{
-          timeout: 5000
-        })
+        },
+        {
+          timeout: 40000,
+        }
+      )
       .then((res) => {
-        setSuccess(true)
-        setLoading(false)
-        setValue(value => value+1)
+        setSuccess(true);
+        setLoading(false);
+        setValue((value) => value + 1);
 
-        console.log(res)
+        console.log(res);
       })
       .catch((err) => {
-        setErr(true)
-        console.error(err)
+        setErr(true);
+        console.error(err);
       });
   };
 
@@ -141,68 +143,68 @@ export default function Header() {
         </Button>
 
         <Button
-        onClick={()=> {
-          setRoom({})
-          
-          setValue(value => value+1)
-        }}
+          onClick={() => {
+            setRoom([]);
+
+            setValue((value) => value + 1);
+          }}
           disableElevation
           variant="outlined"
-          color='secondary'
-          startIcon={<CachedIcon/>}
+          color="secondary"
+          startIcon={<CachedIcon />}
           sx={{
             ...btnStyle,
             "&.MuiButton-root": {
               fontFamily: `${font.EN_FONT}`,
               width: "100px",
               height: 30,
-              fontSize: '12px'
+              fontSize: "12px",
             },
           }}
         >
           reload
         </Button>
         <div
-      style={{ display: "none" }}// This make ComponentToPrint show   only while printing
-      > 
-       <PrintComponent ref={componentRef} />
-      </div>
- 
-      <Button
-        onClick={() => {
-          //setValue( value => value+1)
-          //generatePDF(resData)
-          handlePrint()
-        }}
-        color="error"
-        disableElevation
-        sx={{
-          ...btnStyle,
-          "&.MuiButton-root": {
-            fontFamily: `${font.LAO_FONT}`,
-            width: "150px",
-            fontWeight: "500",
-            height: 30,
-            fontSize: "14px",
-          },
-        }}
-        size="small"
-        variant="outlined"
-        startIcon={<PictureAsPdfIcon />}
-      >
-        ນໍາອອກເປັນ PDF
-      </Button>
+          style={{ display: "none" }} // This make ComponentToPrint show   only while printing
+        >
+          <PrintComponent ref={componentRef}  />
+        </div>
+
+        <Button
+          onClick={() => {
+            //setValue( value => value+1)
+            //generatePDF(resData)
+            handlePrint();
+          }}
+          color="error"
+          disableElevation
+          sx={{
+            ...btnStyle,
+            "&.MuiButton-root": {
+              fontFamily: `${font.LAO_FONT}`,
+              width: "150px",
+              fontWeight: "500",
+              height: 30,
+              fontSize: "14px",
+            },
+          }}
+          size="small"
+          variant="outlined"
+          startIcon={<PictureAsPdfIcon />}
+        >
+          ນໍາອອກເປັນ PDF
+        </Button>
         {/** show pop up to add new room */}
         <Dialog
           open={isOpen}
           onClose={() => {
-            setSuccess(false)
-            setErr(false)
-            setLoading(false)
+            setSuccess(false);
+            setErr(false);
+            setLoading(false);
             handlePopUp();
             setType("");
             setRoomNumber("");
-            setNote('')
+            setNote("");
           }}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
@@ -237,7 +239,6 @@ export default function Header() {
                   value={type}
                   onChange={(e) => {
                     setType(e.target.value);
-
                   }}
                 >
                   {roomTypeData.map((val) => {
@@ -256,11 +257,10 @@ export default function Header() {
                   sx={{ ...textStyle, width: "100%" }}
                 />
               </Stack>
-              {loading? <h3>Please wait...</h3>: null}
-              {err && <h3>there is an error</h3>}
-              
-              {success && <h3>Successfully added</h3>}
+              {loading ? <h3>Please wait...</h3> : null}
+              {err && <h3>Something went wrongor</h3>}
 
+              {success && <h3>Successfully added</h3>}
             </Stack>
           </DialogContent>
           <DialogActions>
@@ -289,8 +289,8 @@ export default function Header() {
                   status: false,
                   isDeleted: false,
                   note: note,
-                })
-                handleAddNewRoom()
+                });
+                handleAddNewRoom();
               }}
             >
               ຕົກລົງ
@@ -299,10 +299,9 @@ export default function Header() {
         </Dialog>
         {/****************************************** */}
       </Stack>
-      <Divider/>
+      <Divider />
 
       {/**search area */}
-    
     </Stack>
   );
 }
