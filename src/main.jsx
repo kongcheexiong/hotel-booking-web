@@ -18,11 +18,13 @@ import { PrintProvider } from "./context/print.context";
 
 import { CheckInContextProvider } from "./context/checkin.context";
 import { EmployeeProvider } from "./context/employee.context";
+import { EditHotelProvider } from "./context/edithotel.context";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <EditHotelProvider>
     <CreateCheckInProvider>
       <EmployeeProvider>
         <CheckInContextProvider>
@@ -48,5 +50,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         </CheckInContextProvider>
       </EmployeeProvider>
     </CreateCheckInProvider>
+    </EditHotelProvider>
   </React.StrictMode>
 );

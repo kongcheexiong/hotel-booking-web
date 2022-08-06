@@ -36,6 +36,8 @@ import { notificationContext } from "../context/notification";
 
 // io
 import { io } from "socket.io-client";
+import MapsHomeWorkIcon from '@mui/icons-material/MapsHomeWork';
+import MapIcon from '@mui/icons-material/Map';
 
 const socket = io.connect(`${SERVER_URL}`, { transports: ["websocket"] });
 
@@ -69,6 +71,13 @@ function Layout() {
     react.useContext(notificationContext);
 
   const sideNavData = [
+    {
+      name: "ໜ້າຫຼັກ",
+      icon: <EqualizerIcon fontSize="small" />,
+      router: `${router.ADMIN_DASHBOARD}`,
+      access: [ "SYSTEM"],
+    },
+
    {
      name: "ໜ້າຫຼັກ",
      icon: <EqualizerIcon fontSize="small" />,
@@ -129,22 +138,22 @@ function Layout() {
    ///},
     {
       name: "ຈັດການຂໍ້ມູນໂຮງແຮມ",
-      icon: <SettingsIcon fontSize="small" />,
+      icon: <MapsHomeWorkIcon fontSize="small" />,
       router: `${router.ALL_HOTEL}`,
       access: ["SYSTEM"],
     },
     {
       name: "ແຜນທີ່ໂຮງແຮມ",
-      icon: <SettingsIcon fontSize="small" />,
+      icon: <MapIcon fontSize="small" />,
       router: `${router.MAP}`,
       access: ["SYSTEM"],
     },
-    {
-      name: "ຂໍ້ມູນຜູ້ໃຊ້ແອັບ BanHao",
-      icon: <SettingsIcon fontSize="small" />,
-      router: `${router.ALL_USER}`,
-      access: ["SYSTEM"],
-    },
+   //{
+   //  name: "ຂໍ້ມູນຜູ້ໃຊ້ແອັບ BanHao",
+   //  icon: <SettingsIcon fontSize="small" />,
+   //  router: `${router.ALL_USER}`,
+   //  access: ["SYSTEM"],
+   //},
   ];
 
   // react.useEffect(() => {
@@ -309,10 +318,9 @@ function Layout() {
         >
           <Stack direction="row-reverse" spacing={0} alignItems="center">
             {/**profile */}
-            <IconButton
+            {localStorage.getItem('hotel')?  <IconButton
               onClick={() => {
-                play();
-                console.log("test beep");
+               
               }}
             >
               <Avatar
@@ -320,7 +328,8 @@ function Layout() {
                 //src="/static/images/avatar/1.jpg"
                 sx={{ width: 30, height: 30 }}
               />
-            </IconButton>
+            </IconButton>: null}
+           
 
             {/**name */}
             <span
@@ -332,11 +341,12 @@ function Layout() {
           </Stack>
 
           {/**notification */}
-          <IconButton>
+          {localStorage.getItem('hotel')?  <IconButton>
             <Badge color="secondary" badgeContent={notification}>
               <NotificationsIcon fontSize="medium" />
             </Badge>
-          </IconButton>
+          </IconButton>: null}
+         
         </Stack>
         <div style={{ margin: "30px 30px", padding: "", backgroundColor: "" }}>
           <Outlet />
