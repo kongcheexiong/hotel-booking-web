@@ -11,6 +11,8 @@ import { SERVER_URL } from "../../constants/index.js";
 import axios from "axios";
 
 import { format } from "date-fns";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box'
 
 function Dashboard() {
   const today = new Date();
@@ -26,9 +28,9 @@ function Dashboard() {
   const [latestBooking, setLatestBooking] = React.useState([])
   const [latestCheckIn, setLatestCheckIn] = React.useState([])
 
-  const [success,setSuccess] = React.useState(false)
+  const [success, setSuccess] = React.useState(false)
   const [err, setErr] = React.useState(false)
-  const [loading,setLoading] = React.useState(true)
+  const [loading, setLoading] = React.useState(true)
 
   const labels = [
     format(new Date(today), "dd/MM/yyyy"),
@@ -54,8 +56,8 @@ function Dashboard() {
         await setEmployee(res.data.totalUser);
         await setBooking(res.data.totalBooking);
         await setCheckIn(res.data.totalCheckIn);
-        await  setLatestBooking(res.data.latestBookings);
-        await  setLatestCheckIn(res.data.latestCheckIns);
+        await setLatestBooking(res.data.latestBookings);
+        await setLatestCheckIn(res.data.latestCheckIns);
         console.log(res.data)
         setLoading(false);
       })
@@ -139,7 +141,7 @@ function Dashboard() {
   //     });
   // };
 
-  const fetchData = async() => {
+  const fetchData = async () => {
 
     // await totalRoom();
     await totalRoomType();
@@ -154,38 +156,39 @@ function Dashboard() {
   }
   React.useEffect(() => {
     fetchData()
-   
+
     // latestBookings()
-  },[]);
+  }, []);
 
   return (
     <div>
-      {err && <h1>Something went wrong</h1>}
-      {loading && <h1>loading...</h1>}
-      {success && 
-      <Stack direction="column" spacing={2}>
-        {/**static card */}
-        <Stack direction="row" justifyContent="space-between" spacing={2}>
-          <StaticCard title="ປະເພດຫ້ອງ" value={roomType} />
-          <StaticCard title="ຈໍານວນຫ້ອງ" value={room} />
-          <StaticCard title="ຫ້ອງຫວ່າງ" value={availableRoom} />
-        
+      {err ? <h1>Something went wrong</h1> : loading ? <Stack direction='column' sx={{marginLeft: '50%', marginTop: '20%'}}>
+      <CircularProgress />
+        <span>Loading...</span>
+      </Stack>
+        : success ?
+          <Stack direction="column" spacing={2}>
+            {/**static card */}
+            <Stack direction="row" justifyContent="space-between" spacing={2}>
+              <StaticCard title="ປະເພດຫ້ອງ" value={roomType} />
+              <StaticCard title="ຈໍານວນຫ້ອງ" value={room} />
+              <StaticCard title="ຫ້ອງຫວ່າງ" value={availableRoom} />
 
-        </Stack>
-        <Stack direction="row" justifyContent="space-between" spacing={2}>
-          
-          <StaticCard title="ພະນັກງານ" value={employee} />
-          <StaticCard title="ການຈອງຍັງຄ້າງຢູ່" value={booking} />
-          <StaticCard title="ກໍາລັງເຊັດອິນ" value={checkIn} />
 
-        </Stack>
+            </Stack>
+            <Stack direction="row" justifyContent="space-between" spacing={2}>
 
-        {/**booking in a week */}
-        <CustomBarChart data={latestBooking} title = "ການຈອງໃນແຕ່ລະມື້" />
-        {/**check in in a week */}
-        <CustomBarChart data={latestCheckIn}  title = "ການແຈ້ງເຂົ້າໃນແຕ່ລະມື້" />
-      </Stack>}
-      
+              <StaticCard title="ພະນັກງານ" value={employee} />
+              <StaticCard title="ການຈອງຍັງຄ້າງຢູ່" value={booking} />
+              <StaticCard title="ກໍາລັງເຊັດອິນ" value={checkIn} />
+
+            </Stack>
+
+            {/**booking in a week */}
+            <CustomBarChart data={latestBooking} title="ການຈອງໃນແຕ່ລະມື້" />
+            {/**check in in a week */}
+            <CustomBarChart data={latestCheckIn} title="ການແຈ້ງເຂົ້າໃນແຕ່ລະມື້" />
+          </Stack> : null}
     </div>
   );
 }

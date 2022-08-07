@@ -37,7 +37,7 @@ export default function AddNewBookingDialog() {
 
   const [roomNum, setRoomNum] = React.useState(0)
 
-  const [loadNum ,setLoadNum] = React.useState(false)
+  const [loadNum, setLoadNum] = React.useState(false)
 
   const fetchData = async () => {
     await axios
@@ -82,7 +82,7 @@ export default function AddNewBookingDialog() {
         quantity: num,
         checkInDate: startDate,
         isOnline: false,
-      },{
+      }, {
         headers: {
           //'Authorization': localStorage.getItem('accessToken'),
           'Content-Type': 'application/json'
@@ -165,14 +165,14 @@ export default function AddNewBookingDialog() {
         </Select>
       </Stack>
       <Stack>
-        {selectedRoomType===''?<label htmlFor="num">ຈໍານວນຫ້ອງ</label>:
-        <>
-        { loadNum ? <>ຈໍານວນຫ້ອງ ...</>: <label htmlFor="num">ຈໍານວນຫ້ອງ  (ຫວ່າງ {roomNum} ຫ້ອງ)</label>}
-        </>}
-        
+        {selectedRoomType === '' ? <label htmlFor="num">ຈໍານວນຫ້ອງ</label> :
+          <>
+            {loadNum ? <>ຈໍານວນຫ້ອງ ...</> : roomNum <= 0 ? <label htmlFor="num">ບໍ່ມີຫ້ອງຫວ່າງ</label> : <label htmlFor="num">ຈໍານວນຫ້ອງ  (ຫວ່າງ {roomNum} ຫ້ອງ)</label>}
+          </>}
+
         <TextField
           //placeholder="First name"
-          disabled={ selectedRoomType !== ''? false: true}
+          disabled={selectedRoomType === '' || roomNum <= 0? true : false}
           value={num}
           variant="outlined"
           sx={{
@@ -182,12 +182,12 @@ export default function AddNewBookingDialog() {
           }}
           onChange={(e) => {
             e.preventDefault();
-            if(e.target.value > roomNum){
+            if (e.target.value > roomNum) {
               alert(`ກາລຸນາປ້ອນຈໍານວນຫ້ອງທີ່ຢູ່ລະຫວ່າງ 1 - ${roomNum}`)
-              return ;
+              return;
             }
             setNum(e.target.value);
-          
+
             // console.log(checkInData);
           }}
         />
@@ -211,7 +211,7 @@ export default function AddNewBookingDialog() {
             renderInput={(params) => (
               <TextField
                 onChange={
-                  (e) => {}
+                  (e) => { }
                   ///setData({
                   ///  ...data,
                   ///  birthday: e.target.value,
@@ -236,12 +236,13 @@ export default function AddNewBookingDialog() {
         ) : err ? (
           <span>error</span>
         ) : null}
-        <Button variant="contained" sx={{ ...btnStyle }} onClick={()=>{
-          if(phone === '' || num === '' || selectedRoomType ==='' ){
+        <Button variant="contained" sx={{ ...btnStyle }} onClick={() => {
+          if (phone === '' || num === '' || selectedRoomType === '') {
             alert('ກາລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ')
-            return ;
+            return;
           }
-          postBooking()}}>
+          postBooking()
+        }}>
           ບັນທຶກ
         </Button>
       </Stack>

@@ -248,7 +248,7 @@ export default function Table() {
     //{ field: "city", headerName: "ເມືອງ", flex: 1, sortable: false },
     //{ field: "province", headerName: "ແຂວງ", flex: 1, sortable: false },
     { field: "phone", headerName: "ເບີໂທລະສັບ", flex: 0.6, sortable: false },
-    { field: "role", headerName: "Role", flex: 0.4 },
+    // { field: "role", headerName: "Role", flex: 0.4 },
   ];
 
   

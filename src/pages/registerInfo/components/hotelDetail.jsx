@@ -32,18 +32,19 @@ import { router } from "../../../constants";
 import { RegisterProgressContext } from "../../../context/registerProgress.context";
 import MyRouter from "../../../routes";
 
-const SuccessRegister = ()=>{
+const SuccessRegister = () => {
 
-  return(
+  return (
     <div style={{
       width: '500px',
       height: '600px',
-      display:'flex',
+      display: 'flex',
       flexDirection: 'column',
-      rowGap: '20px'}}>
-         <h3> ສໍາເລັດການລົງທະບຽນຂໍ້ມູນ, ກາລຸນາລໍຖ້າການຢືນຢັນຈາກລະບົບ</h3>
-          
-          </div>
+      rowGap: '20px'
+    }}>
+      <h3> ສໍາເລັດການລົງທະບຽນຂໍ້ມູນ, ກາລຸນາລໍຖ້າການຢືນຢັນຈາກລະບົບ</h3>
+
+    </div>
   )
 }
 
@@ -60,6 +61,7 @@ export default function HotelDetail() {
   const [update, setUpdate] = React.useState(0);
   const [files, setFiles] = React.useState("");
   const [hotelName, setHotelName] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
   //const [finish, setFinish] = React.useState(0)
   const registerHotel = async () => {
@@ -71,8 +73,8 @@ export default function HotelDetail() {
       village: registerInfo.village,
       lat: registerInfo.lat,
       lng: registerInfo.lng,
-      phone:  registerInfo.phone,
-      email:  registerInfo.email,
+      phone: registerInfo.phone,
+      email: registerInfo.email,
     });
 
     var config = {
@@ -100,13 +102,13 @@ export default function HotelDetail() {
             role: "OWNER",
             firstName: registerInfo.firstName,
             lastName: registerInfo.lastName,
-      
+
             birthday: registerInfo.birthday,
 
-            image:  registerInfo.UserImages,
+            image: registerInfo.UserImages,
           })
           .then((res) => {
-           // handleUploadImg(files);
+            // handleUploadImg(files);
             console.log(res.data);
             alert("create success");
           })
@@ -120,7 +122,7 @@ export default function HotelDetail() {
 
 
   return (
-    <Stack direction='column' spacing = {2}>
+    <Stack direction='column' spacing={2}>
       <Stack direction='column' spacing={1}>
         <h1>ລາຍລະອຽດໂຮງແຮມ</h1>
         <Stack spacing={0}>
@@ -245,7 +247,7 @@ export default function HotelDetail() {
             )}
           />
         </Stack>
-       
+
         <Stack spacing={0}>
           <label>ອັບໂຫລດຮູບພາບໂຮງແຮມ (ສາມາດເລືອກໄດ້ຫຼາຍກວ່າ 1 ຮູບ)</label>
           <input
@@ -274,19 +276,25 @@ export default function HotelDetail() {
           <Map />
         </div>
       </Stack>
+      {loading ? <span>Loading...</span> : null}
 
       <Button
         onClick={async () => {
-          await registerHotel();
+          if (loading) return;
+          setLoading(true)
           await handleUploadImg(files)
+          await registerHotel();
+          setLoading(false)
+
           setRegisterProgress(2);
           console.log(registerInfo)
-          navigate(`${router.REGISTER}/hotel/success`)
-          
+          navigate(`${router.REGISTER
+            }/hotel/success`)
+
         }}
-        
+
         variant="contained"
-        sx={{ ...btnStyle}}
+        sx={{ ...btnStyle }}
       >
         ສໍາເລັດ
       </Button>

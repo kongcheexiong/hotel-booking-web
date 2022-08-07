@@ -43,7 +43,7 @@ export default function Table() {
 
   const hotel = localStorage.getItem("hotel");
   const token = localStorage.getItem("accessToken");
-  const {bookingContext,setbookingContext} = React.useContext(BookingContext)
+  const { bookingContext, setbookingContext } = React.useContext(BookingContext)
 
   const [loading, setLoading] = React.useState(true);
   const [err, setErr] = React.useState(false);
@@ -162,9 +162,39 @@ export default function Table() {
       headerName: "ຕົວເລືອກ",
       width: 100,
       sortable: false,
+      // renderCell: (parram) => {
+      //   if (parram.row.status === "REJECTED") {
+      //     return <div></div>
+      //   }
+      //   return (
+      //     <Stack direction="row" spacing={0}>
+      //       <Tooltip title="ແຈ້ງເຂົ້າ">
+      //         <IconButton
+      //           onClick={() => {
+      //             navigate(`${router.CHECKIN}/add`, { state: parram.row });
+      //           }}
+      //         >
+      //           <HourglassTopIcon />
+      //         </IconButton>
+      //       </Tooltip>
+      //       <Tooltip title="ລົບອອກ">
+      //         <IconButton
+      //           onClick={() => {
+      //             cancelBooking(parram.row._id);
+      //           }}
+      //         >
+      //           <DeleteForever />
+      //         </IconButton>
+      //       </Tooltip>
+      //     </Stack>
+      //   );
+      // },
       renderCell: (parram) => {
-        if (parram.row.status === "REJECTED") {
-          return <div></div>
+        if (
+          parram.row.status === "REJECTED" ||
+          parram.row.status === "CHECKIN"
+        ) {
+          return <div></div>;
         }
         return (
           <Stack direction="row" spacing={0}>
@@ -174,7 +204,7 @@ export default function Table() {
                   navigate(`${router.CHECKIN}/add`, { state: parram.row });
                 }}
               >
-                <HourglassTopIcon />
+                <DomainVerificationIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="ລົບອອກ">

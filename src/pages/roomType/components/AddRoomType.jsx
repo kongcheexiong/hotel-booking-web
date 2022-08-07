@@ -17,7 +17,7 @@ import "../style.css";
 import { ConstructionOutlined, TurnedIn } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { SERVER_URL } from "../../../constants";
-import {handleUploadImg} from '../../../services/uploadImage/index'
+import { handleUploadImg } from '../../../services/uploadImage/index'
 export default function AddRoomType() {
   // const {setRoomType } = React.useContext(roomTypeContext);
   //const roomType = React.useContext(roomTypeContext)
@@ -25,7 +25,7 @@ export default function AddRoomType() {
 
   const [loading, setLoading] = React.useState(false);
   const [err, setErr] = React.useState(false);
-  const [success,setSuccess] = React.useState(false)
+  const [success, setSuccess] = React.useState(false)
 
   const hotelId = localStorage.getItem("hotel");
   const initialState = {
@@ -59,7 +59,7 @@ export default function AddRoomType() {
 
 
   // func for upload roomtype info
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     setLoading(true)
     let config = {
       method: "post",
@@ -77,13 +77,13 @@ export default function AddRoomType() {
         setLoading(false)
         setSuccess(true)
 
-      //  console.log('submited')
+        //  console.log('submited')
       })
       .catch(function (error) {
         console.log(error);
-       // console.log('error')
-       setSuccess(false)
-       setLoading(false)
+        // console.log('error')
+        setSuccess(false)
+        setLoading(false)
         setErr(true);
       });
   };
@@ -141,6 +141,12 @@ export default function AddRoomType() {
           <label id="price">ລາຄາ</label>
           <TextField
             onChange={(e) => {
+              const num = Number(e.target.value);
+
+              if (!Number.isInteger(num)) {
+                return alert('ປ້ອນແຕ່ຕົວເລກ');
+                return;
+              }
               setData({ ...data, price: e.target.value });
             }}
             sx={{ ...textStyle, width: "100%" }}
@@ -191,24 +197,25 @@ export default function AddRoomType() {
               setData({ ...data, images: fileImage });
             }}
           />
-          <br/>
-          
-              {err ? <Alert severity="error">This is an error alert — check it out!</Alert> : null}
-              {loading ? <CircularProgress /> : null}
-              {success? <Alert severity="success">This is a success alert — check it out!</Alert> : null}
+          <br />
+
+          {err ? <Alert severity="error">This is an error alert — check it out!</Alert> : null}
+          {loading ? <CircularProgress /> : null}
+          {success ? <Alert severity="success">This is a success alert — check it out!</Alert> : null}
         </Stack>
       </Stack>
       {/**submit button */}
       <Stack sx={{ marginTop: "50px" }} direction="row" justifyContent="">
         <Button
           onClick={async () => {
+            if (loading) return;
             //console.log(data)
             await setLoading(true);
             await setErr(false)
             await handleUploadImg(files);
             await handleSubmit();
-            
-            
+
+
 
             //await navigate(`${router.ROOMTYPEMANAGEMENT}`,{replace:true})
           }}

@@ -167,7 +167,7 @@ export default function Header() {
         <div
           style={{ display: "none" }} // This make ComponentToPrint show   only while printing
         >
-          <PrintComponent ref={componentRef}  />
+          <PrintComponent ref={componentRef} />
         </div>
 
         <Button
@@ -282,14 +282,15 @@ export default function Header() {
               color="primary"
               size="small"
               onClick={() => {
-                console.log({
-                  hotel: hotelID,
-                  roomType: type,
-                  roomName: roomNumber,
-                  status: false,
-                  isDeleted: false,
-                  note: note,
-                });
+                // console.log({
+                //   hotel: hotelID,
+                //   roomType: type,
+                //   roomName: roomNumber,
+                //   status: false,
+                //   isDeleted: false,
+                //   note: note,
+                // });
+                if (loading) return;
                 handleAddNewRoom();
               }}
             >

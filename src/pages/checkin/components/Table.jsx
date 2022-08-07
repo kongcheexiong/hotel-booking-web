@@ -1,4 +1,4 @@
-import { Stack, TextField, MenuItem, Button, IconButton, Dialog, DialogContent, DialogActions, Select, DialogTitle } from "@mui/material";
+import { Stack, TextField, MenuItem, Button, IconButton, Dialog, DialogContent, DialogActions, Select, DialogTitle, Divider } from "@mui/material";
 import React from "react";
 import { textStyle, btnStyle, datagridSx } from "../../../style";
 import { font, SERVER_URL, color, router } from "../../../constants";
@@ -77,7 +77,7 @@ export default function Table() {
     //console.log("====>", sendDate);
     var config = {
       method: "get",
-      url: `${SERVER_URL}/api/search/check-in-data/skip/0/limit/100?hotel=${hotel}&startDate=${yesterday}&endDate=${endDate}&status=${filter}&isOnline=true`,
+      url: `${SERVER_URL}/api/search/check-in-data/skip/0/limit/100?hotel=${hotel}&startDate=${yesterday}&endDate=${endDate}&isCheckOut=${filter}`,
       timeout: 40000,
     };
 
@@ -115,18 +115,20 @@ export default function Table() {
       width: 100,
       sortable: false,
       renderCell: (parram) => {
-        return (
-          <div>
-            <IconButton onClick={() => {
-              setCheckOutData(parram.row)
-              console.log(parram.row)
-              setIsOpenCheckout(true)
-            }}>
-              <LogoutIcon fontSize="small" />
-            </IconButton>
+        if (parram.row.isCheckOut) return null;
+          return (
 
-          </div>
-        );
+            <div>
+              <IconButton onClick={() => {
+                setCheckOutData(parram.row)
+                console.log(parram.row)
+                setIsOpenCheckout(true)
+              }}>
+                <LogoutIcon fontSize="small" />
+              </IconButton>
+
+            </div>
+          );
       },
     },
     { field: "billId", headerName: "ລະຫັດ", width: 80 },
@@ -399,12 +401,12 @@ export default function Table() {
               <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="ALL">
                 ສະແດງທັງໝົດ
               </MenuItem>
-              <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value="PENDING">
+              <MenuItem sx={{ fontFamily: `${font.LAO_FONT}` }} value='false'>
                 ລໍຖ້າແຈ້ງອອກ
               </MenuItem>
               <MenuItem
                 sx={{ fontFamily: `${font.LAO_FONT}` }}
-                value="CHECKEDOUT"
+                value="true"
               >
                 ແຈ້ງອອກແລ້ວ
               </MenuItem>
@@ -432,10 +434,7 @@ export default function Table() {
           </Stack>
 
         </Stack>
-        <Stack direction="row" spacing={2} justifyContent="center">
-
-
-        </Stack>
+        <Divider/>
 
         <br />
       </Stack>

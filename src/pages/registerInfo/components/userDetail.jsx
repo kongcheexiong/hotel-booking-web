@@ -49,23 +49,24 @@ export default function UserDetail() {
   const [update, setUpdate] = React.useState(0);
   const [files, setFiles] = React.useState("");
   const [hotelName, setHotelName] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
 
 
   const [date, setDate] = React.useState("")
 
   //const [finish, setFinish] = React.useState(0)
-  React.useEffect(()=>{
+  React.useEffect(() => {
     setRegisterProgress(0)
 
-  },[])
+  }, [])
 
   return (
     <div style={{
-        width: '500px',
-        height: '600px',
-        display:'flex',
-        flexDirection: 'column',
-        rowGap: '20px',
+      width: '500px',
+      height: '600px',
+      display: 'flex',
+      flexDirection: 'column',
+      rowGap: '20px',
 
     }}
     >
@@ -89,39 +90,39 @@ export default function UserDetail() {
             //defaultValue={registerInfo.userName}
             sx={{ ...textStyle, width: "100%" }}
             onChange={(e) => {
-                setRegisterInfo({ ...registerInfo, lastName: e.target.value });
-              }}
+              setRegisterInfo({ ...registerInfo, lastName: e.target.value });
+            }}
           />
         </Stack>
         <Stack>
-              <label id="dateOfBirth">ວັນເດືອນປີເກີດ</label>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <MobileDatePicker
-                  inputFormat = 'dd/MM/yyyy'
-                  value={date}
-                  onChange={(value) => {
-                    const _date = new Date(value);
-                    console.log(_date.toLocaleDateString("en-GB"));
-                    const saveDate = _date.toLocaleDateString("en-GB")
-                    setDate(value);
-                    //setData({
-                    //  ...data,
-                    //  birthday: value,
-                    //});
-                    setRegisterInfo({ ...registerInfo, birthday: value });
+          <label id="dateOfBirth">ວັນເດືອນປີເກີດ</label>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <MobileDatePicker
+              inputFormat='dd/MM/yyyy'
+              value={date}
+              onChange={(value) => {
+                const _date = new Date(value);
+                console.log(_date.toLocaleDateString("en-GB"));
+                const saveDate = _date.toLocaleDateString("en-GB")
+                setDate(value);
+                //setData({
+                //  ...data,
+                //  birthday: value,
+                //});
+                setRegisterInfo({ ...registerInfo, birthday: value });
 
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      onChange={(e) =>{}
-                      }
-                      sx={{ ...textStyle, width: "100%" }}
-                      {...params}
-                    />
-                  )}
+              }}
+              renderInput={(params) => (
+                <TextField
+                  onChange={(e) => { }
+                  }
+                  sx={{ ...textStyle, width: "100%" }}
+                  {...params}
                 />
-              </LocalizationProvider>
-            </Stack>
+              )}
+            />
+          </LocalizationProvider>
+        </Stack>
         <Stack spacing={0}>
           <label>ເບີໂທລະສັບຕິດຕໍ່</label>
           <TextField
@@ -133,7 +134,7 @@ export default function UserDetail() {
             }}
           />
         </Stack>
-       
+
         <Stack spacing={0}>
           <label>ອັບໂຫລດຮູບພາບເຈົ້າຂອງໂຮງແຮມ</label>
           <input
@@ -157,18 +158,23 @@ export default function UserDetail() {
             }}
           />
         </Stack>
-       
+
       </Stack>
+
+      {loading ? <span>Loading...</span> : null}
 
       <Button
         onClick={async () => {
           //await registerHotel();
-        
-          if(registerInfo.UserImages){
+          if (loading) return;
+
+          if (registerInfo.UserImages) {
+            setLoading(true)
             await handleUploadImg(files)
+            setLoading(false);
           }
           console.log(registerInfo)
-       
+
           setRegisterProgress(1);
           navigate(`${router.REGISTER}/hotel`)
         }}

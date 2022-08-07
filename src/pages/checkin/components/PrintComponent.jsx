@@ -68,7 +68,7 @@ export class PrintComponent extends React.PureComponent {
                 return (
                   <tr key={index}>
                     <td align="center">{index + 1}</td>
-                    <td>{val?.gender} {val?.firstName}  {val?.lastName}</td>
+                    <td>{val?.gender === 'MALE' ? <span>ທ້າວ</span> : <span>ນາງ</span>} {val?.firstName}  {val?.lastName}</td>
                     <td>{val?.room?.roomName}</td>
                     <td>{val?.phone}</td>
                     <td>{val?.reference}</td>
