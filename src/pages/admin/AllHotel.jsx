@@ -6,14 +6,10 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Typography,
   Divider,
   Tooltip,
   TextField,
-  Autocomplete,
-  Box,
-  MenuItem,
-  Select,
+  
 } from "@mui/material";
 
 import TitlebarImageList from "./ImageList";
@@ -22,7 +18,6 @@ import axios from "axios";
 import { textStyle } from "../../style";
 
 import EditIcon from "@mui/icons-material/Edit";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Chip } from "@mui/material";
 
@@ -34,12 +29,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import { datagridSx } from "../../style";
 import { SERVER_URL } from "../../constants";
 
-import ShowHotelDetail from "./showHotelDetail";
-
 import { counterContext } from "../../context/counter";
 
 import { useFormatDate } from "../../services/formateDate";
-import MapIcon from "@mui/icons-material/Map";
 
 import MapDialog from "./map.dialog";
 
@@ -48,8 +40,6 @@ import CloudDoneIcon from "@mui/icons-material/CloudDone";
 import MapDialogEdit from "./map.dialog.editform";
 
 import { EditHotelContext } from "../../context/edithotel.context";
-
-import laoInfo from "../../../lao.json";
 
 export default function AllHotel() {
   const { EditHotel, setEditHotel } = React.useContext(EditHotelContext);
@@ -61,10 +51,6 @@ export default function AllHotel() {
   const [popUpHotelUpdate, setPopupHotelUpdate] = React.useState(false);
   const [hotelUpdateData, setHotelUpdateData] = React.useState({});
 
-  const [province, setProvince] = React.useState([]);
-  const [district, setDistrict] = React.useState([]);
-  const [village, setVillage] = React.useState([]);
-
   const [map, setMap] = React.useState();
 
   const [loading, setLoading] = React.useState(true);
@@ -72,10 +58,6 @@ export default function AllHotel() {
   const [resData, setResData] = React.useState([]);
 
   const { value, setValue } = React.useContext(counterContext);
-
-  const [showVillage, setShowVillage] = React.useState("");
-  const [showDistrict, setShowDistrict] = React.useState("");
-  const [showProvince, setShowProvince] = React.useState("");
   const [files, setFiles] = React.useState("");
 
   const [updating, setUpdating] = React.useState(false);
@@ -84,7 +66,9 @@ export default function AllHotel() {
 
   const [popUpConfirm, setPopUpConfirm] = React.useState(false)
 
+  const [bookingSearchPhone, setBookingSearchPhone] = React.useState([]);
 
+  const [phoneSearch, setPhoneSearch] = React.useState(false);
 
   const handleUploadImg = async () => {
     setLoading(true);
@@ -119,7 +103,7 @@ export default function AllHotel() {
         timeout: 40000,
       })
       .then((res) => {
-        console.log(res.data.users);
+        // console.log(res.data.users);
         //setTotal(res.data.total);
         setResData(res.data.users);
         //
@@ -155,12 +139,12 @@ export default function AllHotel() {
       .then((res) => console.log(res.data))
       .catch((err) => console.error(err));
   };
-  const deleteHotel = async (hotelId)=>{
+  const deleteHotel = async (hotelId) => {
     axios
       .delete(`${SERVER_URL}/api/delete/all-user-hotel?hotelId=${hotelId}`)
       .then(res => {
         console.log(res.data)
-        setValue(value => value+1)
+        setValue(value => value + 1)
       })
       .catch(err => console.error(err));
 
@@ -476,6 +460,17 @@ export default function AllHotel() {
           placeholder="ໂຮງແຮມ"
           variant="outlined"
           sx={{ ...textStyle, width: "200px", backgroundColor: "white" }}
+          onChange={(e) => {
+
+            if (e.target.value !== "") {
+              setPhoneSearch(true);
+            } else { setPhoneSearch(false) }
+
+            let filtered = resData.filter(b => b?.hotel?.hotelName.includes(e.target.value));
+            setBookingSearchPhone(
+              filtered
+            );
+          }}
         />
       </Stack>
       <div style={{ height: 860, width: "100%" }}>
@@ -485,14 +480,14 @@ export default function AllHotel() {
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 20]}
           pagination
-          rows={resData}
+          rows={phoneSearch ? bookingSearchPhone : resData}
           columns={columns}
           disableSelectionOnClick
           getRowId={(row) => row._id}
           loading={loading}
           rowHeight={70}
-          //autoHeight
-          // getRowHeight={() => 'auto'}
+        //autoHeight
+        // getRowHeight={() => 'auto'}
         />
       </div>
       {/**show image album */}
@@ -668,29 +663,29 @@ export default function AllHotel() {
 
             <br />
             <Stack>
-            <Button
-              variant="contained"
-              sx={{ ...btnStyle, width: "100px" }}
-              onClick={async () => {
-                setUpdating(true);
-                await updateDataHotel();
-                await handleUploadImg();
-                setUpdating(false);
-                setUpdateSuccess(true);
-                setValue(value => value+1)
-                //console.log(EditHotel);
-              }}
-            >
-              ຕົກລົງ
-            </Button>
-            {updating? <span>ແກ້ໄຂຂໍ້ມູນ...</span>: updateSuccess? <span>ສໍາເລັດ</span> : updateErr? <span>Something went wrong</span> : null}
+              <Button
+                variant="contained"
+                sx={{ ...btnStyle, width: "100px" }}
+                onClick={async () => {
+                  setUpdating(true);
+                  await updateDataHotel();
+                  await handleUploadImg();
+                  setUpdating(false);
+                  setUpdateSuccess(true);
+                  setValue(value => value + 1)
+                  //console.log(EditHotel);
+                }}
+              >
+                ຕົກລົງ
+              </Button>
+              {updating ? <span>ແກ້ໄຂຂໍ້ມູນ...</span> : updateSuccess ? <span>ສໍາເລັດ</span> : updateErr ? <span>Something went wrong</span> : null}
             </Stack>
-          
+
           </div>
         </DialogContent>
       </Dialog>
-          {/**show confirm delete hotel */}
-          <Dialog
+      {/**show confirm delete hotel */}
+      <Dialog
         fullWidth
         maxWidth="xs"
         open={popUpConfirm}
@@ -727,10 +722,10 @@ export default function AllHotel() {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>{
-            
+          <Button onClick={() => {
+
             deleteHotel(EditHotel?._id)
-            setValue(value => value+1)
+            setValue(value => value + 1)
           }} sx={{
             ...btnStyle
           }}>
