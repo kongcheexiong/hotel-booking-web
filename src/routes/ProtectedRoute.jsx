@@ -1,8 +1,4 @@
-import * as react from "react";
-import { Route, Navigate } from "react-router-dom";
-import Auth from "../auth";
-
-import { authContext } from "../context/authContext";
+import { Navigate } from "react-router-dom";
 
 import { router } from "../constants";
 
@@ -16,7 +12,7 @@ const ProtectedRoute = (props) => {
     return <Navigate to={`${router.LOGIN}`} replace />;
   }
 
-  
+
 
   return children;
 };

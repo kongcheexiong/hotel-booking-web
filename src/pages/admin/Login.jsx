@@ -1,21 +1,16 @@
 import { Button, Divider, Stack, TextField } from "@mui/material";
-import { borderRadius, fontSize, height, width } from "@mui/system";
 import * as react from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
-import axios from "axios";
 
 // auth
-import { authContext, authInitialValue } from "../../context/authContext";
 import { font, router } from "../../constants/index.js";
 
 //connstant
-import { color } from "../../constants/index.js";
 import { textStyle, btnStyle } from "../../style";
 import { SERVER_URL } from "../../constants/index.js";
 
@@ -54,13 +49,23 @@ const {auth, setAuth } = react.useContext(authContext);
   };
 
   const handleLogin = async (e) => {
-    
+    setLoading(true)
+    if(user === 'admin' && pwd ==='123'){
+      
+      localStorage.setItem("role", "SYSTEM");
+      localStorage.setItem("adminToken", "SYSTEM");
+      navigate(`${router.ADMIN_DASHBOARD}`)
+      setLoading(false)
+      setSuccess(true)
 
-    localStorage.setItem("role", "SYSTEM");
-    localStorage.setItem("adminToken", "SYSTEM");
-    navigate(`${router.ADMIN_DASHBOARD}`)
+    }else{
+      setLoading(false)
+      setSuccess(false)
+      setErr(true)
+    }
+   
   };
-  if (!token) {
+  if (!localStorage.getItem('adminToken')) {
     return (
       <>
         <AppBar position="fixed" color="inherit">
@@ -157,15 +162,17 @@ const {auth, setAuth } = react.useContext(authContext);
               <br />
               <label>Password</label>
               <TextField
+              type='password'
                 onChange={(e) => setPwd(e.target.value)}
                 id="password"
-                placeholder=""
+                placeholder="Password"
                 size="small"
                 sx={{ ...textStyle }}
               />
               <br />
               {/**login button */}
               <Stack justifyContent="center">
+              { loading? <span>ກຳລັງເຂົ້າສູ່ລະບົບ...</span>: err ? <span>ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ</span>: null}
                 <Button
                   color="primary"
                   sx={{
@@ -199,11 +206,11 @@ const {auth, setAuth } = react.useContext(authContext);
     if (success) {
       setLoading(false);
       setSuccess(false);
-      return <Navigate to={`${router.DASHBOARD}`} replace />;
+      return <Navigate to={`${router.ADMIN_DASHBOARD}`} replace />;
     }
   }
 
-  return <Navigate to={`${router.DASHBOARD}`} replace />;
+  return <Navigate to={`${router.ADMIN_DASHBOARD}`} replace />;
 }
 
 export default AdminLogin;

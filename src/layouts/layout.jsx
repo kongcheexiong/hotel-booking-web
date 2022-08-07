@@ -120,7 +120,7 @@ function Layout() {
       name: "ລາຍການຈອງອອນໄລ",
       icon: <BookOnlineIcon fontSize="small" />,
       router: `${router.BOOKING}`,
-      Notification: notification,
+     // Notification: notification,
     
       access: ["OWNER", "STAFF", "ADMIN"],
     },
@@ -341,8 +341,10 @@ function Layout() {
           </Stack>
 
           {/**notification */}
-          {localStorage.getItem('hotel')?  <IconButton>
-            <Badge color="secondary" badgeContent={notification}>
+          {localStorage.getItem('hotel')?  <IconButton onClick={()=>{
+            navigate(`${router.BOOKING}`)
+          }}>
+            <Badge color="error" badgeContent={notification}>
               <NotificationsIcon fontSize="medium" />
             </Badge>
           </IconButton>: null}

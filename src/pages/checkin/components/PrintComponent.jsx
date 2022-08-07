@@ -2,7 +2,6 @@ import { Stack } from "@mui/material";
 import React from "react";
 import { format } from 'date-fns'
 
-import { PrintContext } from "../../../context/print.context";
 import { CheckInContextContext } from "../../../context/checkin.context";
 
 export class PrintComponent extends React.PureComponent {

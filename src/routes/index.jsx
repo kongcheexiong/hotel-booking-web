@@ -1,4 +1,3 @@
-import * as react from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
@@ -32,11 +31,8 @@ import PageNotFound from "../pages/pageNotFound";
 
 import Layout from "../layouts/layout";
 
-import { authContext } from "../context/authContext";
-
 //router
 import { router } from "../constants/index";
-import { Hotel } from "@mui/icons-material";
 
 import UserDetail from "../pages/registerInfo/components/userDetail";
 import HotelDetail from "../pages/registerInfo/components/hotelDetail";
@@ -91,6 +87,10 @@ function MyRouter() {
       myRoute: `${router.CHECKIN}/add`,
       component: <AddCheckin />,
     },
+   //{
+   //  myRoute: `${router.LOGIN}`,
+   //  component: <Login />,
+   //},
   ];
   const adminRoute = [
     {
@@ -109,6 +109,10 @@ function MyRouter() {
       myRoute: `${router.MAP}`,
       component: <HotelMap />,
     },
+   // {
+   //   myRoute: `${router.ADMIN}`,
+   //   component: <AdminLogin />,
+   // },
   ];
   return (
     <Router>
@@ -118,6 +122,7 @@ function MyRouter() {
 
         <Route exact path="/public" element={<Landing />} />
         <Route exact path="/" element={<Login />} />
+        <Route exact path="/login" element={<Login />} />
         <Route exact path={router.REGISTER} element={<Register />} />
 
         <Route element={<RegisterInfo />}>

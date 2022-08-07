@@ -212,11 +212,11 @@ export default function Table() {
         );
       },
     },
-    {
-      field: "_id",
-      headerName: "ລະຫັດ",
-      width: 80,
-    },
+    // {
+    //   field: "_id",
+    //   headerName: "ລະຫັດ",
+    //   width: 80,
+    // },
     {
       field: "images",
       headerName: "ຮູບພາບອ້າງອີງ",
@@ -241,15 +241,15 @@ export default function Table() {
     {
       field: "Agency",
       headerName: "Agency",
-      width: 80,
+      // width: 80,
       renderCell: (parram) => {
-        if (!parram.row.onlineCustomer) {
-          return <>STAFF</>;
-        }
+        // if (!parram.row.onlineCustomer) {
+        //   return <>STAFF</>;
+        // }
         return (
           <>
-            {parram.row.onlineCustomer.firstName}{" "}
-            {parram.row.onlineCustomer.lastName}
+            {parram.row?.onlineCustomer?.firstName}{" "}
+            {parram.row?.onlineCustomer?.lastName}
           </>
         );
       },
@@ -271,7 +271,7 @@ export default function Table() {
           return null;
         }
 
-        return params.row.roomType.typeName;
+        return params.row?.roomType?.typeName;
       },
     },
     {
@@ -286,7 +286,7 @@ export default function Table() {
       type: "number",
       flex: 1,
       renderCell: (params) => {
-        const date = useFormatDate(params.row.checkInDate);
+        const date = useFormatDate(params?.row?.checkInDate);
         return <div>{date}</div>;
       },
     },
@@ -298,7 +298,7 @@ export default function Table() {
       renderCell: (params) => {
         // var today = new Date(params.row.createdAt);
         // today.setHours(today.getHours() + 7);
-        const date = useFormatDate(params.row.createdAt);
+        const date = useFormatDate(params.row?.createdAt);
         return <span>{date}</span>;
       },
     },
@@ -307,7 +307,7 @@ export default function Table() {
       headerName: "ສະຖານະ",
       flex: 1.2,
       renderCell: (parram) => {
-        if (parram.row.status === "PENDING") {
+        if (parram.row?.status === "PENDING") {
           return (
             <Chip
               sx={{ fontFamily: "Noto Sans Lao", width: "100px" }}
@@ -317,7 +317,7 @@ export default function Table() {
             />
           );
         }
-        if (parram.row.status === "REJECTED") {
+        if (parram.row?.status === "REJECTED") {
           return (
             <Chip
               sx={{ fontFamily: "Noto Sans Lao", width: "100px" }}

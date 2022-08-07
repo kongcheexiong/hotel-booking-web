@@ -95,9 +95,12 @@ export default function AddEmployee() {
         //  console.log('submited')
       })
       .catch(function (error) {
-        console.log(error);
+        if(error.response.status == 500){
+          alert("User already exist");
+        }
+        console.log(error.response.status);
         // console.log('error')
-        alert("Please fill out the form properly");
+       
         setSuccess(false);
         setLoading(false);
         setErr(true);
@@ -315,7 +318,11 @@ export default function AddEmployee() {
           />
 
           
-          {loading ? (
+          
+        </Stack>
+      </Stack>
+      <br/>
+      {loading ? (
             <Backdrop
               sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
               open={loading}
@@ -324,8 +331,8 @@ export default function AddEmployee() {
               <CircularProgress color="inherit" />
             </Backdrop>
           ) : null}
-          {err ? <Alert severity="success">
-              This is a success alert — check it out!
+          {err ? <Alert severity="error">
+              Something went wrong
             </Alert>
            : null}
           {success ? (
@@ -333,13 +340,11 @@ export default function AddEmployee() {
               This is a success alert — check it out!
             </Alert>
           ) : null}
-        </Stack>
-      </Stack>
       {/**submit button */}
       <Stack sx={{ marginTop: "50px" }} direction="row" justifyContent="">
         <Button
           onClick={async () => {
-            //console.log(data);
+            console.log(data);
            
             let exists = Object.keys(data).some((key) => data[key] === "");
             if (exists) {

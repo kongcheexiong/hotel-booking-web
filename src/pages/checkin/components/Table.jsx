@@ -1,7 +1,7 @@
 import { Stack, TextField, MenuItem, Button, IconButton, Dialog, DialogContent, DialogActions, Select, DialogTitle } from "@mui/material";
 import React from "react";
 import { textStyle, btnStyle, datagridSx } from "../../../style";
-import { font, SERVER_URL, color, router  } from "../../../constants";
+import { font, SERVER_URL, color, router } from "../../../constants";
 import CheckOutComponent from "./checkOut.component";
 
 //icon
@@ -30,7 +30,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 import { PrintComponent } from "./PrintComponent";
 
-import {useReactToPrint} from "react-to-print";
+import { useReactToPrint } from "react-to-print";
 
 export default function Table() {
   const [pageSize, setPageSize] = React.useState(10);
@@ -272,11 +272,11 @@ export default function Table() {
             Reload
           </Button>
           <div
-      style={{ display: "none" }}// This make ComponentToPrint show   only while printing
-      > 
-       <PrintComponent ref={componentRef} />
-      </div>
- 
+            style={{ display: "none" }}// This make ComponentToPrint show   only while printing
+          >
+            <PrintComponent ref={componentRef} />
+          </div>
+
           <Button
             size="small"
             startIcon={<PictureAsPdfIcon />}
@@ -294,7 +294,7 @@ export default function Table() {
             }}
             onClick={() => {
               handlePrint()
-              
+
             }}
           >
             ລາຍງານຂໍ້ມູນ

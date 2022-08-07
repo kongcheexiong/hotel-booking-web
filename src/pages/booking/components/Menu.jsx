@@ -30,10 +30,6 @@ import { PrintComponent } from "./PrintComponent";
 
 
 export default function Menu() {
-  const [startDate, setStartDate] = React.useState();
-  const [endDate, setEndDate] = React.useState();
-
-  const [filter ,setFilter] = React.useState('ALL')
   const [isOpen, setOpen]= React.useState(false)
 
   const {value, setValue} = React.useContext(counterContext)

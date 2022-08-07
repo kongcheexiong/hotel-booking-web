@@ -170,7 +170,7 @@ export default function Table() {
         );
       },
     },
-    { field: "_id", headerName: "ລະຫັດ", width: 70 },
+    // { field: "_id", headerName: "ລະຫັດ", width: 70 },
     { field: "userName", headerName: "ຜູ້ໃຊ້", flex: 0.6 },
     {
       field: "image",

@@ -59,16 +59,16 @@ const {auth, setAuth } = react.useContext(authContext);
     }),
   };
   const { notification, setNotification } =
-  react.useContext(notificationContext);
+    react.useContext(notificationContext);
 
-  const fetchNotification  = async(hotelID)=>{
+  const fetchNotification = async (hotelID) => {
     await socket.emit("private massage", hotelID);
     socket.on(hotelID, async (data) => {
       await setNotification(data);
-       console.log(notification);
-     });
+      console.log(notification);
+    });
 
-  
+
 
   }
 
@@ -113,16 +113,16 @@ const {auth, setAuth } = react.useContext(authContext);
       <>
         <AppBar position="fixed" color="inherit">
           <Toolbar>
-            
+
             <Typography
               color="blue"
               variant="h6"
               component="div"
               sx={{ flexGrow: 1, cursor: 'pointer' }}
-              onClick={()=>{
+              onClick={() => {
                 navigate(`/public`)
               }}
-              
+
             >
               BanHao Booking Platform
             </Typography>
@@ -204,14 +204,15 @@ const {auth, setAuth } = react.useContext(authContext);
               <br />
               <label>ລະຫັດຜ່ານ</label>
               <TextField
+                type='password'
                 onChange={(e) => setPwd(e.target.value)}
                 id="password"
-                placeholder=""
+                placeholder="Password"
                 size="small"
                 sx={{ ...textStyle }}
               />
               <br />
-              { loading? <span>ກຳລັງເຂົ້າສູ່ລະບົບ...</span>: err ? <span>ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍຖືກຕ້ອງ</span>: null}
+              {loading ? <span>ກຳລັງເຂົ້າສູ່ລະບົບ...</span> : err ? <span>ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍຖືກຕ້ອງ</span> : null}
               {/**login button */}
               <Stack justifyContent="center">
                 <Button

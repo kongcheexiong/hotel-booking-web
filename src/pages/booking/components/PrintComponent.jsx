@@ -67,10 +67,10 @@ export class PrintComponent extends React.PureComponent {
                 return (
                   <tr key={index}>
                     <td align="center">{index + 1}</td>
-                    <td>{val?.onlineCustomer.firstName}  {val?.onlineCustomer.lastName}</td>
+                    <td>{val?.onlineCustomer?.firstName}  {val?.onlineCustomer?.lastName}</td>
                     <td>{val?.customerPhone}</td>
                    
-                    <td>{val?.roomType.typeName}</td>
+                    <td>{val?.roomType?.typeName}</td>
 
                     <td>{val?.quantity}</td>
                     <td>{format(new Date(val?.checkInDate), 'dd/MM/yyyy')}</td>
