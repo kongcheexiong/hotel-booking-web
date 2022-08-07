@@ -71,7 +71,7 @@ export default function Map() {
             lng: e.lngLat.lng,
           });
 
-          console.log(marker);
+         // console.log(marker);
         }}
       >
         <RoomIcon color="error" />
