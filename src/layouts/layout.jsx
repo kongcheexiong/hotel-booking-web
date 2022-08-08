@@ -205,20 +205,20 @@ function Layout() {
       name: "ຈັດການຂໍ້ມູນພຶ້ນຖານ",
       icon: <MapsHomeWorkIcon fontSize="small" />,
       //router: `${router.EMPLOYEEMANAGEMENT}`,
-      access: ["OWNER", "ADMIN"],
+      access: ["OWNER", "ADMIN", "STAFF"],
       sub: [
         {
           name: "ຈັດການຂໍ້ມູນປະເພດຫ້ອງ",
           icon: <BedroomParentIcon fontSize="small" />,
           router: `${router.ROOMTYPEMANAGEMENT}`,
-          access: ["OWNER", "ADMIN"],
+          access: ["OWNER", "ADMIN", "STAFF"],
         },
 
         {
           name: "ຈັດການຂໍ້ມູນຫ້ອງ",
           icon: <KingBedIcon fontSize="small" />,
           router: `${router.ROOMMAGEMENT}`,
-          access: ["OWNER", "ADMIN"],
+          access: ["OWNER", "ADMIN", "STAFF"],
         },
         {
           name: "ຈັດການຂໍ້ມູນພະນັກງານ",
@@ -237,7 +237,7 @@ function Layout() {
     },
     {
       name: "ບໍລິການ",
-      icon: <PeopleOutlineSharpIcon fontSize="small" />,
+      icon: <MenuBookIcon fontSize="small" />,
       //router: `${router.HOTEL_BOOKING}`,
       access: ["OWNER", "STAFF", "ADMIN"],
       sub: [
@@ -523,6 +523,7 @@ function Layout() {
                         ) : val.name == "ຈັດການຂໍ້ມູນພຶ້ນຖານ" ? (
                           <Collapse in={open} timeout="auto" unmountOnExit>
                             {val?.sub?.map((data, index) => {
+                              if(data?.access.includes(userRole))
                               return (
                                 <List
                                   key={index}
