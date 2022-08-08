@@ -38,11 +38,21 @@ import UserDetail from "../pages/registerInfo/components/userDetail";
 import HotelDetail from "../pages/registerInfo/components/hotelDetail";
 import BookingOffline from "../pages/bookingOffline/Booking";
 import Success from "../pages/registerInfo/components/succes";
+import MoveRoom from "../pages/moveRoom/Checkin";
+import AddImage from "../pages/Addimg/AddImage";
 
 const Test = () => <h1>test</h1>;
 
 function MyRouter() {
   const privateRoute = [
+    {
+      myRoute: `${router.ADD_IMG}`,
+      component: <AddImage />,
+    },
+    {
+      myRoute: `${router.MOVE_ROOM}`,
+      component: <MoveRoom />,
+    },
     {
       myRoute: `${router.HOTEL_BOOKING}`,
       component: <BookingOffline />,

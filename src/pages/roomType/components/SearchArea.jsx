@@ -21,13 +21,14 @@ export default function SearchArea() {
   const hotel = localStorage.getItem("hotel");
 
   const fetchData = async () => {
-    setRoomType([])
+    //setRoomType([])
     await axios
       .get(`${SERVER_URL}/api/room-type?roomType=${search}&hotelId=${hotel}`, {
         timeout: 40000,
       })
       .then((res) => {
         console.log(res.data.roomTypes);
+        setValue(value => value+1)
         
         //alert('success')
         setRoomType(res.data.roomTypes);

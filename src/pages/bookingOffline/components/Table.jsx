@@ -29,6 +29,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { counterContext } from "../../../context/counter";
 
 import { DeleteForever } from "@mui/icons-material";
+import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import { BookingContext } from "../../../context/booking.context";
 
 export default function Table() {

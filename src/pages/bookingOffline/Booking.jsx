@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material'
+import { Divider, Stack } from '@mui/material'
 import React from 'react'
 //components
 import Menu from './components/Menu'
@@ -17,7 +17,7 @@ function BookingOffline() {
     
     >
      <Menu/>
-      <hr/>
+      <Divider/>
       <Table/>
 
     </Stack>

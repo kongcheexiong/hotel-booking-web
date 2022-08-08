@@ -50,11 +50,13 @@ export default function UserInfo() {
   const width = "auto";
   const [verifys, setVerify] = React.useState("");
   const [gender, setGender] = React.useState("MALE");
-  const [selectedRoomType, setSelectedRoomType] = React.useState("");
+  const [selectedRoomType, setSelectedRoomType] = React.useState('');
   const [selectedRoom, setSelectedRoom] = React.useState("");
   const [paid, setPaid] = React.useState(false)
   const [rooms, setRooms] = React.useState([])
   const [loading, setLoading] = React.useState(false)
+
+  const [selectedValue,setSelectedValue] =React.useState()
 
   const { checkInData, setCheckInData } =
     React.useContext(CreateCheckInContext);
@@ -67,9 +69,13 @@ export default function UserInfo() {
   var bookingData = location.state;
   // console.log('data: ', bookingData);
 
+  const [price, setPrice] = React.useState('')
+
   const [sending, setSending] = React.useState(false)
   const [err, setErr] = React.useState(false)
   const [success, setSuccess] = React.useState(false)
+
+  
 
   const fetchAllRoomType = async () => {
     await axios
@@ -167,9 +173,19 @@ export default function UserInfo() {
   const handleSelectRoomType = async (e) => {
     e.preventDefault();
     await setSelectedRoomType(e.target.value);
+    await setSelectedValue(e.target.value)
+   // await setPrice(e.target.value)
+   console.log(roomType)
+     
+    await setPrice(roomType.find(data => data.roomType._id === selectedRoomType))
+    console.log(price)
+
+
+   
     setSelectedRoom("");
     setCheckInData({ ...checkInData, roomType: e.target.value });
     fetchRoomsData(e.target.value);
+  
   };
 
   const handleSelectRoom = async (e) => {
@@ -401,7 +417,7 @@ export default function UserInfo() {
                 height: 35,
                 width: `${width}`,
               }}
-              value={selectedRoomType}
+              value={selectedValue}
               onChange={handleSelectRoomType}
               variant="outlined"
             >
@@ -411,6 +427,7 @@ export default function UserInfo() {
                     key={idx}
                     sx={{ fontFamily: `${font.LAO_FONT}` }}
                     value={val.roomType._id}
+                   
                   >
                     {val.roomType.typeName}
                   </MenuItem>
@@ -552,7 +569,13 @@ export default function UserInfo() {
                 ຈ່າຍແລ້ວ
               </MenuItem>
             </Select>
+           
           </Stack>
+          <Stack justifyContent='flex-end' sx={{fontSize: '25px'}}>
+            { startDate && endDate && selectedRoomType ? <></>:null }
+          12.000 kip
+          </Stack>
+         
         </Stack>
 
         <Stack direction='row' spacing={2}>
@@ -562,6 +585,7 @@ export default function UserInfo() {
             variant="contained"
             sx={{ ...btnStyle, width: "100px" }}
             onClick={async () => {
+              console.log(price)
               console.log(checkInData)
               await setCheckInData({ ...checkInData, checkInDate: startDate, checkOutDate: endDate, })
 

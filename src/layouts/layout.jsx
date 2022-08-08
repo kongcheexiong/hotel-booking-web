@@ -52,7 +52,9 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { io } from "socket.io-client";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import MapIcon from "@mui/icons-material/Map";
-import PeopleOutlineSharpIcon from '@mui/icons-material/PeopleOutlineSharp';
+import PeopleOutlineSharpIcon from "@mui/icons-material/PeopleOutlineSharp";
+
+import ImageIcon from '@mui/icons-material/Image';
 
 const socket = io.connect(`${SERVER_URL}`, { transports: ["websocket"] });
 
@@ -224,6 +226,13 @@ function Layout() {
           router: `${router.EMPLOYEEMANAGEMENT}`,
           access: ["OWNER", "ADMIN"],
         },
+        {
+          name: "ເພີ່ມຮູບພາບ",
+          icon: <ImageIcon fontSize="small" />,
+          router: `${router.ADD_IMG}`,
+          access: ["OWNER", "ADMIN"],
+          
+        }
       ],
     },
     {
@@ -245,6 +254,14 @@ function Layout() {
           router: `${router.CHECKIN}`,
           access: ["OWNER", "STAFF", "ADMIN"],
         },
+        
+        {
+          name: "ຍ້າຍຫ້ອງ",
+          icon: <GradingIcon fontSize="small" />,
+          router: `${router.MOVE_ROOM}`,
+          access: ["OWNER", "STAFF", "ADMIN"],
+        },
+
         {
           name: "ລາຍການຈອງອອນໄລ",
           icon: <BookOnlineIcon fontSize="small" />,
@@ -268,7 +285,7 @@ function Layout() {
     ///  router: `${router.SETTING}`,
     ///  access: ["OWNER"],
     ///},
- 
+
     //{
     //  name: "ຂໍ້ມູນຜູ້ໃຊ້ແອັບ BanHao",
     //  icon: <SettingsIcon fontSize="small" />,
@@ -399,7 +416,6 @@ function Layout() {
                 sx={{
                   width: "100%",
                   maxWidth: 360,
-                  bgcolor: "background.paper",
                 }}
                 component="nav"
               >
@@ -408,6 +424,7 @@ function Layout() {
                     return (
                       <>
                         <ListItemButton
+                          key={idx}
                           sx={{
                             backgroundColor:
                               location.pathname.split("/")[1] ===
@@ -434,8 +451,16 @@ function Layout() {
                         >
                           <ListItemIcon>{val.icon}</ListItemIcon>
                           <ListItemText
-                            
-                            primary={<span style={{fontFamily: `${font.LAO_FONT}`}}>{val.name}</span>}
+                            primary={
+                              <span
+                                style={{
+                                  fontFamily: `${font.LAO_FONT}`,
+                                  fontSize: "14px",
+                                }}
+                              >
+                                {val.name}
+                              </span>
+                            }
                           />
                           {val.sub ? (
                             val.name == "ຈັດການຂໍ້ມູນພຶ້ນຖານ" ? (
@@ -461,7 +486,11 @@ function Layout() {
                           >
                             {val?.sub?.map((data, index) => {
                               return (
-                                <List component="div" disablePadding>
+                                <List
+                                  key={index}
+                                  component="div"
+                                  disablePadding
+                                >
                                   <ListItemButton
                                     onClick={() => navigate(data.router)}
                                     sx={{
@@ -474,7 +503,18 @@ function Layout() {
                                     }}
                                   >
                                     <ListItemIcon>{data.icon}</ListItemIcon>
-                                    <ListItemText primary={<span style={{fontFamily: `${font.LAO_FONT}`}}>{data.name}</span>} />
+                                    <ListItemText
+                                      primary={
+                                        <span
+                                          style={{
+                                            fontFamily: `${font.LAO_FONT}`,
+                                            fontSize: "14px",
+                                          }}
+                                        >
+                                          {data.name}
+                                        </span>
+                                      }
+                                    />
                                   </ListItemButton>
                                 </List>
                               );
@@ -484,7 +524,11 @@ function Layout() {
                           <Collapse in={open} timeout="auto" unmountOnExit>
                             {val?.sub?.map((data, index) => {
                               return (
-                                <List component="div" disablePadding>
+                                <List
+                                  key={index}
+                                  component="div"
+                                  disablePadding
+                                >
                                   <ListItemButton
                                     onClick={() => navigate(data.router)}
                                     sx={{
@@ -497,7 +541,18 @@ function Layout() {
                                     }}
                                   >
                                     <ListItemIcon>{data.icon}</ListItemIcon>
-                                    <ListItemText primary={<span style={{fontFamily: `${font.LAO_FONT}`}}>{data.name}</span>} />
+                                    <ListItemText
+                                      primary={
+                                        <span
+                                          style={{
+                                            fontFamily: `${font.LAO_FONT}`,
+                                            fontSize: "14px",
+                                          }}
+                                        >
+                                          {data.name}
+                                        </span>
+                                      }
+                                    />
                                   </ListItemButton>
                                 </List>
                               );

@@ -184,7 +184,7 @@ export default function PageSizeCustomOptions() {
         .then((res) => {
           setloading(false);
           console.log(res.data);
-          setRoom(res.data.rooms);
+          setRoom(res.data);
         })
         .catch((err) => console.error(err));
     } else if (selectedRoomType !== "none") {
@@ -195,7 +195,7 @@ export default function PageSizeCustomOptions() {
         .then((res) => {
           setloading(false);
           console.log(res.data);
-          setRoom(res.data.rooms);
+          setRoom(res.data);
         })
         .catch((err) => console.error(err));
     } else if (status !== "none") {
@@ -206,7 +206,7 @@ export default function PageSizeCustomOptions() {
         .then((res) => {
           setloading(false);
           console.log(res.data);
-          setRoom(res.data.rooms);
+          setRoom(res.data);
         })
 
         .catch((err) => console.error(err));
@@ -218,7 +218,7 @@ export default function PageSizeCustomOptions() {
         .then((res) => {
           setloading(false);
           console.log(res.data);
-          setRoom(res.data.rooms);
+          setRoom(res.data);
         })
 
         .catch((err) => console.error(err));

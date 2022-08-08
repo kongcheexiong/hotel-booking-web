@@ -1,6 +1,10 @@
 //color
-// export const SERVER_URL=  'http://167.71.209.215:8080'
-export const SERVER_URL=  'http://192.168.43.180:8080'
+ //export const SERVER_URL=  'http://167.71.209.215:8080'
+//export const SERVER_URL=  'http://192.168.43.180:8080'
+//export const SERVER_URL=  'http://127.0.0.1:8080'
+//export const SERVER_URL=  'http://192.168.43.251:8080'
+export const SERVER_URL=  'http://127.0.0.1:8080'
+
 //167.71.209.215
 
 export const font = {
@@ -18,6 +22,8 @@ export const color={
 
 //router
 export const router = {
+    ADD_IMG: '/add_img',
+    MOVE_ROOM: '/move_room',
     HOTEL_BOOKING: '/hotel_booking',
     DASHBOARD: '/dashboard',
     BOOKING:'/booking',
