@@ -97,7 +97,8 @@ export default function UserInfo() {
     const res = await fetch(`${SERVER_URL}/api/rooms-by-room-type?roomType=${type}&status=false`);
     const data = await res.json();
     await setRooms(data);
-    await setPrice((data[0]?.roomType?.price ?? 0) * betweenDay);
+    // await setPrice((data[0]?.roomType?.price ?? 0) * betweenDay);
+    calculatePrice(startDate.getDate(), endDate.getDate());
     setLoading(false);
   }
 
@@ -193,6 +194,11 @@ export default function UserInfo() {
     await setSelectedRoom(e.target.value);
     await setCheckInData({ ...checkInData, room: e.target.value });
   };
+
+  const calculatePrice = async (checkInDate, checkOutDate) => {
+    await setPrice((rooms[0]?.roomType?.price ?? 0) * (checkOutDate.getDate() - checkInDate.getDate()));
+    console.log('date: ', checkInDate + checkOutDate)
+  }
 
   React.useEffect(() => {
     setCheckInData({});
@@ -475,11 +481,7 @@ export default function UserInfo() {
                   // console.log(_date.toLocaleDateString("en-GB"));
                   const saveDate = _date.toLocaleDateString("en");
                   setStartDate(value);
-                  if (endDate != '' && startDate != '') {
-                    setBetweenDay(endDate.getDate() - _date)
-                    setPrice(rooms?.roomType?.price * betweenDay);
-                    console.log('betweenDay', betweenDay)
-                  }
+                  calculatePrice(_date, endDate);
                   //setData({
                   //  ...data,
                   //  birthday: saveDate,
@@ -524,11 +526,7 @@ export default function UserInfo() {
                   //  birthday: saveDate,
                   //});
                   setCheckInData({ ...checkInData, checkOutDate: _date });
-                  if (endDate != '' && startDate != '') {
-                    setBetweenDay(_date.getDate() - startDate.getDate())
-                    setPrice(rooms?.roomType?.price * betweenDay);
-                    console.log('betweenDay', betweenDay)
-                  }
+                  calculatePrice(startDate, _date);
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -577,9 +575,9 @@ export default function UserInfo() {
             </Select>
 
           </Stack>
-          <Stack justifyContent='flex-end' sx={{ fontSize: '25px' }}>
+          <Stack justifyContent='flex-end' flexDirection="row" sx={{ fontSize: '25px' }}>
             {/* { startDate && endDate && selectedRoomType ? <></>:null } */}
-            ລາຄາ: {price} KIP
+            ລາຄາ:  <span style={{ color: 'red' }}> {price} KIP</span>
           </Stack>
 
         </Stack>
