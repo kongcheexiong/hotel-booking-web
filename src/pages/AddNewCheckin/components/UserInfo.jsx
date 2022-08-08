@@ -39,11 +39,12 @@ export default function UserInfo() {
   const day = new Date(Date.now())
   const toDay = new Date(day.setDate(day.getDate()));
   const navigate = useNavigate();
+  const [betweenDay, setBetweenDay] = React.useState(1);
 
   const nextDay = new Date(day.setDate(day.getDate()));
 
   const [startDate, setStartDate] = React.useState(nextDay);
-  const [endDate, setEndDate] = React.useState('');
+  const [endDate, setEndDate] = React.useState(nextDay);
 
   const hotelID = localStorage.getItem("hotel");
 
@@ -56,7 +57,7 @@ export default function UserInfo() {
   const [rooms, setRooms] = React.useState([])
   const [loading, setLoading] = React.useState(false)
 
-  const [selectedValue,setSelectedValue] =React.useState()
+  const [selectedValue, setSelectedValue] = React.useState()
 
   const { checkInData, setCheckInData } =
     React.useContext(CreateCheckInContext);
@@ -69,13 +70,11 @@ export default function UserInfo() {
   var bookingData = location.state;
   // console.log('data: ', bookingData);
 
-  const [price, setPrice] = React.useState('')
+  const [price, setPrice] = React.useState(0)
 
   const [sending, setSending] = React.useState(false)
   const [err, setErr] = React.useState(false)
   const [success, setSuccess] = React.useState(false)
-
-  
 
   const fetchAllRoomType = async () => {
     await axios
@@ -97,14 +96,14 @@ export default function UserInfo() {
     setLoading(true);
     const res = await fetch(`${SERVER_URL}/api/rooms-by-room-type?roomType=${type}&status=false`);
     const data = await res.json();
-    setRooms(data);
+    await setRooms(data);
+    await setPrice((data[0]?.roomType?.price ?? 0) * betweenDay);
     setLoading(false);
   }
 
   const postCheckIn = async (post) => {
     if (Object.keys(checkInData).length < 13 || endDate === '') { return alert('ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຕາມຈໍານວນ Field') }
     setSending(true)
-    // console.log('dssssssssssssssss')
 
     var config = {
       method: 'post',
@@ -141,7 +140,7 @@ export default function UserInfo() {
       await roomData.push({ _id: rooms[i]._id })
       await checkInDatas.push({ ...checkInData, room: rooms[i]._id })
     }
-    if (Object.keys(checkInDatas[0]).length < 13 || endDate === '') {return alert('ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຕາມຈໍານວນ Field') }
+    if (Object.keys(checkInDatas[0]).length < 13 || endDate === '') { return alert('ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຕາມຈໍານວນ Field') }
     var data = {
       bookingID: bookingData._id,
       roomData: roomData,
@@ -174,18 +173,15 @@ export default function UserInfo() {
     e.preventDefault();
     await setSelectedRoomType(e.target.value);
     await setSelectedValue(e.target.value)
-   // await setPrice(e.target.value)
-   console.log(roomType)
-     
-    await setPrice(roomType.find(data => data.roomType._id === selectedRoomType))
-    console.log(price)
+    // await setPrice(e.target.value)
+    // console.log(roomType)
 
 
-   
+
     setSelectedRoom("");
     setCheckInData({ ...checkInData, roomType: e.target.value });
-    fetchRoomsData(e.target.value);
-  
+    await fetchRoomsData(e.target.value);
+
   };
 
   const handleSelectRoom = async (e) => {
@@ -427,7 +423,7 @@ export default function UserInfo() {
                     key={idx}
                     sx={{ fontFamily: `${font.LAO_FONT}` }}
                     value={val.roomType._id}
-                   
+
                   >
                     {val.roomType.typeName}
                   </MenuItem>
@@ -479,6 +475,11 @@ export default function UserInfo() {
                   // console.log(_date.toLocaleDateString("en-GB"));
                   const saveDate = _date.toLocaleDateString("en");
                   setStartDate(value);
+                  if (endDate != '' && startDate != '') {
+                    setBetweenDay(endDate.getDate() - _date)
+                    setPrice(rooms?.roomType?.price * betweenDay);
+                    console.log('betweenDay', betweenDay)
+                  }
                   //setData({
                   //  ...data,
                   //  birthday: saveDate,
@@ -523,6 +524,11 @@ export default function UserInfo() {
                   //  birthday: saveDate,
                   //});
                   setCheckInData({ ...checkInData, checkOutDate: _date });
+                  if (endDate != '' && startDate != '') {
+                    setBetweenDay(_date.getDate() - startDate.getDate())
+                    setPrice(rooms?.roomType?.price * betweenDay);
+                    console.log('betweenDay', betweenDay)
+                  }
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -569,13 +575,13 @@ export default function UserInfo() {
                 ຈ່າຍແລ້ວ
               </MenuItem>
             </Select>
-           
+
           </Stack>
-          <Stack justifyContent='flex-end' sx={{fontSize: '25px'}}>
-            { startDate && endDate && selectedRoomType ? <></>:null }
-          12.000 kip
+          <Stack justifyContent='flex-end' sx={{ fontSize: '25px' }}>
+            {/* { startDate && endDate && selectedRoomType ? <></>:null } */}
+            ລາຄາ: {price} KIP
           </Stack>
-         
+
         </Stack>
 
         <Stack direction='row' spacing={2}>

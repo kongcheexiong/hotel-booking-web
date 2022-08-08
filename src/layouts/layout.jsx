@@ -447,7 +447,7 @@ function Layout() {
                               setOpenService(false);
                             }
                           }}
-                          key={idx}
+                          // key={idx}
                         >
                           <ListItemIcon>{val.icon}</ListItemIcon>
                           <ListItemText

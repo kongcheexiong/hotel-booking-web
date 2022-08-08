@@ -1,9 +1,9 @@
 //color
  //export const SERVER_URL=  'http://167.71.209.215:8080'
-//export const SERVER_URL=  'http://192.168.43.180:8080'
+export const SERVER_URL=  'http://192.168.43.180:8080'
 //export const SERVER_URL=  'http://127.0.0.1:8080'
 //export const SERVER_URL=  'http://192.168.43.251:8080'
-export const SERVER_URL=  'http://127.0.0.1:8080'
+// export const SERVER_URL=  'http://127.0.0.1:8080'
 
 //167.71.209.215
 
