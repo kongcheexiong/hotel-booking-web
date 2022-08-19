@@ -9,7 +9,7 @@ import {
 import * as React from "react";
 
 import { btnStyle, textStyle } from "../../../style";
-import { font } from "../../../constants";
+import { color, font } from "../../../constants";
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -20,6 +20,8 @@ import { SERVER_URL } from "../../../constants";
 
 import axios from "axios";
 import { set } from "date-fns";
+import MultipleSelectChip from "./chipSelectmultiple";
+
 
 export default function AddNewBookingDialog() {
   const width = "auto";
@@ -104,9 +106,25 @@ export default function AddNewBookingDialog() {
     console.log(roomNum)
   }, []);
 
+  const Room = (props) =>{
+    return <Stack direction='column' spacing={0} alignItems='center' sx={{
+      margin: '5px 0px',
+ 
+    borderRadius: '10px',
+    padding: '10px',
+    backgroundColor: color.GRAY_COLLOR
+    }}>
+      <span>{props.roomName}</span>
+      <span>{props.description}</span>
+
+    </Stack>
+    
+
+  }
+
   return (
     <Stack spacing={1}>
-      <Stack>
+      <Stack width={400}>
         <label htmlFor="phone">ເບີໂທລະສັບ</label>
         <TextField
           //placeholder="First name"\
@@ -126,67 +144,14 @@ export default function AddNewBookingDialog() {
           }}
           onChange={(e) => {
             e.preventDefault();
+            const num1 = Number(e.target.value);
+
+
+              if (!Number.isInteger(num1)) {
+                return alert('ປ້ອນຂໍ້ມູນໃນ Field ເປັນຕົວເລກ');
+                return;
+              }
             setPhone(e.target.value);
-
-            // console.log(checkInData);
-          }}
-        />
-      </Stack>
-      <Stack>
-        <label>ເລືອກປະເພດຫ້ອງ</label>
-        <Select
-          sx={{
-            ...textStyle,
-            fontFamily: `${font.LAO_FONT}`,
-            height: 35,
-            width: `${width}`,
-          }}
-          value={selectedRoomType}
-          onChange={async (e) => {
-            e.preventDefault();
-            await setSelectedRoomType(e.target.value);
-            setNum('')
-            fetchDataByType(e.target.value)
-            console.log(selectedRoomType);
-          }}
-          variant="outlined"
-        >
-          {roomType?.map((val, idx) => {
-            return (
-              <MenuItem
-                key={idx}
-                sx={{ fontFamily: `${font.LAO_FONT}` }}
-                value={val.roomType._id}
-              >
-                {val.roomType.typeName}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </Stack>
-      <Stack>
-        {selectedRoomType === '' ? <label htmlFor="num">ຈໍານວນຫ້ອງ</label> :
-          <>
-            {loadNum ? <>ຈໍານວນຫ້ອງ ...</> : roomNum <= 0 ? <label htmlFor="num">ບໍ່ມີຫ້ອງຫວ່າງ</label> : <label htmlFor="num">ຈໍານວນຫ້ອງ  (ຫວ່າງ {roomNum} ຫ້ອງ)</label>}
-          </>}
-
-        <TextField
-          //placeholder="First name"
-          disabled={selectedRoomType === '' || roomNum <= 0? true : false}
-          value={num}
-          variant="outlined"
-          sx={{
-            ...textStyle,
-            width: `${width}`,
-            backgroundColor: "white",
-          }}
-          onChange={(e) => {
-            e.preventDefault();
-            if (e.target.value > roomNum) {
-              alert(`ກາລຸນາປ້ອນຈໍານວນຫ້ອງທີ່ຢູ່ລະຫວ່າງ 1 - ${roomNum}`)
-              return;
-            }
-            setNum(e.target.value);
 
             // console.log(checkInData);
           }}
@@ -228,6 +193,119 @@ export default function AddNewBookingDialog() {
           />
         </LocalizationProvider>
       </Stack>
+      <Stack>
+        <label id="dateOfBirth">ວັນທີແຈ້ງອອກ</label>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            inputFormat="dd/MM/yyyy"
+            value={startDate}
+            onChange={(value) => {
+              //const _date = new Date(value);
+              //// console.log(_date.toLocaleDateString("en-GB"));
+              //const saveDate = _date.toLocaleDateString("en");
+              setStartDate(value);
+              //setData({
+              //  ...data,
+              //  birthday: saveDate,
+              //});
+            }}
+            renderInput={(params) => (
+              <TextField
+                onChange={
+                  (e) => { }
+                  ///setData({
+                  ///  ...data,
+                  ///  birthday: e.target.value,
+                  ///})
+                }
+                sx={{
+                  ...textStyle,
+                  width: width,
+                  backgroundColor: "white",
+                }}
+                {...params}
+              />
+            )}
+          />
+        </LocalizationProvider>
+      </Stack>
+      <Stack>
+        <label>ເລືອກປະເພດຫ້ອງ</label>
+        <Select
+          sx={{
+            ...textStyle,
+            fontFamily: `${font.LAO_FONT}`,
+            height: 35,
+            width: `${width}`,
+          }}
+          value={selectedRoomType}
+          onChange={async (e) => {
+            e.preventDefault();
+            await setSelectedRoomType(e.target.value);
+            setNum('')
+            fetchDataByType(e.target.value)
+            console.log(selectedRoomType);
+          }}
+          variant="outlined"
+        >
+          {roomType?.map((val, idx) => {
+            return (
+              <MenuItem
+                key={idx}
+                sx={{ fontFamily: `${font.LAO_FONT}` }}
+                value={val.roomType._id}
+              >
+                {val.roomType.typeName}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </Stack>
+      <Stack>
+        {selectedRoomType === '' ? <label htmlFor="num">ຈໍານວນຫ້ອງ</label> :
+          <>
+            {loadNum ? <>ຈໍານວນຫ້ອງ...</> : roomNum <= 0 ? <label htmlFor="num">ບໍ່ມີຫ້ອງຫວ່າງ</label> : <Stack spacing={1}>
+            <label htmlFor="num">ຈໍານວນຫ້ອງ  (ຫວ່າງ {roomNum} ຫ້ອງ)</label>
+            <MultipleSelectChip/>
+            </Stack>}
+          </>}
+          
+{/* 
+        <TextField
+          //placeholder="First name"
+          disabled={selectedRoomType === '' || roomNum <= 0? true : false}
+          value={num}
+          variant="outlined"
+          sx={{
+            ...textStyle,
+            width: `${width}`,
+            backgroundColor: "white",
+          }}
+          onChange={(e) => {
+            e.preventDefault();
+            const num1 = Number(e.target.value);
+
+
+              if (!Number.isInteger(num1)) {
+                return alert('ປ້ອນຂໍ້ມູນໃນ Field ເປັນຕົວເລກ');
+                return;
+              }
+            if (e.target.value > roomNum) {
+              alert(`ກາລຸນາປ້ອນຈໍານວນຫ້ອງທີ່ຢູ່ລະຫວ່າງ 1 - ${roomNum}`)
+              return;
+            }
+            setNum(e.target.value);
+
+            // console.log(checkInData);
+          }}
+        />
+        */}
+      </Stack>
+       
+    
+
+      <br/>
+ 
       <Stack>
         {loading ? (
           <span>ກຳລັງສ້າງລາຍການຈອງ...</span>

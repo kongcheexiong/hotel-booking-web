@@ -156,7 +156,7 @@ export default function Menu() {
             </Stack>
             
           </DialogTitle>
-          <br/>
+        <div></div>
           <DialogContent>
          
             <AddNewBookingDialog/>

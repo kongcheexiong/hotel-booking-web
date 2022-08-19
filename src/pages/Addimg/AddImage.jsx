@@ -52,7 +52,7 @@ export default function AddImage() {
     )
     .then((res) => {
       console.log(res.data);
-      alert("successfully add");
+      alert("successfully deleted");
       fetchHotels();
     })
     .catch((err) => console.log(err));

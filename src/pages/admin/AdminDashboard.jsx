@@ -50,7 +50,7 @@ export default function AdminDashboard() {
         {loading? <>Loading...
         </>: <>
         <StaticCard title="ໂຮງແຮມທັງໝົດ" value={hotel} startIcon = {<MapsHomeWorkIcon/>} />
-          <StaticCard title="ຜູ້ໃຊ້ແອັບພິເຄຊັ່ນທັງໝົດ" value={customer}  startIcon = {<PeopleAltIcon/>}/>
+        <StaticCard title="ຜູ້ໃຊ້ແອັບພິເຄຊັ່ນທັງໝົດ" value={customer}  startIcon = {<PeopleAltIcon/>}/>
         
         </>}
 

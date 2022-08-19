@@ -140,13 +140,14 @@ export default function AddRoomType() {
         <Stack>
           <label id="price">ລາຄາ</label>
           <TextField
+    
             onChange={(e) => {
-              const num = Number(e.target.value);
+              // const num = Number(e.target.value);
 
-              if (!Number.isInteger(num)) {
-                return alert('ປ້ອນແຕ່ຕົວເລກ');
-                return;
-              }
+              // if (!Number.isInteger(num)) {
+              //   return alert('ປ້ອນແຕ່ຕົວເລກ');
+              //   return;
+              // }
               setData({ ...data, price: e.target.value });
             }}
             sx={{ ...textStyle, width: "100%" }}
@@ -209,6 +210,16 @@ export default function AddRoomType() {
         <Button
           onClick={async () => {
             if (loading) return;
+           // if(typeof data.suggestedGuestAllowed !== "Number" || typeof data.price !== "Number" || typeof data. !== "Number")
+const num1 = Number(data.suggestedGuestAllowed);
+const num2 = Number(data.price );
+const num3 = Number(data.numberOfBed);
+
+
+              if (!Number.isInteger(num1) || !Number.isInteger(num2) || !Number.isInteger(num3)) {
+                return alert('ປ້ອນຂໍ້ມູນໃນ Field ຈໍານວນເງິນ, ຫ້ອງ, ລູກຄ້າທີ່ແນະນໍາຕ້ອງເປັນຕົວເລກ');
+                return;
+              }
             //console.log(data)
             await setLoading(true);
             await setErr(false)

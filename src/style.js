@@ -3,7 +3,6 @@ import { font } from "./constants";
 export const btnStyle = {
   "&.MuiButton-root": {
     fontFamily: "Noto Sans Lao",
-    
   },
   "&.MuiButton-text": {
     color: ``,
@@ -25,26 +24,12 @@ export const textStyle = {
     fontFamily: "Noto Sans Lao",
     height: 35,
     fontSize: '14px',
-
-    
-   
-    //borderRadius: "15px",
   },
-  
-  "& label.Mui-focused": {
-    color: "",
 
-  },
-  "& .MuiInput-underline:after": {
-
-  },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
       borderColor: "",
       borderRadius: "5px",
-  
-
-      
     },
     "&:hover fieldset": {
       borderColor: "",
