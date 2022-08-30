@@ -132,8 +132,8 @@ export default function PageSizeCustomOptions() {
         timeout: 40000,
       })
       .then(async (res) => {
-        await setRoomType(res.data.roomTypes);
-        // await console.log(roomType);
+        await setRoomType(res.data.totalRoomTypes);
+        console.log(res.data);
       })
       .catch((err) => {
         console.error(err);
@@ -344,9 +344,9 @@ export default function PageSizeCustomOptions() {
                 <MenuItem
                   key={idx}
                   sx={{ fontFamily: `${font.LAO_FONT}` }}
-                  value={val.roomType._id}
+                  value={val._id}
                 >
-                  {val.roomType.typeName}
+                  {val.typeName}
                 </MenuItem>
               );
             })}

@@ -17,7 +17,7 @@ export default function TitlebarImageList(props) {
 
   const [img, setImg] = React.useState([imgData.images]);
   //console.log(img)
-  const [showImg, setShowImg] = React.useState(img[0]);
+  const [showImg, setShowImg] = React.useState(img);
   console.log(showImg);
 
   //console.log(img[0])
@@ -59,7 +59,7 @@ export default function TitlebarImageList(props) {
 
   return (
     <ImageList sx={{ width: 500, height: 450 }}>
-      {showImg.map((item, index) => (
+      {imgData?.map((item, index) => (
         <ImageListItem key={index}>
           <img
             src={`${SERVER_URL}/api/image/${item}`}

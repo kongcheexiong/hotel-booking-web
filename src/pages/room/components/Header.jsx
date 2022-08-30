@@ -66,9 +66,9 @@ export default function Header() {
         timeout: 40000,
       })
       .then((res) => {
-        setRoomTypeData(res.data.roomTypes);
+        setRoomTypeData(res.data.totalRoomTypes);
         //setloading(false);
-        console.log(roomTypeData);
+        console.log(res.data);
       })
       .catch((err) => {
         console.error(err);
@@ -222,8 +222,7 @@ export default function Header() {
             {"+ ເພີ່ມຫ້ອງ"}
           </DialogTitle>
           <DialogContent>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure
-            debitis
+          
             <Stack direction="column" spacing={1}>
               <Stack>
                 <label>ເບີຫ້ອງ</label>
@@ -241,10 +240,10 @@ export default function Header() {
                     setType(e.target.value);
                   }}
                 >
-                  {roomTypeData.map((val) => {
+                  {roomTypeData?.map((val) => {
                     return (
-                      <MenuItem key={val.roomType._id} value={val.roomType._id}>
-                        {val.roomType.typeName}
+                      <MenuItem key={val._id} value={val._id}>
+                        {val.typeName}
                       </MenuItem>
                     );
                   })}

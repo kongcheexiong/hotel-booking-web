@@ -71,7 +71,7 @@ export default function Table() {
 
     await axios(config)
       .then(async (response) => {
-        // console.log(response.data.bookings);
+         console.log(response.data.bookings);
         await setbookings(response.data.bookings);
         await setbookingContext(response.data.bookings)
         await setLoading(false);
@@ -250,18 +250,32 @@ export default function Table() {
       },
     },
     {
-      field: "quantity",
-      headerName: "ຈໍານວນ",
-      type: "number",
+      field: "roomName",
+      headerName: "ເບີຫ້ອງ",
+      type: "string",
       flex: 0.7,
+      renderCell: (params) => {
+      
+        return <div>{params.row.room?.roomName}</div>;
+      },
     },
     {
       field: "checkInDate",
       headerName: "ວັນທີເຂົ້າພັກ",
-      type: "number",
+      type: "Date",
       flex: 1,
       renderCell: (params) => {
         const date = useFormatDate(params.row.checkInDate);
+        return <div>{date}</div>;
+      },
+    },
+    {
+      field: "checkOutDate",
+      headerName: "ວັນທີແຈ້ງອອກ",
+      type: "Date",
+      flex: 1,
+      renderCell: (params) => {
+        const date = useFormatDate(params.row.checkOutDate);
         return <div>{date}</div>;
       },
     },

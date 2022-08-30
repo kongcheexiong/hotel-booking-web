@@ -275,11 +275,18 @@ export default function Table() {
       },
     },
     {
-      field: "quantity",
-      headerName: "ຈໍານວນ",
-      type: "number",
-      flex: 0.7,
+      field: "room",
+      headerName: "ຫ້ອງ",
+      flex: 1,
+      renderCell: (params) => {
+        if (!params.row.roomType) {
+          return null;
+        }
+
+        return params.row.room?.roomName;
+      },
     },
+   
     {
       field: "checkInDate",
       headerName: "ວັນທີເຂົ້າພັກ",
@@ -287,6 +294,16 @@ export default function Table() {
       flex: 1,
       renderCell: (params) => {
         const date = useFormatDate(params?.row?.checkInDate);
+        return <div>{date}</div>;
+      },
+    },
+    {
+      field: "checkOutDate",
+      headerName: "ວັນທີແຈ້ງອອກ",
+      type: "number",
+      flex: 1,
+      renderCell: (params) => {
+        const date = useFormatDate(params?.row?.checkOutDate);
         return <div>{date}</div>;
       },
     },

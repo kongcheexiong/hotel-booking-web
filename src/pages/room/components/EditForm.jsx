@@ -84,11 +84,11 @@ export default function EditForm(props) {
         timeout: 40000,
       })
       .then((res) => {
-        setRoomTypeData(res.data.roomTypes);
+        setRoomTypeData(res.data.totalRoomTypes);
         setLoadingRoom(false);
 
         //setloading(false);
-        console.log(roomTypeData);
+        //console.log(roomTypeData);
       })
       .catch((err) => {
         console.error(err);
@@ -145,8 +145,8 @@ export default function EditForm(props) {
           >
             {roomTypeData.map((val) => {
               return (
-                <MenuItem key={val.roomType._id} value={val.roomType._id}>
-                  {val.roomType.typeName}
+                <MenuItem key={val._id} value={val._id}>
+                  {val.typeName}
                 </MenuItem>
               );
             })}

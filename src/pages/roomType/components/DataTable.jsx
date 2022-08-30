@@ -95,15 +95,15 @@ export default function PageSizeCustomOptions() {
       })
       .then( async (res) => {
         //setResData(res.data.roomTypes);
-        console.log(res.data.roomTypes)
+        console.log(res.data.totalRoomTypes)
         
         //console.log(roomType);
 
         setError(false);
         
-        await setRoomType(res.data.roomTypes);
+        await setRoomType(res.data.totalRoomTypes);
         await setloading(false);
-        setPrint(res.data.roomTypes)
+        setPrint(res.data.totalRoomTypes)
         
       })
       .catch((err) => {
@@ -151,8 +151,6 @@ export default function PageSizeCustomOptions() {
 
   React.useEffect(() => {
     //setloading(true);
-   
- 
       fetchData();
 
   
@@ -198,16 +196,16 @@ export default function PageSizeCustomOptions() {
           </div>
         );
       },
-      valueGetter: (params) => params.row.roomType._id
+      //valueGetter: (params) => params.row.roomType._id
     },
     {
       field: "_id",
       headerName: "ລະຫັດ",
       width: 80,
       renderCell: (parram) => {
-        return <div>{parram.row.roomType._id}</div>;
+        return <div>{parram.row._id}</div>;
       },
-      valueGetter: (params) => params.row.roomType._id
+      valueGetter: (params) => params.row._id
     },
     {
       field: "typeName",
@@ -215,9 +213,9 @@ export default function PageSizeCustomOptions() {
       flex: 1,
      
       renderCell: (parram) => {
-        return <div>{parram.row.roomType.typeName}</div>;
+        return <div>{parram.row.typeName}</div>;
       },
-      valueGetter: (params) => params.row.roomType.typeName
+      valueGetter: (params) => params.row.typeName
       
     },
     {
@@ -232,15 +230,16 @@ export default function PageSizeCustomOptions() {
             onClick={() => {
               handlePopUpImg();
               //setImgSrc(parram.row.images);
-              setImgData(parram.row.roomType);
+              console.log(parram.row.images)
+              setImgData(parram.row.images);
               // console.log(parram.row)
             }}
           >
-            {parram.row.roomType.images}
+            {parram.row.images}
           </div>
         );
       },
-      valueGetter: (params) => params.row.roomType.images
+      valueGetter: (params) => params.row.images
     },
     {
       field: "price",
@@ -248,9 +247,9 @@ export default function PageSizeCustomOptions() {
       flex: 1,
       type: 'number',
       renderCell: (parram) => {
-        return <div>{parram.row.roomType.price}</div>;
+        return <div>{parram.row.price}</div>;
       },
-      valueGetter: (params) => params.row.roomType.price
+      valueGetter: (params) => params.row.price
 
 
     },
@@ -260,9 +259,9 @@ export default function PageSizeCustomOptions() {
       type: "number",
       flex: 1,
       renderCell: (parram) => {
-        return <div>{parram.row.roomType.numberOfBed}</div>;
+        return <div>{parram.row.numberOfBed}</div>;
       },
-      valueGetter: (params) => params.row.roomType.numberOfBed
+      valueGetter: (params) => params.row.numberOfBed
 
     },
     {
@@ -271,9 +270,9 @@ export default function PageSizeCustomOptions() {
       type: "number",
       flex: 1,
       renderCell: (parram) => {
-        return <div>{parram.row.roomType.suggestedGuestAllowed}</div>;
+        return <div>{parram.row.suggestedGuestAllowed}</div>;
       },
-      valueGetter: (params) => params.row.roomType.suggestedGuestAllowed
+      valueGetter: (params) => params.row.suggestedGuestAllowed
     },
     {
       field: "totalRoom",
@@ -292,10 +291,10 @@ export default function PageSizeCustomOptions() {
       type: "date",
       flex: 1.5,
       renderCell: (params) => {
-        const date = useFormatDate(params.row.roomType.updatedAt);
+        const date = useFormatDate(params.row.updatedAt);
         return <span>{date}</span>;
       },
-      valueGetter: (params) => params.row.roomType.updatedAt
+      valueGetter: (params) => params.row.updatedAt
     },
     {
       field: "note",
@@ -304,7 +303,7 @@ export default function PageSizeCustomOptions() {
       flex: 1.5,
       //sortable: false,
       renderCell: (parram) => {
-        return <div>{parram.row.roomType.note}</div>;
+        return <div>{parram.row.note}</div>;
       },
       valueGetter: (params) => params.row.note
     },
@@ -321,7 +320,7 @@ export default function PageSizeCustomOptions() {
 
         <DataGrid
           sx={{ ...datagridSx, marginTop: "10px" }}
-          getRowId={(row) => row.roomType._id}
+          getRowId={(row) => row._id}
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[5, 10, 20]}

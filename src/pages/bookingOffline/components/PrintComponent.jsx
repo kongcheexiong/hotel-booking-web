@@ -56,8 +56,9 @@ export class PrintComponent extends React.PureComponent {
 
               <th>ເບີໂທລະສັບ</th>
               <th>ປະເພດຫ້ອງ</th>
-              <th>ຈໍານວນ</th>
+              <th>ເບີຫ້ອງ</th>
               <th>ວັນທີ່ຈະແຈ້ງເຂົ້າ</th>
+              <th>ວັນທີ່ຈະແຈ້ງອອກ</th>
               <th>ສະຖານະ</th>
           
             </thead>
@@ -72,8 +73,9 @@ export class PrintComponent extends React.PureComponent {
                    
                     <td>{val?.roomType.typeName}</td>
 
-                    <td>{val?.quantity}</td>
+                    <td>{val?.room?.roomName}</td>
                     <td>{format(new Date(val?.checkInDate), 'dd/MM/yyyy')}</td>
+                    <td>{format(new Date(val?.checkOutDate), 'dd/MM/yyyy')}</td>
                     <td>{val?.status}</td>
                   
                   </tr>

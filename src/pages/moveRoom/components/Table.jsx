@@ -79,9 +79,9 @@ export default function Table() {
         timeout: 40000,
       })
       .then(async (res) => {
-        await setRoomType(res.data.roomTypes);
+        await setRoomType(res.data.totalRoomTypes);
         console.log(res.data.roomTypes);
-        // await console.log(roomType);
+       console.log(res.data);
       })
       .catch((err) => {
         console.error(err);
@@ -253,7 +253,7 @@ export default function Table() {
     },
     {
       field: "isPaid",
-      headerName: "ຈ່າບແລ້ວ",
+      headerName: "ຈ່າຍແລ້ວ",
       type: "boolean",
       flex: 0.5,
     },
@@ -414,9 +414,9 @@ export default function Table() {
                       <MenuItem
                         key={idx}
                         sx={{ fontFamily: `${font.LAO_FONT}` }}
-                        value={val.roomType._id}
+                        value={val._id}
                       >
-                        {val.roomType.typeName}
+                        {val.typeName}
                       </MenuItem>
                     );
                   })}
